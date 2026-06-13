@@ -17,6 +17,7 @@ export default function Navbar() {
   const links = [
     { href: `/${locale}`, label: t('home') },
     { href: `/${locale}/tours`, label: t('tours') },
+    { href: `/${locale}/transfers`, label: locale === 'fr' ? 'Transferts' : 'Transfers' },
     { href: `/${locale}/fleet`, label: t('fleet') },
     { href: `/${locale}/about`, label: t('about') },
     { href: `/${locale}/contact`, label: t('contact') },
@@ -37,9 +38,17 @@ export default function Navbar() {
             />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-6">
             {links.map((l) => (
-              <Link key={l.href} href={l.href} className="text-sm font-medium text-gray-700 hover:text-[#C8960C] transition-colors">
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`text-sm font-medium transition-colors ${
+                  pathname === l.href
+                    ? 'text-[#C8960C] font-semibold'
+                    : 'text-gray-700 hover:text-[#C8960C]'
+                }`}
+              >
                 {l.label}
               </Link>
             ))}
