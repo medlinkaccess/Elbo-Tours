@@ -1,0 +1,147 @@
+{
+  "nav": {
+    "home": "Home",
+    "tours": "Tours",
+    "fleet": "Our Fleet",
+    "about": "About",
+    "contact": "Contact",
+    "book": "Book Now",
+    "phone": "+212 665-889258"
+  },
+  "hero": {
+    "badge": "Private Transport · Morocco",
+    "title": "Premium Transfers\n& Excursions",
+    "subtitle": "Comfortable, reliable and personalised travel across Morocco — from airport pickups to Sahara circuits.",
+    "cta": "Book a Transfer",
+    "whatsapp": "WhatsApp Us"
+  },
+  "stats": [
+    {
+      "num": "10+",
+      "label": "Years experience"
+    },
+    {
+      "num": "5,000+",
+      "label": "Happy travellers"
+    },
+    {
+      "num": "24/7",
+      "label": "Availability"
+    },
+    {
+      "num": "3",
+      "label": "Languages"
+    }
+  ],
+  "services": {
+    "badge": "What We Offer",
+    "title": "Our Services",
+    "items": [
+      {
+        "icon": "plane",
+        "title": "Airport Transfers",
+        "desc": "Fixed-price, on-time pickups and drop-offs at all Moroccan airports. Flight tracking included."
+      },
+      {
+        "icon": "car",
+        "title": "Private City Transfers",
+        "desc": "Door-to-door transfers between Moroccan cities in air-conditioned, modern vehicles."
+      },
+      {
+        "icon": "hotel",
+        "title": "Hotel Pick-up & Drop-off",
+        "desc": "Seamless connections between your hotel and any destination across Morocco."
+      },
+      {
+        "icon": "compass",
+        "title": "Guided Excursions",
+        "desc": "Day trips and multi-day circuits to the Sahara, Atlas Mountains, Essaouira and beyond."
+      }
+    ]
+  },
+  "fleet": {
+    "badge": "Travel in Comfort",
+    "title": "Our Fleet",
+    "items": [
+      {
+        "name": "Standard Car",
+        "capacity": "up to 3 passengers",
+        "img": "/fleet/standard.png"
+      },
+      {
+        "name": "Minivan",
+        "capacity": "up to 7 passengers",
+        "img": "/fleet/minivan.png"
+      },
+      {
+        "name": "Minibus",
+        "capacity": "up to 17 passengers",
+        "img": "/fleet/minibus.png"
+      }
+    ]
+  },
+  "why": {
+    "badge": "Why Elbo Tours",
+    "title": "Your Trusted Partner in Morocco",
+    "points": [
+      "Professional English & French speaking drivers",
+      "Modern, air-conditioned vehicles",
+      "Fixed prices — no hidden fees",
+      "Personalised itineraries for your group",
+      "Instant confirmation by WhatsApp"
+    ]
+  },
+  "testimonials": {
+    "badge": "Customer Reviews",
+    "title": "What Travellers Say",
+    "items": [
+      {
+        "text": "Reliable, professional, and very comfortable ride. We traveled from Agadir to Marrakech and everything went perfectly.",
+        "name": "David S.",
+        "country": "Germany"
+      },
+      {
+        "text": "Booking was simple and everything was exactly as promised. The driver was waiting with our name sign — very reassuring.",
+        "name": "Emily R.",
+        "country": "USA"
+      },
+      {
+        "text": "Top service from start to finish. The driver arrived on time, helped with luggage, and the car was spotless.",
+        "name": "Ahmed K.",
+        "country": "Morocco"
+      },
+      {
+        "text": "Elbo Tours made our trip so easy. Communication was perfect and the chauffeur was very kind and helpful.",
+        "name": "Sophie L.",
+        "country": "France"
+      },
+      {
+        "text": "The driver was punctual, professional, and very friendly. Transfer from Agadir to Taghazout was smooth and stress-free.",
+        "name": "John M.",
+        "country": "United Kingdom"
+      }
+    ]
+  },
+  "contact": {
+    "badge": "Get In Touch",
+    "title": "Ready to Travel?",
+    "subtitle": "Contact us for a personalised quote or instant WhatsApp booking.",
+    "name": "Full name",
+    "email": "Email address",
+    "phone": "Phone / WhatsApp",
+    "destination": "Destination or service",
+    "message": "Tell us about your trip",
+    "send": "Send Message",
+    "whatsapp": "Chat on WhatsApp",
+    "info": {
+      "phone": "+212 665-889258",
+      "email": "contact@elbo-tours.com",
+      "address": "Marrakech, Morocco",
+      "hours": "7 days a week, 8am – 9pm"
+    }
+  },
+  "footer": {
+    "desc": "Morocco-based private transport specialists. Comfortable, reliable and personalised transfers for every journey.",
+    "copyright": "© 2025 Elbo Tours. All rights reserved."
+  }
+}

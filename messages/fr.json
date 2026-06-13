@@ -1,0 +1,147 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "tours": "Circuits",
+    "fleet": "Notre Flotte",
+    "about": "À propos",
+    "contact": "Contact",
+    "book": "Réserver",
+    "phone": "+212 665-889258"
+  },
+  "hero": {
+    "badge": "Transport Privé · Maroc",
+    "title": "Transferts Premium\n& Excursions",
+    "subtitle": "Voyages confortables, fiables et personnalisés au Maroc — des transferts aéroport aux circuits désert.",
+    "cta": "Réserver un transfert",
+    "whatsapp": "WhatsApp"
+  },
+  "stats": [
+    {
+      "num": "10+",
+      "label": "Ans d'expérience"
+    },
+    {
+      "num": "5 000+",
+      "label": "Voyageurs satisfaits"
+    },
+    {
+      "num": "24/7",
+      "label": "Disponibilité"
+    },
+    {
+      "num": "3",
+      "label": "Langues"
+    }
+  ],
+  "services": {
+    "badge": "Ce Que Nous Offrons",
+    "title": "Nos Services",
+    "items": [
+      {
+        "icon": "plane",
+        "title": "Transferts Aéroport",
+        "desc": "Prises en charge ponctuelles à prix fixe dans tous les aéroports marocains. Suivi de vol inclus."
+      },
+      {
+        "icon": "car",
+        "title": "Transferts Privés",
+        "desc": "Transferts porte-à-porte entre les villes marocaines en véhicules climatisés et modernes."
+      },
+      {
+        "icon": "hotel",
+        "title": "Navette Hôtel",
+        "desc": "Connexions sans souci entre votre hôtel et toute destination au Maroc."
+      },
+      {
+        "icon": "compass",
+        "title": "Excursions Guidées",
+        "desc": "Circuits à la journée et multi-jours vers le Sahara, l'Atlas, Essaouira et plus encore."
+      }
+    ]
+  },
+  "fleet": {
+    "badge": "Voyagez Confortablement",
+    "title": "Notre Flotte",
+    "items": [
+      {
+        "name": "Voiture Standard",
+        "capacity": "jusqu'à 3 passagers",
+        "img": "/fleet/standard.png"
+      },
+      {
+        "name": "Minivan",
+        "capacity": "jusqu'à 7 passagers",
+        "img": "/fleet/minivan.png"
+      },
+      {
+        "name": "Minibus",
+        "capacity": "jusqu'à 17 passagers",
+        "img": "/fleet/minibus.png"
+      }
+    ]
+  },
+  "why": {
+    "badge": "Pourquoi Elbo Tours",
+    "title": "Votre Partenaire de Confiance au Maroc",
+    "points": [
+      "Chauffeurs professionnels anglophones et francophones",
+      "Véhicules modernes et climatisés",
+      "Prix fixes — sans frais cachés",
+      "Itinéraires personnalisés pour votre groupe",
+      "Confirmation instantanée par WhatsApp"
+    ]
+  },
+  "testimonials": {
+    "badge": "Avis Clients",
+    "title": "Ce que disent les voyageurs",
+    "items": [
+      {
+        "text": "Fiable, professionnel et très confortable. Nous avons voyagé d'Agadir à Marrakech et tout s'est parfaitement passé.",
+        "name": "David S.",
+        "country": "Allemagne"
+      },
+      {
+        "text": "La réservation était simple et tout était exactement comme promis. Le chauffeur nous attendait avec notre panneau.",
+        "name": "Emily R.",
+        "country": "USA"
+      },
+      {
+        "text": "Service impeccable du début à la fin. Le chauffeur est arrivé à l'heure, a aidé avec les bagages.",
+        "name": "Ahmed K.",
+        "country": "Maroc"
+      },
+      {
+        "text": "Elbo Tours a rendu notre voyage si facile. La communication était parfaite et le chauffeur très aimable.",
+        "name": "Sophie L.",
+        "country": "France"
+      },
+      {
+        "text": "Le chauffeur était ponctuel, professionnel et très sympathique. Transfert d'Agadir à Taghazout sans stress.",
+        "name": "John M.",
+        "country": "Royaume-Uni"
+      }
+    ]
+  },
+  "contact": {
+    "badge": "Contactez-nous",
+    "title": "Prêt à Voyager ?",
+    "subtitle": "Contactez-nous pour un devis personnalisé ou une réservation instantanée par WhatsApp.",
+    "name": "Nom complet",
+    "email": "Adresse e-mail",
+    "phone": "Téléphone / WhatsApp",
+    "destination": "Destination ou service",
+    "message": "Parlez-nous de votre voyage",
+    "send": "Envoyer le message",
+    "whatsapp": "Chat WhatsApp",
+    "info": {
+      "phone": "+212 665-889258",
+      "email": "contact@elbo-tours.com",
+      "address": "Marrakech, Maroc",
+      "hours": "7j/7, 8h – 21h"
+    }
+  },
+  "footer": {
+    "desc": "Spécialistes marocains du transport privé. Transferts confortables, fiables et personnalisés pour chaque voyage.",
+    "copyright": "© 2025 Elbo Tours. Tous droits réservés."
+  }
+}
