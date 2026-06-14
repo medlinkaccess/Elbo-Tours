@@ -348,8 +348,6 @@ export default function Home() {
 
         /* ── parallax quote ── */
         .quote-band {
-          background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-                      url(/images/hero-quote.jpg) center/cover no-repeat;
           padding: 4rem 1.5rem; text-align: center;
         }
         .quote-text {
@@ -482,7 +480,7 @@ export default function Home() {
         </section>
 
         {/* ── QUOTE BAND ── */}
-        <div className="quote-band">
+        <div className="quote-band" style={{background: "linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(/images/hero-quote.jpg) center/cover no-repeat"}}>
           <p className="quote-text">"We love to share with our guests the peace and the Moroccan way of life — every journey is a chance to discover something genuine."</p>
           <Link href={`/${locale}/about`} className="btn-outline" style={{ display: 'inline-flex', borderColor: 'rgba(255,255,255,0.5)', color: '#fff' }}>
             Meet our team & philosophy
