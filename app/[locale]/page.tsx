@@ -348,8 +348,8 @@ export default function Home() {
 
         /* ── parallax quote ── */
         .quote-band {
-          background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-                      linear-gradient(135deg, #1a0a00 0%, #3d1c00 100%);
+          background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                      url(/images/hero-quote.jpg) center/cover no-repeat;
           padding: 4rem 1.5rem; text-align: center;
         }
         .quote-text {
