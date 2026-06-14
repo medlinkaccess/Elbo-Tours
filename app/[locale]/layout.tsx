@@ -4,10 +4,10 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Inter, Playfair_Display } from 'next/font/google';
 import '../globals.css';
+import ChatWidget from '@/components/ChatWidget';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
-
 const locales = ['en', 'fr'];
 
 export const metadata: Metadata = {
@@ -32,6 +32,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <ChatWidget />
       </body>
     </html>
   );
