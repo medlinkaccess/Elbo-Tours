@@ -23,12 +23,9 @@ const TOUR_TYPES = [
 
 // ─── Hero slides ──────────────────────────────────────────────────────────────
 const SLIDES_TEXT = [
-  { headline: 'Discover the
-Essence of Morocco', sub: 'Private tailor-made tours from Marrakech', cta: 'Explore Tours' },
-  { headline: 'Sahara Nights
-Under a Billion Stars', sub: 'Glamping camps, camel treks, sunrise dunes', cta: 'Desert Tours' },
-  { headline: 'Imperial Cities,
-Timeless Stories', sub: 'Marrakech · Fès · Meknès · Casablanca', cta: 'Cultural Tours' },
+  { headline: 'Discover the\nEssence of Morocco', sub: 'Private tailor-made tours from Marrakech', cta: 'Explore Tours' },
+  { headline: 'Sahara Nights\nUnder a Billion Stars', sub: 'Glamping camps, camel treks, sunrise dunes', cta: 'Desert Tours' },
+  { headline: 'Imperial Cities,\nTimeless Stories', sub: 'Marrakech · Fès · Meknès · Casablanca', cta: 'Cultural Tours' },
 ];
 
 const SLIDES_DATA = [
