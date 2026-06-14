@@ -8,6 +8,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
   const locale = hasLocale(locales, requested) ? requested : 'en';
   return {
     locale,
-    messages: (await import(./messages/.json)).default,
+    messages: (await import(`./messages/${locale}.json`)).default,
   };
 });
