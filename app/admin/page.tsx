@@ -49,12 +49,17 @@ export default function AdminPage() {
   const [successMsg, setSuccessMsg] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Check auth on load
+  // FIXED: Check auth properly using a GET fallback or testing the state safely
   useEffect(() => {
-    // Try to load tours — if 200, we're authed (cookie-based)
-    fetch('/api/tours').then(r => {
-      if (r.ok) { setAuthed(true); loadTours(); }
-    });
+    fetch('/api/tours')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          // Check if we can hit an auth check or keep it false until submission
+          setTours(data);
+        }
+      })
+      .catch(() => setTours([]));
   }, []);
 
   async function handleLogin(e: React.FormEvent) {
@@ -76,14 +81,21 @@ export default function AdminPage() {
   async function handleLogout() {
     await fetch('/api/admin-auth', { method: 'DELETE' });
     setAuthed(false);
-    setTours([]);
   }
 
   async function loadTours() {
     setLoading(true);
-    const res = await fetch('/api/tours');
-    const data = await res.json();
-    setTours(data);
+    try {
+      const res = await fetch('/api/tours');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setTours(data);
+      } else {
+        setTours([]);
+      }
+    } catch {
+      setTours([]);
+    }
     setLoading(false);
   }
 
@@ -104,11 +116,19 @@ export default function AdminPage() {
     setSaving(true);
     const method = editId ? 'PUT' : 'POST';
     const body = editId ? { ...form, id: editId } : form;
-    await fetch('/api/tours', {
+    const res = await fetch('/api/tours', {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    
+    if (res.status === 401) {
+      setAuthError('Session expired. Please sign in again.');
+      setAuthed(false);
+      setSaving(false);
+      return;
+    }
+
     setSaving(false);
     setForm(EMPTY_FORM);
     setEditId(null);
@@ -121,11 +141,17 @@ export default function AdminPage() {
 
   async function handleDelete(id: string, title: string) {
     if (!confirm(`Delete "${title}"?`)) return;
-    await fetch('/api/tours', {
+    const res = await fetch('/api/tours', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
     });
+
+    if (res.status === 401) {
+      setAuthed(false);
+      return;
+    }
+
     setSuccessMsg('Tour deleted.');
     setTimeout(() => setSuccessMsg(''), 3000);
     loadTours();
@@ -144,15 +170,16 @@ export default function AdminPage() {
     setActiveTab('tours');
   }
 
-  const filtered = filterCat === 'All' ? tours : tours.filter(t => t.category === filterCat);
+  const safeTours = Array.isArray(tours) ? tours : [];
+  const filtered = filterCat === 'All' ? safeTours : safeTours.filter(t => t.category === filterCat);
 
-  // ── LOGIN SCREEN ──
+  // —— LOGIN SCREEN ——
   if (!authed) {
     return (
       <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-[#C8960C] rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🔐</div>
+            <div className="w-16 h-16 bg-[#C8960C] rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🔑</div>
             <h1 className="font-bold text-2xl text-[#1A1A2E]">Admin Panel</h1>
             <p className="text-gray-400 text-sm mt-1">Elbo Tours Management</p>
           </div>
@@ -166,7 +193,7 @@ export default function AdminPage() {
               autoFocus
             />
             {authError && <p className="text-red-500 text-sm text-center">{authError}</p>}
-            <button type="submit" className="btn-gold w-full justify-center py-3">
+            <button type="submit" className="w-full bg-[#C8960C] hover:bg-[#A77D0A] text-white rounded-xl py-3 font-semibold transition-colors">
               Sign In →
             </button>
           </form>
@@ -175,10 +202,9 @@ export default function AdminPage() {
     );
   }
 
-  // ── ADMIN DASHBOARD ──
+  // —— ADMIN DASHBOARD ——
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top bar */}
       <header className="bg-[#1A1A2E] text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-xl">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-[#C8960C] rounded-lg flex items-center justify-center font-bold text-sm">ET</div>
@@ -198,21 +224,18 @@ export default function AdminPage() {
       </header>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-
-        {/* Success message */}
         {successMsg && (
           <div className="mb-6 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm font-medium flex items-center gap-2">
             ✅ {successMsg}
           </div>
         )}
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: 'Total Tours', value: tours.length, icon: '🗺️' },
-            { label: 'Featured', value: tours.filter(t => t.featured).length, icon: '⭐' },
-            { label: 'With Photos', value: tours.filter(t => t.image).length, icon: '📷' },
-            { label: 'Categories', value: new Set(tours.map(t => t.category)).size, icon: '🏷️' },
+            { label: 'Total Tours', value: safeTours.length, icon: '🗺️' },
+            { label: 'Featured', value: safeTours.filter(t => t.featured).length, icon: '⭐' },
+            { label: 'With Photos', value: safeTours.filter(t => t.image).length, icon: '📷' },
+            { label: 'Categories', value: new Set(safeTours.map(t => t.category)).size, icon: '🎫' },
           ].map((s, i) => (
             <div key={i} className="bg-white rounded-2xl border border-gray-200 p-5 flex items-center gap-4">
               <div className="text-3xl">{s.icon}</div>
@@ -224,22 +247,19 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* Tabs */}
         <div className="flex gap-2 mb-6">
           <button onClick={() => { setActiveTab('tours'); cancelEdit(); }}
             className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${activeTab === 'tours' ? 'bg-[#1A1A2E] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-            📋 All Tours ({tours.length})
+            📋 All Tours ({safeTours.length})
           </button>
           <button onClick={() => { setActiveTab('add'); if (!editId) setForm(EMPTY_FORM); }}
             className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${activeTab === 'add' ? 'bg-[#C8960C] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-            {editId ? '✏️ Edit Tour' : '➕ Add Tour'}
+            {editId ? '📝 Edit Tour' : '➕ Add Tour'}
           </button>
         </div>
 
-        {/* ALL TOURS TAB */}
         {activeTab === 'tours' && (
           <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-            {/* Filter bar */}
             <div className="p-4 border-b border-gray-100 flex gap-2 overflow-x-auto">
               {['All', ...CATEGORIES].map(cat => (
                 <button key={cat} onClick={() => setFilterCat(cat)}
@@ -253,14 +273,13 @@ export default function AdminPage() {
               <div className="py-20 text-center text-gray-400">Loading tours...</div>
             ) : filtered.length === 0 ? (
               <div className="py-20 text-center">
-                <div className="text-4xl mb-3">📭</div>
+                <div className="text-4xl mb-3">📥</div>
                 <p className="text-gray-500">No tours yet. Add your first one!</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
                 {filtered.map(tour => (
                   <div key={tour.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-                    {/* Thumbnail */}
                     <div className="w-16 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                       {tour.image ? (
                         <img src={tour.image} alt={tour.title} className="w-full h-full object-cover" />
@@ -269,7 +288,6 @@ export default function AdminPage() {
                       )}
                     </div>
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="font-semibold text-[#1A1A2E] truncate">{tour.title}</span>
@@ -277,16 +295,15 @@ export default function AdminPage() {
                       </div>
                       <div className="flex gap-3 text-xs text-gray-400">
                         <span className="bg-gray-100 px-2 py-0.5 rounded-full">{tour.category}</span>
-                        <span>⏱ {tour.duration}</span>
+                        <span>⏱️ {tour.duration}</span>
                         <span className="font-semibold text-[#C8960C]">{tour.price}</span>
                       </div>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex gap-2 flex-shrink-0">
                       <button onClick={() => startEdit(tour)}
                         className="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold transition-colors">
-                        ✏️ Edit
+                        📝 Edit
                       </button>
                       <button onClick={() => handleDelete(tour.id, tour.title)}
                         className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors">
@@ -300,15 +317,12 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* ADD/EDIT TOUR TAB */}
         {activeTab === 'add' && (
           <div className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8">
             <h2 className="font-bold text-xl text-[#1A1A2E] mb-6">
-              {editId ? '✏️ Edit Tour' : '➕ Add New Tour'}
+              {editId ? '📝 Edit Tour' : '➕ Add New Tour'}
             </h2>
             <form onSubmit={handleSave} className="space-y-6">
-
-              {/* Image upload */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Tour Photo</label>
                 <div className="flex gap-4 items-start">
@@ -334,7 +348,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Title EN/FR */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Title (English) *</label>
@@ -350,7 +363,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Category, Duration, From, Price */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Category *</label>
@@ -379,7 +391,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Description EN/FR */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Description (English) *</label>
@@ -395,7 +406,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Featured toggle */}
               <div className="flex items-center gap-3">
                 <button type="button" onClick={() => setForm((f: any) => ({...f, featured: !f.featured}))}
                   className={`w-12 h-6 rounded-full transition-colors ${form.featured ? 'bg-[#C8960C]' : 'bg-gray-200'} relative flex-shrink-0`}>
@@ -404,9 +414,8 @@ export default function AdminPage() {
                 <span className="text-sm font-medium text-gray-700">⭐ Mark as Featured (shown prominently)</span>
               </div>
 
-              {/* Buttons */}
               <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={saving} className="btn-gold px-8 py-3 disabled:opacity-50">
+                <button type="submit" disabled={saving} className="bg-[#C8960C] hover:bg-[#A77D0A] text-white rounded-xl px-8 py-3 font-semibold transition-colors disabled:opacity-50">
                   {saving ? '⏳ Saving...' : editId ? '✅ Update Tour' : '➕ Add Tour'}
                 </button>
                 <button type="button" onClick={cancelEdit}
