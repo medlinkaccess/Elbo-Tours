@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Inter, Playfair_Display } from 'next/font/google';
 import '../globals.css';
 import ChatWidget from '@/components/ChatWidget';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
@@ -33,6 +34,7 @@ export default async function LocaleLayout({
           {children}
         </NextIntlClientProvider>
         <ChatWidget />
+        <WhatsAppButton />
       </body>
     </html>
   );
