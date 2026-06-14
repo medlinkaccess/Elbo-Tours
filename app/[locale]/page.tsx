@@ -93,7 +93,7 @@ export default function Home() {
     days: t(`featured.tours.${i}.days`),
     title: t(`featured.tours.${i}.title`),
     desc: t(`featured.tours.${i}.desc`),
-    tags: JSON.parse(t(`featured.tours.${i}.tags`)),
+    tags: tour.tags,
   }));
 
   useEffect(() => {
@@ -448,7 +448,7 @@ export default function Home() {
                     <div className="tour-title">{tour.title}</div>
                     <p className="tour-desc">{tour.desc}</p>
                     <div className="tour-tags">
-                      {tour.tags.map((tag, j) => <span key={j} className="tour-tag">{tag}</span>)}
+                      {tour.tags.map((tag: string, j: number) => <span key={j} className="tour-tag">{tag}</span>)}
                     </div>
                     <Link href={`/${locale}${tour.href}`} className="tour-link">{t('featured.view_itinerary')} →</Link>
                   </div>
