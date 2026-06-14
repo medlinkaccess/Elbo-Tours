@@ -12,19 +12,22 @@ You help customers with:
 - General Morocco travel tips: best time to visit, currency, customs, safety, packing, etc.
 
 Always be warm, concise, and helpful. If you don't know something specific, invite them to WhatsApp or email us directly.
-Contact: WhatsApp +212 6XX XXX XXX | info@elbotours.com`;
+Contact: WhatsApp +212 665-889258 | info@elbotours.com`;
 
 export async function POST(req: NextRequest) {
-  const { messages } = await req.json();
-
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...messages,
-    ],
-    max_tokens: 500,
-  });
-
-  return NextResponse.json({ reply: response.choices[0].message.content });
+  try {
+    const { messages } = await req.json();
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...messages,
+      ],
+      max_tokens: 500,
+    });
+    return NextResponse.json({ reply: response.choices[0].message.content });
+  } catch (error: any) {
+    console.error('OpenAI error:', error?.message);
+    return NextResponse.json({ error: error?.message }, { status: 500 });
+  }
 }
