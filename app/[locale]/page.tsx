@@ -49,30 +49,15 @@ const SLIDES = [
 
 // ─── Featured tours ───────────────────────────────────────────────────────────
 const FEATURED_TOURS = [
-  {
-    img: null, // replace with real image paths
-    days: '10–14 days',
-    title: 'Grand Morocco Tour',
-    desc: 'The full spectrum: imperial cities, Atlas mountains, Sahara dunes, and Atlantic coast in one unforgettable journey.',
-    tags: ['Family', 'Luxury', 'Desert', 'Culture'],
-    href: '/tours/grand-morocco',
-  },
-  {
-    img: null,
-    days: '7–11 days',
-    title: 'The Great South',
-    desc: 'From Marrakech through Kasbahs and High Atlas passes to the golden dunes of Erg Chebbi in Merzouga.',
-    tags: ['Adventure', 'Desert', 'Nature'],
-    href: '/tours/great-south',
-  },
-  {
-    img: null,
-    days: '3–6 days',
-    title: 'Marrakech to Fès via Desert',
-    desc: 'A perfectly paced short getaway crossing the Atlas, Ziz valley, and Sahara before ending in ancient Fès.',
-    tags: ['Adventure', 'Culture', 'Desert'],
-    href: '/tours/marrakech-fes',
-  },
+  { img: "/images/tours/tour-grand-morocco.jpg", days: "10-14 days", title: "Grand Morocco Tour", desc: "The ultimate Moroccan experience: golden Sahara dunes, the blue medinas of Fes and Chefchaouen, snow-capped Atlas peaks, ancient imperial cities, and the windswept Atlantic coast of Essaouira all in one private journey.", tags: ["Family", "Luxury", "Desert", "Culture"], href: "/tours/grand-morocco" },
+  { img: "/images/tours/tour-great-south.jpg", days: "7-11 days", title: "The Great South", desc: "Cross the High Atlas via Tizi n Tichka, explore the UNESCO kasbah of Ait Ben Haddou, wind through the Valley of a Thousand Kasbahs, and arrive at the towering dunes of Merzouga for a camel trek under the Saharan stars.", tags: ["Adventure", "Desert", "Nature"], href: "/tours/great-south" },
+  { img: "/images/tours/tour-marrakech-fes.jpg", days: "3-6 days", title: "Marrakech to Fes via Desert", desc: "Cross the Atlas mountains, discover the timeless kasbah of Ait Ben Haddou, traverse the Ziz palm valley, and reach the golden Sahara dunes before arriving in the ancient medina of Fes.", tags: ["Adventure", "Culture", "Desert"], href: "/tours/marrakech-fes" },
+  { img: "/images/tours/tour-north-morocco.jpg", days: "7-10 days", title: "North Morocco Tour", desc: "Discover the indigo-blue streets of Chefchaouen in the Rif mountains, the Roman glory of Volubilis, the white-washed port of Asilah, and the timeless souks of Fes and Meknes.", tags: ["Culture", "Nature", "Adventure"], href: "/tours/north-morocco" },
+  { img: "/images/tours/tour-imperial-cities.jpg", days: "6-9 days", title: "Imperial Cities Tour", desc: "Walk in the footsteps of sultans across Morocco four royal capitals: the spiritual depth of Fes, the Roman ruins of Meknes and Volubilis, the energy of Casablanca and Rabat, and the rose-red magic of Marrakech.", tags: ["Culture", "History", "Luxury"], href: "/tours/imperial-cities" },
+  { img: "/images/tours/tour-atlas-nature.jpg", days: "2-3 days", title: "Atlas and Waterfalls Escape", desc: "Visit the spectacular three-tiered Ouzoud Falls, the highest in North Africa. Swim in emerald pools, spot Barbary macaques, and lunch riverside in a Berber village with the Atlas mountains as your backdrop.", tags: ["Nature", "Adventure", "Family"], href: "/tours/atlas-waterfalls" },
+  { img: "/images/tours/tour-ourika-valley.jpg", days: "1-2 days", title: "Ourika Valley Day Trip", desc: "Just 30 minutes from Marrakech, the Ourika Valley opens into a lush Berber world of rushing rivers, terraced saffron fields, and family-run mountain restaurants perched above turquoise water.", tags: ["Nature", "Culture", "Family"], href: "/tours/ourika-valley" },
+  { img: "/images/tours/tour-4x4-adventure.jpg", days: "1-3 days", title: "Quad and Buggy Desert Adventure", desc: "Tear across the volcanic plains of the Agafay Desert in a powerful buggy or quad bike. Raw lunar landscape as far as the eye can see. Combine with a sunset camel ride and dinner under the stars.", tags: ["Adventure", "4x4", "Family"], href: "/tours/quad-buggy" },
+  { img: "/images/tours/tour-essaouira.jpg", days: "2-3 days", title: "Essaouira Atlantic Escape", desc: "A UNESCO-listed medina of blue-and-white alleys, Portuguese ramparts with ancient cannons, a buzzing fish market, and one of Africa finest kitesurfing beaches. A soulful contrast to the desert heat.", tags: ["Culture", "Nature", "Luxury"], href: "/tours/essaouira" },
 ];
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
@@ -477,7 +462,7 @@ export default function Home() {
             <div className="tours-grid">
               {FEATURED_TOURS.map((tour, i) => (
                 <div key={i} className="tour-card">
-                  <div className="tour-img">🏜️</div>
+                  <div className="tour-img" style={{backgroundImage: tour.img ? "url("+tour.img+")" : "none", backgroundSize: "cover", backgroundPosition: "center"}}></div>
                   <div className="tour-body">
                     <div className="tour-days">{tour.days}</div>
                     <div className="tour-title">{tour.title}</div>
