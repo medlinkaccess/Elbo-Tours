@@ -25,21 +25,21 @@ const TOUR_TYPES = [
 // ─── Hero slides ──────────────────────────────────────────────────────────────
 const SLIDES = [
   {
-    bg: 'linear-gradient(135deg, #1a0a00 0%, #3d1c00 60%, #1a0a00 100%)',
+    bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-essence.jpg) center/cover no-repeat',
     accent: '#C8960C',
     headline: 'Discover the\nEssence of Morocco',
     sub: 'Private tailor-made tours from Marrakech',
     cta: { label: 'Explore Tours', href: '/tours' },
   },
   {
-    bg: 'linear-gradient(135deg, #0a1a0a 0%, #1a3a1a 60%, #0a1a0a 100%)',
+    bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-sahara.jpg) center/cover no-repeat',
     accent: '#5aaa5a',
     headline: 'Sahara Nights\nUnder a Billion Stars',
     sub: 'Glamping camps, camel treks, sunrise dunes',
     cta: { label: 'Desert Tours', href: '/tours?type=desert' },
   },
   {
-    bg: 'linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 60%, #0a0a2a 100%)',
+    bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-cities.jpg) center/cover no-repeat',
     accent: '#C8440A',
     headline: 'Imperial Cities,\nTimeless Stories',
     sub: 'Marrakech · Fès · Meknès · Casablanca',
