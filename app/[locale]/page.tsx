@@ -413,7 +413,7 @@ export default function Home() {
               {TOUR_TYPES.map((t, i) => (
                 <Link key={i} href={`/${locale}${t.href}`} className="type-card">
                   <img src={t.img} alt={t.label} className="type-img" />
-                  <span className="type-label">{t2(`types.labels.${t.label}`) || t.label}</span>
+                  <span className="type-label">{tTypes(`types.labels.${t.label}`)}</span>
                 </Link>
               ))}
             </div>
