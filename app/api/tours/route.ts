@@ -20,10 +20,8 @@ function writeTours(tours: any[]) {
   writeFileSync(DATA_FILE, JSON.stringify(tours, null, 2));
 }
 
+// FIXED: Public visitors can now see the tours without a 401 error
 export async function GET(req: NextRequest) {
-  if (!isAuthed(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
   return NextResponse.json(readTours());
 }
 
