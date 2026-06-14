@@ -385,7 +385,7 @@ export default function Home() {
           </div>
 
           {/* stats bar */}
-          <div className="stats-bar" style={{ gridTemplateColumns: `repeat(${STATS.length},1fr)` }}>
+          <div className="stats-bar" style={{ gridTemplateColumns: `repeat(${stats.length},1fr)` }}>
             {stats.map((st, i) => (
               <div key={i}>
                 <div className="stat-num">{st.num}</div>
