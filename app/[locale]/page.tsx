@@ -63,36 +63,42 @@ const CITIES = [
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function Home() {
   const locale = useLocale();
-  const t = useTranslations();
-  const t2 = t;
+  const tHero = useTranslations('hero');
+  const tStats = useTranslations('stats');
+  const tTypes = useTranslations('types');
+  const tFeatured = useTranslations('featured');
+  const tQuote = useTranslations('quote');
+  const tWhy = useTranslations('why');
+  const tTest = useTranslations('testimonials');
+  const tCta = useTranslations('cta');
   const [slide, setSlide] = useState(0);
 
   const slides = SLIDES_DATA.map((sd, i) => ({
     ...sd,
-    headline: t(`hero.slides.${i}.headline`),
-    sub: t(`hero.slides.${i}.sub`),
-    cta: { label: t(`hero.slides.${i}.cta`), href: sd.href },
+    headline: tHero(`slides.${i}.headline`),
+    sub: tHero(`slides.${i}.sub`),
+    cta: { label: tHero(`slides.${i}.cta`), href: sd.href },
   }));
 
-  const stats = STATS_NUMS.map((num, i) => ({ num, label: t(`stats.${i}.label`) }));
+  const stats = STATS_NUMS.map((num, i) => ({ num, label: tStats(`${i}.label`) }));
 
   const WHY_US = Array.from({length: 6}, (_, i) => ({
-    title: t(`why.items.${i}.title`),
-    body: t(`why.items.${i}.body`),
+    title: tWhy(`items.${i}.title`),
+    body: tWhy(`items.${i}.body`),
   }));
 
   const TESTIMONIALS = Array.from({length: 3}, (_, i) => ({
-    name: t(`testimonials.items.${i}.name`),
-    country: t(`testimonials.items.${i}.country`),
-    tour: t(`testimonials.items.${i}.tour`),
-    text: t(`testimonials.items.${i}.text`),
+    name: tTest(`items.${i}.name`),
+    country: tTest(`items.${i}.country`),
+    tour: tTest(`items.${i}.tour`),
+    text: tTest(`items.${i}.text`),
   }));
 
   const FEATURED_TOURS_I18N = FEATURED_TOURS.map((tour, i) => ({
     ...tour,
-    days: t(`featured.tours.${i}.days`),
-    title: t(`featured.tours.${i}.title`),
-    desc: t(`featured.tours.${i}.desc`),
+    days: tFeatured(`tours.${i}.days`),
+    title: tFeatured(`tours.${i}.title`),
+    desc: tFeatured(`tours.${i}.desc`),
     tags: tour.tags,
   }));
 
@@ -361,7 +367,7 @@ export default function Home() {
         <section className="hero-section" style={{ background: s.bg }}>
           <div className="hero-overlay" />
           <div className="hero-content">
-            <div className="hero-badge">✦ {t('hero.badge')}</div>
+            <div className="hero-badge">✦ {tHero('badge')}</div>
             <h1 className="hero-title">
               {s.headline.split('\n').map((line, i) => (
                 <span key={i}>{i === 1 ? <><br /><span style={{ color: s.accent }}>{line}</span></> : line}</span>
@@ -399,9 +405,9 @@ export default function Home() {
         <section className="section section-sand">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">{t('types.eyebrow')}</span>
-              <h2 className="sec-title">{t('types.title')}</h2>
-              <p className="sec-body mx-auto">{t('types.body')}</p>
+              <span className="sec-eyebrow">{tTypes('eyebrow')}</span>
+              <h2 className="sec-title">{tTypes('title')}</h2>
+              <p className="sec-body mx-auto">{tTypes('body')}</p>
             </div>
             <div className="type-grid">
               {TOUR_TYPES.map((t, i) => (
@@ -416,16 +422,16 @@ export default function Home() {
 
             {/* departure cities */}
             <div className="text-center">
-              <h3 style={{ fontFamily: 'Georgia,serif', fontSize: '1.1rem', color: 'var(--ink)', marginBottom: '0.25rem' }}>{t('types.depart_title')}</h3>
+              <h3 style={{ fontFamily: 'Georgia,serif', fontSize: '1.1rem', color: 'var(--ink)', marginBottom: '0.25rem' }}>{tTypes('depart_title')}</h3>
               <div className="city-pills">
                 {CITIES.map((c, i) => (
                   <Link key={i} href={`/${locale}/tours?from=${c.name.toLowerCase()}`} className="city-pill">
-                    {t('types.depart_from')} {c.name} <span>{c.count}</span>
+                    {tTypes('depart_from')} {c.name} <span>{c.count}</span>
                   </Link>
                 ))}
               </div>
               <div className="mt-2">
-                <Link href={`/${locale}/tours`} className="btn-gold">{t('types.see_all')}</Link>
+                <Link href={`/${locale}/tours`} className="btn-gold">{tTypes('see_all')}</Link>
               </div>
             </div>
           </div>
@@ -435,9 +441,9 @@ export default function Home() {
         <section className="section section-white">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">{t('featured.eyebrow')}</span>
-              <h2 className="sec-title">{t('featured.title')}</h2>
-              <p className="sec-body mx-auto">{t('featured.body')}</p>
+              <span className="sec-eyebrow">{tFeatured('eyebrow')}</span>
+              <h2 className="sec-title">{tFeatured('title')}</h2>
+              <p className="sec-body mx-auto">{tFeatured('body')}</p>
             </div>
             <div className="tours-grid">
               {FEATURED_TOURS_I18N.map((tour, i) => (
@@ -450,22 +456,22 @@ export default function Home() {
                     <div className="tour-tags">
                       {tour.tags.map((tag: string, j: number) => <span key={j} className="tour-tag">{tag}</span>)}
                     </div>
-                    <Link href={`/${locale}${tour.href}`} className="tour-link">{t('featured.view_itinerary')} →</Link>
+                    <Link href={`/${locale}${tour.href}`} className="tour-link">{tFeatured('view_itinerary')} →</Link>
                   </div>
                 </div>
               ))}
             </div>
             <div className="text-center mt-2">
-              <Link href={`/${locale}/tours`} className="btn-ghost">{t('featured.browse_all')}</Link>
+              <Link href={`/${locale}/tours`} className="btn-ghost">{tFeatured('browse_all')}</Link>
             </div>
           </div>
         </section>
 
         {/* ── QUOTE BAND ── */}
         <div className="quote-band" style={{background: "linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(/images/hero-quote.jpg) center/cover no-repeat"}}>
-          <p className="quote-text">{t('quote.text')}</p>
+          <p className="quote-text">{tQuote('text')}</p>
           <Link href={`/${locale}/about`} className="btn-outline" style={{ display: 'inline-flex', borderColor: 'rgba(255,255,255,0.5)', color: '#fff' }}>
-            {t('quote.link')}
+            {tQuote('link')}
           </Link>
         </div>
 
@@ -473,10 +479,10 @@ export default function Home() {
         <section className="section section-dark">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">{t('why.eyebrow')}</span>
-              <h2 className="sec-title sec-title-light">{t('why.title')}</h2>
+              <span className="sec-eyebrow">{tWhy('eyebrow')}</span>
+              <h2 className="sec-title sec-title-light">{tWhy('title')}</h2>
               <p className="sec-body mx-auto" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                {t('why.body')}
+                {tWhy('body')}
               </p>
             </div>
             <div className="why-grid">
@@ -488,7 +494,7 @@ export default function Home() {
               ))}
             </div>
             <div className="text-center mt-2">
-              <Link href={`/${locale}/contact`} className="btn-gold">{t('why.cta')} →</Link>
+              <Link href={`/${locale}/contact`} className="btn-gold">{tWhy('cta')} →</Link>
             </div>
           </div>
         </section>
@@ -497,9 +503,9 @@ export default function Home() {
         <section className="section section-sand">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">{t('testimonials.eyebrow')}</span>
-              <h2 className="sec-title">{t('testimonials.title')}</h2>
-              <p className="sec-body mx-auto">{t('testimonials.body')}</p>
+              <span className="sec-eyebrow">{tTest('eyebrow')}</span>
+              <h2 className="sec-title">{tTest('title')}</h2>
+              <p className="sec-body mx-auto">{tTest('body')}</p>
             </div>
             <div className="test-grid">
               {TESTIMONIALS.map((r, i) => (
@@ -517,7 +523,7 @@ export default function Home() {
               ))}
             </div>
             <div className="text-center mt-2">
-              <Link href={`/${locale}/reviews`} className="btn-ghost">{t('testimonials.read_more')}</Link>
+              <Link href={`/${locale}/reviews`} className="btn-ghost">{tTest('read_more')}</Link>
             </div>
           </div>
         </section>
@@ -525,10 +531,10 @@ export default function Home() {
         {/* ── CTA BAND ── */}
         <section className="cta-band">
           <div className="container">
-            <h2 className="cta-title">{t('cta.title')}</h2>
-            <p className="cta-sub">{t('cta.sub')}</p>
+            <h2 className="cta-title">{tCta('title')}</h2>
+            <p className="cta-sub">{tCta('sub')}</p>
             <div className="cta-btns">
-              <Link href={`/${locale}/contact`} className="btn-white">{t('cta.book')} →</Link>
+              <Link href={`/${locale}/contact`} className="btn-white">{tCta('book')} →</Link>
               <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer" className="btn-white-outline">
                 <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 WhatsApp us
