@@ -1,203 +1,577 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
+import { useState, useEffect } from 'react';
 
-function ServiceIcon({ icon }: { icon: string }) {
-  const icons: Record<string, JSX.Element> = {
-    plane: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>,
-    car: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 6H7L5 12H3v3h2a2 2 0 004 0h6a2 2 0 004 0h2v-5l-3-6h-5z"/></svg>,
-    hotel: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0H5m14 0V9a2 2 0 00-2-2h-4a2 2 0 00-2 2v12M9 9h1m4 0h1M9 13h1m4 0h1"/></svg>,
-    compass: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth={1.5}/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/></svg>,
-  };
-  return icons[icon] || null;
-}
+// ─── Tour type icons ──────────────────────────────────────────────────────────
+const TOUR_TYPES = [
+  { label: 'Desert', icon: '🏜️', href: '/tours?type=desert' },
+  { label: 'Culture', icon: '🏛️', href: '/tours?type=culture' },
+  { label: 'Adventure', icon: '🧭', href: '/tours?type=adventure' },
+  { label: 'Nature', icon: '🌿', href: '/tours?type=nature' },
+  { label: 'Luxury', icon: '💎', href: '/tours?type=luxury' },
+  { label: 'Family', icon: '👨‍👩‍👧', href: '/tours?type=family' },
+  { label: '4×4 & Moto', icon: '🚙', href: '/tours?type=4x4' },
+  { label: 'Birdwatch', icon: '🦅', href: '/tours?type=birdwatch' },
+  { label: 'Yoga', icon: '🧘', href: '/tours?type=yoga' },
+  { label: 'City Break', icon: '🎒', href: '/tours?type=city' },
+];
 
+// ─── Hero slides ──────────────────────────────────────────────────────────────
+const SLIDES = [
+  {
+    bg: 'linear-gradient(135deg, #1a0a00 0%, #3d1c00 60%, #1a0a00 100%)',
+    accent: '#C8960C',
+    headline: 'Discover the\nEssence of Morocco',
+    sub: 'Private tailor-made tours from Marrakech',
+    cta: { label: 'Explore Tours', href: '/tours' },
+  },
+  {
+    bg: 'linear-gradient(135deg, #0a1a0a 0%, #1a3a1a 60%, #0a1a0a 100%)',
+    accent: '#5aaa5a',
+    headline: 'Sahara Nights\nUnder a Billion Stars',
+    sub: 'Glamping camps, camel treks, sunrise dunes',
+    cta: { label: 'Desert Tours', href: '/tours?type=desert' },
+  },
+  {
+    bg: 'linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 60%, #0a0a2a 100%)',
+    accent: '#C8440A',
+    headline: 'Imperial Cities,\nTimeless Stories',
+    sub: 'Marrakech · Fès · Meknès · Casablanca',
+    cta: { label: 'Cultural Tours', href: '/tours?type=culture' },
+  },
+];
+
+// ─── Featured tours ───────────────────────────────────────────────────────────
+const FEATURED_TOURS = [
+  {
+    img: null, // replace with real image paths
+    days: '10–14 days',
+    title: 'Grand Morocco Tour',
+    desc: 'The full spectrum: imperial cities, Atlas mountains, Sahara dunes, and Atlantic coast in one unforgettable journey.',
+    tags: ['Family', 'Luxury', 'Desert', 'Culture'],
+    href: '/tours/grand-morocco',
+  },
+  {
+    img: null,
+    days: '7–11 days',
+    title: 'The Great South',
+    desc: 'From Marrakech through Kasbahs and High Atlas passes to the golden dunes of Erg Chebbi in Merzouga.',
+    tags: ['Adventure', 'Desert', 'Nature'],
+    href: '/tours/great-south',
+  },
+  {
+    img: null,
+    days: '3–6 days',
+    title: 'Marrakech to Fès via Desert',
+    desc: 'A perfectly paced short getaway crossing the Atlas, Ziz valley, and Sahara before ending in ancient Fès.',
+    tags: ['Adventure', 'Culture', 'Desert'],
+    href: '/tours/marrakech-fes',
+  },
+];
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
+const STATS = [
+  { num: '20+', label: 'Years of experience' },
+  { num: '24', label: 'Curated tours' },
+  { num: '7', label: 'Languages spoken' },
+  { num: '1', label: 'Unique trip: yours' },
+];
+
+// ─── Why us ───────────────────────────────────────────────────────────────────
+const WHY_US = [
+  { title: 'Authenticity first', body: 'Local Berber guides who love sharing their culture, not just showing landmarks.' },
+  { title: 'Completely private', body: 'Your group only — no strangers, no fixed schedules, no rushed stops.' },
+  { title: 'Tailor-made for you', body: 'Every detail shaped around your pace, interests, and travel style.' },
+  { title: 'Handpicked stays', body: 'Riads, desert camps and mountain lodges chosen for character and warmth.' },
+  { title: 'Door-to-door service', body: 'We collect you from any arrival city and handle every transfer.' },
+  { title: 'Sustainable travel', body: 'We support local communities and travel gently with nature and wildlife.' },
+];
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  {
+    name: 'Lars & Marja',
+    country: 'Sweden',
+    tour: 'Classic Morocco Tour',
+    text: 'Exotic places we would never have found alone. A family atmosphere, charming riads, and dining experiences that were simply fantastic. Our best trip ever.',
+  },
+  {
+    name: 'Anne',
+    country: 'USA',
+    tour: 'North Morocco Tour',
+    text: "Our guide's exceptional knowledge of history and culture, and his desire to share it with us, was truly extraordinary.",
+  },
+  {
+    name: 'Toril & Andreas',
+    country: 'Norway',
+    tour: 'The Great South',
+    text: 'Breakfast on top of a dune was truly amazing. Nothing but positive experiences — comfort, security, and a once-in-a-lifetime cultural encounter.',
+  },
+];
+
+// ─── Departure cities ─────────────────────────────────────────────────────────
+const CITIES = [
+  { name: 'Marrakech', count: 16 },
+  { name: 'Casablanca', count: 15 },
+  { name: 'Rabat', count: 12 },
+  { name: 'Tangier', count: 10 },
+  { name: 'Fès', count: 8 },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function Home() {
-  const t = useTranslations();
   const locale = useLocale();
-  const stats = t.raw('stats') as Array<{num: string; label: string}>;
-  const services = t.raw('services.items') as Array<{icon: string; title: string; desc: string}>;
-  const fleet = t.raw('fleet.items') as Array<{name: string; capacity: string}>;
-  const whyPoints = t.raw('why.points') as string[];
-  const testimonials = t.raw('testimonials.items') as Array<{text: string; name: string; country: string}>;
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setSlide(s => (s + 1) % SLIDES.length), 5000);
+    return () => clearInterval(t);
+  }, []);
+
+  const s = SLIDES[slide];
 
   return (
     <>
+      <style>{`
+        /* ── tokens ── */
+        :root {
+          --gold: #C8960C;
+          --gold-light: #F0C040;
+          --rust: #C8440A;
+          --sand: #F5EDD6;
+          --dark: #1A1A2E;
+          --ink: #1a0d00;
+        }
+
+        /* ── hero ── */
+        .hero-section {
+          position: relative;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          transition: background 1.2s ease;
+        }
+        .hero-overlay {
+          position: absolute; inset: 0;
+          background: rgba(0,0,0,0.45);
+        }
+        .hero-content {
+          position: relative; z-index: 10;
+          text-align: center;
+          padding: 6rem 1.5rem 10rem;
+          max-width: 860px;
+          margin: 0 auto;
+        }
+        .hero-badge {
+          display: inline-flex; align-items: center; gap: 6px;
+          background: rgba(200,150,12,0.18);
+          border: 1px solid rgba(200,150,12,0.4);
+          color: #F0C040;
+          font-size: 0.7rem; font-weight: 700;
+          letter-spacing: 0.15em; text-transform: uppercase;
+          padding: 0.4rem 1.2rem; border-radius: 999px; margin-bottom: 1.5rem;
+        }
+        .hero-title {
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(2.4rem, 6vw, 4.5rem);
+          font-weight: 700; color: #fff;
+          line-height: 1.1; margin-bottom: 1rem;
+          white-space: pre-line;
+        }
+        .hero-title span { color: var(--gold-light); }
+        .hero-sub {
+          font-size: 1.1rem; color: rgba(255,255,255,0.75);
+          margin-bottom: 2.5rem;
+        }
+        .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+        /* ── slide dots ── */
+        .slide-dots {
+          position: absolute; bottom: 5.5rem; left: 0; right: 0;
+          display: flex; justify-content: center; gap: 8px; z-index: 10;
+        }
+        .slide-dot {
+          width: 8px; height: 8px; border-radius: 50%;
+          background: rgba(255,255,255,0.35); border: none; cursor: pointer; padding: 0;
+          transition: all .3s;
+        }
+        .slide-dot.active { background: var(--gold-light); transform: scale(1.4); }
+
+        /* ── stats bar ── */
+        .stats-bar {
+          position: absolute; bottom: 0; left: 0; right: 0;
+          background: rgba(255,255,255,0.08);
+          backdrop-filter: blur(8px);
+          border-top: 1px solid rgba(255,255,255,0.15);
+          display: grid; grid-template-columns: repeat(4,1fr);
+          text-align: center; padding: 1.25rem 0; z-index: 10;
+        }
+        .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--gold-light); }
+        .stat-label { font-size: 0.65rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: .08em; }
+
+        /* ── buttons ── */
+        .btn-gold {
+          display: inline-flex; align-items: center; gap: 6px;
+          background: var(--gold); color: #fff;
+          font-weight: 700; font-size: 0.9rem;
+          padding: 0.85rem 2rem; border-radius: 8px;
+          text-decoration: none; border: none; cursor: pointer;
+          transition: background .2s, transform .15s;
+        }
+        .btn-gold:hover { background: #b07e08; transform: translateY(-1px); }
+        .btn-outline {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: transparent; color: #fff;
+          font-weight: 700; font-size: 0.9rem;
+          padding: 0.85rem 2rem; border-radius: 8px;
+          text-decoration: none; border: 2px solid rgba(255,255,255,0.5);
+          transition: border-color .2s, background .2s;
+        }
+        .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+        .btn-ghost {
+          display: inline-flex; align-items: center; gap: 6px;
+          background: transparent; color: var(--gold);
+          font-weight: 700; font-size: 0.85rem;
+          padding: 0.7rem 1.6rem; border-radius: 8px;
+          text-decoration: none; border: 2px solid var(--gold);
+          transition: all .2s;
+        }
+        .btn-ghost:hover { background: var(--gold); color: #fff; }
+
+        /* ── section shells ── */
+        .section { padding: 5rem 1.5rem; }
+        .section-sand { background: var(--sand); }
+        .section-dark { background: var(--dark); }
+        .section-white { background: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* ── section header ── */
+        .sec-eyebrow {
+          display: inline-block;
+          background: rgba(200,150,12,0.12);
+          color: var(--gold); font-size: 0.68rem; font-weight: 700;
+          letter-spacing: .14em; text-transform: uppercase;
+          padding: 0.3rem 1rem; border-radius: 999px; margin-bottom: 0.75rem;
+        }
+        .sec-title {
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+          font-weight: 700; color: var(--ink);
+          margin-bottom: 0.75rem; line-height: 1.2;
+        }
+        .sec-title-light { color: #fff; }
+        .sec-body { color: #666; max-width: 640px; line-height: 1.7; }
+        .text-center { text-align: center; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* ── tour type grid ── */
+        .type-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 1rem; margin-top: 2rem;
+        }
+        @media(max-width:768px){ .type-grid { grid-template-columns: repeat(3,1fr); } }
+        @media(max-width:480px){ .type-grid { grid-template-columns: repeat(2,1fr); } }
+        .type-card {
+          display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+          background: #fff; border: 1px solid #e8e0d0;
+          border-radius: 12px; padding: 1.25rem 0.5rem;
+          text-decoration: none; color: var(--ink);
+          transition: box-shadow .2s, transform .15s, border-color .2s;
+          cursor: pointer;
+        }
+        .type-card:hover { box-shadow: 0 6px 24px rgba(200,150,12,0.18); transform: translateY(-2px); border-color: var(--gold); }
+        .type-icon { font-size: 1.8rem; }
+        .type-label { font-size: 0.75rem; font-weight: 600; text-align: center; }
+
+        /* ── city pills ── */
+        .city-pills { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; justify-content: center; }
+        .city-pill {
+          display: inline-flex; align-items: center; gap: 0.4rem;
+          background: #fff; border: 1px solid #ddd; border-radius: 999px;
+          padding: 0.5rem 1.2rem; font-size: 0.82rem; font-weight: 600;
+          color: var(--ink); text-decoration: none;
+          transition: all .2s;
+        }
+        .city-pill span { background: var(--gold); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 999px; }
+        .city-pill:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* ── featured tours ── */
+        .tours-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem; }
+        @media(max-width:900px){ .tours-grid { grid-template-columns: 1fr 1fr; } }
+        @media(max-width:600px){ .tours-grid { grid-template-columns: 1fr; } }
+        .tour-card {
+          background: #fff; border-radius: 14px; overflow: hidden;
+          border: 1px solid #e8e0d0;
+          transition: box-shadow .2s, transform .15s;
+          display: flex; flex-direction: column;
+        }
+        .tour-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.12); transform: translateY(-3px); }
+        .tour-img {
+          height: 190px; background: linear-gradient(135deg, #c8960c22 0%, #c8440a22 100%);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 3rem; color: var(--gold);
+        }
+        .tour-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+        .tour-days { font-size: 0.68rem; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 0.4rem; }
+        .tour-title { font-family: Georgia, serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 0.5rem; }
+        .tour-desc { font-size: 0.82rem; color: #666; line-height: 1.6; flex: 1; margin-bottom: 1rem; }
+        .tour-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
+        .tour-tag { font-size: 0.65rem; background: #fef3c7; color: #92400e; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 600; }
+        .tour-link { font-size: 0.8rem; font-weight: 700; color: var(--gold); text-decoration: none; }
+        .tour-link:hover { text-decoration: underline; }
+
+        /* ── why us ── */
+        .why-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 2rem; }
+        @media(max-width:900px){ .why-grid { grid-template-columns: repeat(2,1fr); } }
+        @media(max-width:560px){ .why-grid { grid-template-columns: 1fr; } }
+        .why-card {
+          background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 12px; padding: 1.5rem;
+        }
+        .why-card-title { font-weight: 700; color: var(--gold-light); margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .why-card-body { font-size: 0.82rem; color: rgba(255,255,255,0.65); line-height: 1.6; }
+
+        /* ── testimonials ── */
+        .test-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 2rem; }
+        @media(max-width:900px){ .test-grid { grid-template-columns: 1fr 1fr; } }
+        @media(max-width:600px){ .test-grid { grid-template-columns: 1fr; } }
+        .test-card {
+          background: #fff; border: 1px solid #e8e0d0; border-radius: 14px; padding: 1.5rem;
+          display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .test-stars { color: var(--gold); font-size: 0.9rem; letter-spacing: 2px; }
+        .test-text { font-size: 0.82rem; color: #555; line-height: 1.65; font-style: italic; flex: 1; }
+        .test-author { display: flex; align-items: center; gap: 0.75rem; }
+        .test-avatar {
+          width: 38px; height: 38px; border-radius: 50%;
+          background: var(--gold); color: #fff;
+          display: flex; align-items: center; justify-content: center;
+          font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+        }
+        .test-name { font-weight: 700; font-size: 0.82rem; color: var(--ink); }
+        .test-meta { font-size: 0.7rem; color: #999; }
+
+        /* ── parallax quote ── */
+        .quote-band {
+          background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+                      linear-gradient(135deg, #1a0a00 0%, #3d1c00 100%);
+          padding: 4rem 1.5rem; text-align: center;
+        }
+        .quote-text {
+          font-family: Georgia, serif; font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+          color: rgba(255,255,255,0.88); font-style: italic;
+          max-width: 720px; margin: 0 auto 1.5rem;
+        }
+
+        /* ── CTA banner ── */
+        .cta-band { background: var(--gold); padding: 4rem 1.5rem; text-align: center; }
+        .cta-title { font-family: Georgia, serif; font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+        .cta-sub { color: rgba(255,255,255,0.8); font-size: 1rem; margin-bottom: 2rem; }
+        .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn-white { display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--gold);font-weight:700;font-size:.9rem;padding:.85rem 2rem;border-radius:8px;text-decoration:none;transition:background .2s; }
+        .btn-white:hover { background: #f5f5f5; }
+        .btn-white-outline { display:inline-flex;align-items:center;gap:6px;background:transparent;color:#fff;font-weight:700;font-size:.9rem;padding:.85rem 2rem;border-radius:8px;text-decoration:none;border:2px solid rgba(255,255,255,0.7);transition:all .2s; }
+        .btn-white-outline:hover { background: rgba(255,255,255,0.12); border-color:#fff; }
+
+        /* ── misc ── */
+        .divider { border: none; border-top: 1px solid #e8e0d0; margin: 3rem 0; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+      `}</style>
+
       <Navbar />
       <main>
-        {/* HERO */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{background: 'linear-gradient(135deg, #1A1A2E 0%, #2d1b00 50%, #1A1A2E 100%)'}}>
-          {/* Decorative pattern */}
-          <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'radial-gradient(circle at 25% 25%, #C8960C 0%, transparent 50%), radial-gradient(circle at 75% 75%, #C8440A 0%, transparent 50%)' }}/>
-          <div className="absolute inset-0 bg-black/30" />
 
-          <div className="relative z-10 text-center max-w-4xl mx-auto px-4 pt-20">
-            <span className="inline-flex items-center gap-2 bg-[#C8960C]/20 border border-[#C8960C]/40 text-[#F0C040] text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-8">
-              ✦ {t('hero.badge')}
-            </span>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight" style={{fontFamily: 'var(--font-playfair), Georgia, serif'}}>
-              {t('hero.title').split('\n').map((line: string, i: number) => (
-                <span key={i}>{line}{i === 0 && <br/>}</span>
+        {/* ── HERO ── */}
+        <section className="hero-section" style={{ background: s.bg }}>
+          <div className="hero-overlay" />
+          <div className="hero-content">
+            <div className="hero-badge">✦ Private Morocco Tours</div>
+            <h1 className="hero-title">
+              {s.headline.split('\n').map((line, i) => (
+                <span key={i}>{i === 1 ? <><br /><span style={{ color: s.accent }}>{line}</span></> : line}</span>
               ))}
             </h1>
-            <p className="text-lg sm:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-              {t('hero.subtitle')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href={`/${locale}/contact`} className="btn-gold text-base px-8 py-4">
-                {t('hero.cta')} →
-              </Link>
-              <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer" className="btn-outline text-base px-8 py-4">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                {t('hero.whatsapp')}
-              </a>
-            </div>
-          </div>
-
-          {/* Stats bar */}
-          <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-sm border-t border-white/20">
-            <div className="max-w-4xl mx-auto px-4 py-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-              {stats.map((s, i) => (
-                <div key={i}>
-                  <div className="text-2xl font-bold text-[#F0C040]">{s.num}</div>
-                  <div className="text-xs text-gray-300 uppercase tracking-wide">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* SERVICES */}
-        <section className="py-24 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <span className="section-badge">{t('services.badge')}</span>
-              <h2 className="font-display text-4xl font-bold text-[#1A1A2E] gold-underline inline-block" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>{t('services.title')}</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {services.map((s, i) => (
-                <div key={i} className="bg-white rounded-2xl p-8 card-hover border border-gray-100">
-                  <div className="w-14 h-14 bg-[#FEF3C7] rounded-xl flex items-center justify-center mb-5 text-[#C8960C]">
-                    <ServiceIcon icon={s.icon} />
-                  </div>
-                  <h3 className="font-semibold text-[#1A1A2E] text-lg mb-3">{s.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{s.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* WHY US */}
-        <section className="py-24 bg-[#1A1A2E]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div>
-                <span className="section-badge">{t('why.badge')}</span>
-                <h2 className="font-display text-4xl font-bold text-white mt-2 mb-8" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>{t('why.title')}</h2>
-                <ul className="space-y-4">
-                  {whyPoints.map((point, i) => (
-                    <li key={i} className="flex items-start gap-3 text-gray-300">
-                      <span className="w-6 h-6 rounded-full bg-[#C8960C] flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
-                        </svg>
-                      </span>
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-                <Link href={`/${locale}/contact`} className="btn-gold mt-10 inline-flex">
-                  Get a Free Quote →
-                </Link>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { label: 'Morocco', icon: '🇲🇦' },
-                  { label: 'Sahara', icon: '🏜️' },
-                  { label: 'Atlas', icon: '⛰️' },
-                  { label: 'Coast', icon: '🌊' },
-                ].map((d, i) => (
-                  <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
-                    <div className="text-4xl mb-3">{d.icon}</div>
-                    <div className="text-white font-semibold">{d.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FLEET */}
-        <section className="py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <span className="section-badge">{t('fleet.badge')}</span>
-              <h2 className="font-display text-4xl font-bold text-[#1A1A2E]" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>{t('fleet.title')}</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {fleet.map((v, i) => (
-                <div key={i} className="rounded-2xl border border-gray-200 overflow-hidden card-hover bg-white">
-                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 h-48 flex items-center justify-center">
-                    <span className="text-6xl">{i === 0 ? '🚗' : i === 1 ? '🚐' : '🚌'}</span>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-semibold text-xl text-[#1A1A2E] mb-1">{v.name}</h3>
-                    <p className="text-[#C8960C] text-sm font-medium">{v.capacity}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* TESTIMONIALS */}
-        <section className="py-24 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <span className="section-badge">{t('testimonials.badge')}</span>
-              <h2 className="font-display text-4xl font-bold text-[#1A1A2E]" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>{t('testimonials.title')}</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {testimonials.slice(0, 3).map((r, i) => (
-                <div key={i} className="bg-white rounded-2xl p-7 card-hover border border-gray-100">
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(5)].map((_, s) => <span key={s} className="text-[#C8960C] text-lg">★</span>)}
-                  </div>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">"{r.text}"</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#C8960C] flex items-center justify-center text-white font-bold text-sm">
-                      {r.name[0]}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-sm text-[#1A1A2E]">{r.name}</div>
-                      <div className="text-xs text-gray-400">{r.country}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA BANNER */}
-        <section className="py-20 bg-[#C8960C]">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="font-display text-4xl font-bold text-white mb-4" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>Ready to Explore Morocco?</h2>
-            <p className="text-white/80 text-lg mb-8">Book your private transfer or excursion today. Fast confirmation by WhatsApp.</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href={`/${locale}/contact`} className="bg-white text-[#C8960C] font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center gap-2">
-                Book Now →
-              </Link>
-              <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer" className="border-2 border-white text-white font-bold px-8 py-4 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-2">
+            <p className="hero-sub">{s.sub}</p>
+            <div className="hero-btns">
+              <Link href={`/${locale}${s.cta.href}`} className="btn-gold">{s.cta.label} →</Link>
+              <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer" className="btn-outline">
+                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 WhatsApp Us
               </a>
             </div>
           </div>
+
+          {/* slide dots */}
+          <div className="slide-dots">
+            {SLIDES.map((_, i) => (
+              <button key={i} className={`slide-dot${i === slide ? ' active' : ''}`} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`} />
+            ))}
+          </div>
+
+          {/* stats bar */}
+          <div className="stats-bar" style={{ gridTemplateColumns: `repeat(${STATS.length},1fr)` }}>
+            {STATS.map((st, i) => (
+              <div key={i}>
+                <div className="stat-num">{st.num}</div>
+                <div className="stat-label">{st.label}</div>
+              </div>
+            ))}
+          </div>
         </section>
+
+        {/* ── TOUR TYPES ── */}
+        <section className="section section-sand">
+          <div className="container">
+            <div className="text-center">
+              <span className="sec-eyebrow">Explore by interest</span>
+              <h2 className="sec-title">What kind of Morocco trip do you want?</h2>
+              <p className="sec-body mx-auto">Private tours built around your interests — from Sahara dunes to ancient medinas, birdsong to yoga sunsets.</p>
+            </div>
+            <div className="type-grid">
+              {TOUR_TYPES.map((t, i) => (
+                <Link key={i} href={`/${locale}${t.href}`} className="type-card">
+                  <span className="type-icon">{t.icon}</span>
+                  <span className="type-label">{t.label}</span>
+                </Link>
+              ))}
+            </div>
+
+            <hr className="divider" />
+
+            {/* departure cities */}
+            <div className="text-center">
+              <h3 style={{ fontFamily: 'Georgia,serif', fontSize: '1.1rem', color: 'var(--ink)', marginBottom: '0.25rem' }}>Where do you want to depart from?</h3>
+              <div className="city-pills">
+                {CITIES.map((c, i) => (
+                  <Link key={i} href={`/${locale}/tours?from=${c.name.toLowerCase()}`} className="city-pill">
+                    Tours from {c.name} <span>{c.count}</span>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-2">
+                <Link href={`/${locale}/tours`} className="btn-gold">See all Morocco tours</Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FEATURED TOURS ── */}
+        <section className="section section-white">
+          <div className="container">
+            <div className="text-center">
+              <span className="sec-eyebrow">Most popular</span>
+              <h2 className="sec-title">Featured Tours</h2>
+              <p className="sec-body mx-auto">Our most-requested private itineraries — each one fully customisable to your travel dates and group size.</p>
+            </div>
+            <div className="tours-grid">
+              {FEATURED_TOURS.map((tour, i) => (
+                <div key={i} className="tour-card">
+                  <div className="tour-img">🏜️</div>
+                  <div className="tour-body">
+                    <div className="tour-days">{tour.days}</div>
+                    <div className="tour-title">{tour.title}</div>
+                    <p className="tour-desc">{tour.desc}</p>
+                    <div className="tour-tags">
+                      {tour.tags.map((tag, j) => <span key={j} className="tour-tag">{tag}</span>)}
+                    </div>
+                    <Link href={`/${locale}${tour.href}`} className="tour-link">View itinerary →</Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-2">
+              <Link href={`/${locale}/tours`} className="btn-ghost">Browse all tours</Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── QUOTE BAND ── */}
+        <div className="quote-band">
+          <p className="quote-text">"We love to share with our guests the peace and the Moroccan way of life — every journey is a chance to discover something genuine."</p>
+          <Link href={`/${locale}/about`} className="btn-outline" style={{ display: 'inline-flex', borderColor: 'rgba(255,255,255,0.5)', color: '#fff' }}>
+            Meet our team & philosophy
+          </Link>
+        </div>
+
+        {/* ── WHY US ── */}
+        <section className="section section-dark">
+          <div className="container">
+            <div className="text-center">
+              <span className="sec-eyebrow">Why Elbo Tours</span>
+              <h2 className="sec-title sec-title-light">Why should you travel with us?</h2>
+              <p className="sec-body mx-auto" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                Testimonials tell one story. Here's ours.
+              </p>
+            </div>
+            <div className="why-grid">
+              {WHY_US.map((w, i) => (
+                <div key={i} className="why-card">
+                  <div className="why-card-title">{w.title}</div>
+                  <div className="why-card-body">{w.body}</div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-2">
+              <Link href={`/${locale}/contact`} className="btn-gold">Plan my trip →</Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── TESTIMONIALS ── */}
+        <section className="section section-sand">
+          <div className="container">
+            <div className="text-center">
+              <span className="sec-eyebrow">What travellers say</span>
+              <h2 className="sec-title">Reviews from people like you</h2>
+              <p className="sec-body mx-auto">Our guests' stories are the most honest proof of what we do.</p>
+            </div>
+            <div className="test-grid">
+              {TESTIMONIALS.map((r, i) => (
+                <div key={i} className="test-card">
+                  <div className="test-stars">★★★★★</div>
+                  <p className="test-text">"{r.text}"</p>
+                  <div className="test-author">
+                    <div className="test-avatar">{r.name[0]}</div>
+                    <div>
+                      <div className="test-name">{r.name}</div>
+                      <div className="test-meta">{r.country} · {r.tour}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-2">
+              <Link href={`/${locale}/reviews`} className="btn-ghost">Read more reviews</Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── CTA BAND ── */}
+        <section className="cta-band">
+          <div className="container">
+            <h2 className="cta-title">Ready to explore Morocco?</h2>
+            <p className="cta-sub">Tell us your dates and we'll shape a trip that fits perfectly. No two journeys are the same.</p>
+            <div className="cta-btns">
+              <Link href={`/${locale}/contact`} className="btn-white">Book your tour →</Link>
+              <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer" className="btn-white-outline">
+                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp us
+              </a>
+            </div>
+          </div>
+        </section>
+
       </main>
       <Footer />
       <WhatsAppButton />
