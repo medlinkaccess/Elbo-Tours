@@ -10,16 +10,16 @@ import { useState, useEffect } from 'react';
 
 // ─── Tour type icons ──────────────────────────────────────────────────────────
 const TOUR_TYPES = [
-  { label: 'Desert', icon: '🏜️', href: '/tours?type=desert' },
-  { label: 'Culture', icon: '🏛️', href: '/tours?type=culture' },
-  { label: 'Adventure', icon: '🧭', href: '/tours?type=adventure' },
-  { label: 'Nature', icon: '🌿', href: '/tours?type=nature' },
-  { label: 'Luxury', icon: '💎', href: '/tours?type=luxury' },
-  { label: 'Family', icon: '👨‍👩‍👧', href: '/tours?type=family' },
-  { label: '4×4 & Moto', icon: '🚙', href: '/tours?type=4x4' },
-  { label: 'Birdwatch', icon: '🦅', href: '/tours?type=birdwatch' },
-  { label: 'Yoga', icon: '🧘', href: '/tours?type=yoga' },
-  { label: 'City Break', icon: '🎒', href: '/tours?type=city' },
+  { label: 'Desert', img: '/images/types/type-desert.jpg', href: '/tours?type=desert' },
+  { label: 'Culture', img: '/images/types/type-culture.jpg', href: '/tours?type=culture' },
+  { label: 'Adventure', img: '/images/types/type-adventure.jpg', href: '/tours?type=adventure' },
+  { label: 'Nature', img: '/images/types/type-nature.jpg', href: '/tours?type=nature' },
+  { label: 'Luxury', img: '/images/types/type-luxury.jpg', href: '/tours?type=luxury' },
+  { label: 'Family', img: '/images/types/type-family.jpg', href: '/tours?type=family' },
+  { label: '4×4 & Moto', img: '/images/types/type-4x4.jpg', href: '/tours?type=4x4' },
+  { label: 'Birdwatch', img: '/images/types/type-birdwatch.jpg', href: '/tours?type=birdwatch' },
+  { label: 'Yoga', img: '/images/types/type-yoga.jpg', href: '/tours?type=yoga' },
+  { label: 'City Break', img: '/images/types/type-city.jpg', href: '/tours?type=city' },
 ];
 
 // ─── Hero slides ──────────────────────────────────────────────────────────────
@@ -267,16 +267,16 @@ export default function Home() {
         @media(max-width:768px){ .type-grid { grid-template-columns: repeat(3,1fr); } }
         @media(max-width:480px){ .type-grid { grid-template-columns: repeat(2,1fr); } }
         .type-card {
-          display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+          display: flex; flex-direction: column; align-items: center;
           background: #fff; border: 1px solid #e8e0d0;
-          border-radius: 12px; padding: 1.25rem 0.5rem;
+          border-radius: 12px; overflow: hidden;
           text-decoration: none; color: var(--ink);
           transition: box-shadow .2s, transform .15s, border-color .2s;
           cursor: pointer;
         }
         .type-card:hover { box-shadow: 0 6px 24px rgba(200,150,12,0.18); transform: translateY(-2px); border-color: var(--gold); }
-        .type-icon { font-size: 1.8rem; }
-        .type-label { font-size: 0.75rem; font-weight: 600; text-align: center; }
+        .type-img { width: 100%; height: 90px; object-fit: cover; display: block; }
+        .type-label { font-size: 0.75rem; font-weight: 600; text-align: center; padding: 0.6rem 0.4rem; }
 
         /* ── city pills ── */
         .city-pills { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; justify-content: center; }
@@ -426,7 +426,7 @@ export default function Home() {
             <div className="type-grid">
               {TOUR_TYPES.map((t, i) => (
                 <Link key={i} href={`/${locale}${t.href}`} className="type-card">
-                  <span className="type-icon">{t.icon}</span>
+                  <img src={t.img} alt={t.label} className="type-img" />
                   <span className="type-label">{t.label}</span>
                 </Link>
               ))}
