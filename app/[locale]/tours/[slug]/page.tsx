@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { unstable_setRequestLocale as setRequestLocale } from "next-intl/server";
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -20,6 +21,7 @@ export async function generateMetadata({
 }: {
   params: { slug: string; locale: string };
 }): Promise<Metadata> {
+  setRequestLocale(params.locale);
   const tour = getTourBySlug(params.slug);
   if (!tour) return { title: 'Tour not found' };
 
@@ -49,6 +51,7 @@ export default function TourPage({
 }: {
   params: { slug: string; locale: string };
 }) {
+  setRequestLocale(params.locale);
   const tour = getTourBySlug(params.slug);
   if (!tour) notFound();
 
