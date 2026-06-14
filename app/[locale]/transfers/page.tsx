@@ -16,12 +16,12 @@ const ROUTES = [
 ];
 
 const AIRPORTS = [
-  { code: 'RAK', city: 'Marrakech Menara', price: 'From €18', popular: true },
-  { code: 'CMN', city: 'Casablanca Mohammed V', price: 'From €30', popular: true },
-  { code: 'AGA', city: 'Agadir Al Massira', price: 'From €20', popular: true },
-  { code: 'TNG', city: 'Tangier Ibn Battouta', price: 'From €20', popular: false },
-  { code: 'FEZ', city: 'Fes Saïss', price: 'From €25', popular: false },
-  { code: 'NDR', city: 'Nador El Aroui', price: 'From €22', popular: false },
+  { code: 'RAK', city: 'Marrakech Menara', price: 'From €18', popular: true, img: '/images/airports/rak.webp' },
+  { code: 'CMN', city: 'Casablanca Mohammed V', price: 'From €30', popular: true, img: '/images/airports/cmn.webp' },
+  { code: 'AGA', city: 'Agadir Al Massira', price: 'From €20', popular: true, img: '/images/airports/aga.webp' },
+  { code: 'TNG', city: 'Tangier Ibn Battouta', price: 'From €20', popular: false, img: '/images/airports/tng.webp' },
+  { code: 'FEZ', city: "Fes Saïss", price: 'From €25', popular: false, img: '/images/airports/fez.webp' },
+  { code: 'NDR', city: 'Nador El Aroui', price: 'From €22', popular: false, img: '/images/airports/ndr.jpg' },
 ];
 
 const STEPS = [
@@ -121,29 +121,33 @@ export default function TransfersPage() {
               {AIRPORTS.map((airport, i) => {
                 const msg = encodeURIComponent(`Hi! I need an airport transfer at ${airport.city} (${airport.code}).`);
                 return (
-                  <div key={i} className="group border border-gray-200 rounded-2xl p-6 hover:border-[#C8960C] hover:shadow-lg transition-all duration-200 relative bg-white">
-                    {airport.popular && (
-                      <span className="absolute -top-2.5 right-4 bg-[#C8960C] text-white text-xs font-bold px-2.5 py-0.5 rounded-full">Popular</span>
-                    )}
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <div className="font-bold text-2xl text-[#1A1A2E]">{airport.code}</div>
-                        <div className="text-sm text-gray-500 mt-0.5">{airport.city}</div>
+                  <div key={i} className="group border border-gray-200 rounded-2xl overflow-hidden hover:border-[#C8960C] hover:shadow-lg transition-all duration-200 relative bg-white">
+                    <div className="relative h-36 overflow-hidden">
+                      <img src={airport.img} alt={airport.city} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute bottom-3 left-4">
+                        <div className="font-bold text-2xl text-white">{airport.code}</div>
+                        <div className="text-xs text-white/80">{airport.city}</div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-bold text-[#C8960C] text-lg">{airport.price}</div>
-                        <div className="text-xs text-gray-400">per vehicle</div>
-                      </div>
+                      {airport.popular && (
+                        <span className="absolute top-3 right-3 bg-[#C8960C] text-white text-xs font-bold px-2.5 py-0.5 rounded-full">Popular</span>
+                      )}
                     </div>
-                    <div className="flex gap-2 mt-4">
-                      <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
-                        💬 WhatsApp
-                      </a>
-                      <Link href={`/${locale}/contact`}
-                        className="flex-1 bg-[#C8960C] hover:bg-[#F0C040] text-white hover:text-[#1A1A2E] text-sm font-semibold py-2 rounded-lg text-center transition-colors">
-                        Book →
-                      </Link>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs text-gray-400">per vehicle</span>
+                        <span className="font-bold text-[#C8960C] text-lg">{airport.price}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
+                          className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                          💬 WhatsApp
+                        </a>
+                        <Link href={`/${locale}/contact`}
+                          className="flex-1 bg-[#C8960C] hover:bg-[#b07e08] text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                          Book →
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 );
