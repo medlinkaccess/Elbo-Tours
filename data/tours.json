@@ -1,1 +1,110 @@
-[{"id": "1", "title": "Desert Camel Safari", "price": 120, "duration": "3 days"}, {"id": "2", "title": "Atlas Mountains Trekking", "price": 85, "duration": "1 day"}]
+[
+  {
+    "id": "1",
+    "title": "Grand Morocco Tour",
+    "category": "Multi-day Tours",
+    "duration": "10-14 days",
+    "from": "Any city",
+    "price": "Ask for price",
+    "desc": "The ultimate Moroccan experience: golden Sahara dunes, the blue medinas of Fes and Chefchaouen, snow-capped Atlas peaks, ancient imperial cities, and the windswept Atlantic coast of Essaouira all in one private journey.",
+    "image": "/images/tours/tour-grand-morocco.jpg",
+    "featured": true,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "2",
+    "title": "The Great South",
+    "category": "Multi-day Tours",
+    "duration": "7-11 days",
+    "from": "Marrakech",
+    "price": "Ask for price",
+    "desc": "Cross the High Atlas via Tizi n Tichka, explore the UNESCO kasbah of Ait Ben Haddou, wind through the Valley of a Thousand Kasbahs, and arrive at the towering dunes of Merzouga for a camel trek under the Saharan stars.",
+    "image": "/images/tours/tour-great-south.jpg",
+    "featured": true,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "3",
+    "title": "Marrakech to Fes via Desert",
+    "category": "Multi-day Tours",
+    "duration": "3-6 days",
+    "from": "Marrakech",
+    "price": "Ask for price",
+    "desc": "Cross the Atlas mountains, discover the timeless kasbah of Ait Ben Haddou, traverse the Ziz palm valley, and reach the golden Sahara dunes before arriving in the ancient medina of Fes.",
+    "image": "/images/tours/tour-marrakech-fes.jpg",
+    "featured": false,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "4",
+    "title": "North Morocco Tour",
+    "category": "Multi-day Tours",
+    "duration": "7-10 days",
+    "from": "Tangier",
+    "price": "Ask for price",
+    "desc": "Discover the indigo-blue streets of Chefchaouen in the Rif mountains, the Roman glory of Volubilis, the white-washed port of Asilah, and the timeless souks of Fes and Meknes.",
+    "image": "/images/tours/tour-north-morocco.jpg",
+    "featured": false,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "5",
+    "title": "Imperial Cities Tour",
+    "category": "Multi-day Tours",
+    "duration": "6-9 days",
+    "from": "Casablanca",
+    "price": "Ask for price",
+    "desc": "Walk in the footsteps of sultans across Morocco four royal capitals: Fes, Meknes with Volubilis Roman ruins, the energy of Casablanca and Rabat, and the rose-red magic of Marrakech.",
+    "image": "/images/tours/tour-imperial-cities.jpg",
+    "featured": false,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "6",
+    "title": "Atlas and Waterfalls Escape",
+    "category": "Day Trips",
+    "duration": "2-3 days",
+    "from": "Marrakech",
+    "price": "Ask for price",
+    "desc": "Visit the spectacular three-tiered Ouzoud Falls, the highest in North Africa. Swim in emerald pools, spot Barbary macaques, and lunch riverside in a Berber village with the Atlas mountains as your backdrop.",
+    "image": "/images/tours/tour-atlas-nature.jpg",
+    "featured": false,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "7",
+    "title": "Ourika Valley Day Trip",
+    "category": "Day Trips",
+    "duration": "1-2 days",
+    "from": "Marrakech",
+    "price": "Ask for price",
+    "desc": "Just 30 minutes from Marrakech, the Ourika Valley opens into a lush Berber world of rushing rivers, terraced saffron fields, and family-run mountain restaurants perched above turquoise water.",
+    "image": "/images/tours/tour-ourika-valley.jpg",
+    "featured": false,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "8",
+    "title": "Quad and Buggy Desert Adventure",
+    "category": "Day Trips",
+    "duration": "1-3 days",
+    "from": "Marrakech",
+    "price": "Ask for price",
+    "desc": "Tear across the volcanic plains of the Agafay Desert in a powerful buggy or quad bike. Raw lunar landscape as far as the eye can see. Combine with a sunset camel ride and dinner under the stars.",
+    "image": "/images/tours/tour-4x4-adventure.jpg",
+    "featured": false,
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "9",
+    "title": "Essaouira Atlantic Escape",
+    "category": "Day Trips",
+    "duration": "2-3 days",
+    "from": "Marrakech",
+    "price": "Ask for price",
+    "desc": "A UNESCO-listed medina of blue-and-white alleys, Portuguese ramparts with ancient cannons, a buzzing fish market, and one of Africa finest kitesurfing beaches. A soulful contrast to the desert heat.",
+    "image": "/images/tours/tour-essaouira.jpg",
+    "featured": false,
+    "createdAt": "2026-06-14"
+  }
+]
