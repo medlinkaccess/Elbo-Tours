@@ -23,28 +23,10 @@ const TOUR_TYPES = [
 ];
 
 // ─── Hero slides ──────────────────────────────────────────────────────────────
-const SLIDES = [
-  {
-    bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-essence.jpg) center/cover no-repeat',
-    accent: '#C8960C',
-    headline: 'Discover the\nEssence of Morocco',
-    sub: 'Private tailor-made tours from Marrakech',
-    cta: { label: 'Explore Tours', href: '/tours' },
-  },
-  {
-    bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-sahara.jpg) center/cover no-repeat',
-    accent: '#5aaa5a',
-    headline: 'Sahara Nights\nUnder a Billion Stars',
-    sub: 'Glamping camps, camel treks, sunrise dunes',
-    cta: { label: 'Desert Tours', href: '/tours?type=desert' },
-  },
-  {
-    bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-cities.jpg) center/cover no-repeat',
-    accent: '#C8440A',
-    headline: 'Imperial Cities,\nTimeless Stories',
-    sub: 'Marrakech · Fès · Meknès · Casablanca',
-    cta: { label: 'Cultural Tours', href: '/tours?type=culture' },
-  },
+const SLIDES_DATA = [
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-essence.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-sahara.jpg) center/cover no-repeat', accent: '#5aaa5a', href: '/tours?type=desert' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-cities.jpg) center/cover no-repeat', accent: '#C8440A', href: '/tours?type=culture' },
 ];
 
 // ─── Featured tours ───────────────────────────────────────────────────────────
@@ -61,44 +43,13 @@ const FEATURED_TOURS = [
 ];
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
-const STATS = [
-  { num: '20+', label: 'Years of experience' },
-  { num: '24', label: 'Curated tours' },
-  { num: '7', label: 'Languages spoken' },
-  { num: '1', label: 'Unique trip: yours' },
-];
+const STATS_NUMS = ['20+', '24', '7', '1'];
 
 // ─── Why us ───────────────────────────────────────────────────────────────────
-const WHY_US = [
-  { title: 'Authenticity first', body: 'Local Berber guides who love sharing their culture, not just showing landmarks.' },
-  { title: 'Completely private', body: 'Your group only — no strangers, no fixed schedules, no rushed stops.' },
-  { title: 'Tailor-made for you', body: 'Every detail shaped around your pace, interests, and travel style.' },
-  { title: 'Handpicked stays', body: 'Riads, desert camps and mountain lodges chosen for character and warmth.' },
-  { title: 'Door-to-door service', body: 'We collect you from any arrival city and handle every transfer.' },
-  { title: 'Sustainable travel', body: 'We support local communities and travel gently with nature and wildlife.' },
-];
+// WHY_US loaded from translations
 
 // ─── Testimonials ─────────────────────────────────────────────────────────────
-const TESTIMONIALS = [
-  {
-    name: 'Lars & Marja',
-    country: 'Sweden',
-    tour: 'Classic Morocco Tour',
-    text: 'Exotic places we would never have found alone. A family atmosphere, charming riads, and dining experiences that were simply fantastic. Our best trip ever.',
-  },
-  {
-    name: 'Anne',
-    country: 'USA',
-    tour: 'North Morocco Tour',
-    text: "Our guide's exceptional knowledge of history and culture, and his desire to share it with us, was truly extraordinary.",
-  },
-  {
-    name: 'Toril & Andreas',
-    country: 'Norway',
-    tour: 'The Great South',
-    text: 'Breakfast on top of a dune was truly amazing. Nothing but positive experiences — comfort, security, and a once-in-a-lifetime cultural encounter.',
-  },
-];
+// TESTIMONIALS loaded from translations
 
 // ─── Departure cities ─────────────────────────────────────────────────────────
 const CITIES = [
@@ -112,14 +63,45 @@ const CITIES = [
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function Home() {
   const locale = useLocale();
+  const t = useTranslations();
+  const t2 = t;
   const [slide, setSlide] = useState(0);
 
-  useEffect(() => {
-    const t = setInterval(() => setSlide(s => (s + 1) % SLIDES.length), 5000);
-    return () => clearInterval(t);
-  }, []);
+  const slides = SLIDES_DATA.map((sd, i) => ({
+    ...sd,
+    headline: t(`hero.slides.${i}.headline`),
+    sub: t(`hero.slides.${i}.sub`),
+    cta: { label: t(`hero.slides.${i}.cta`), href: sd.href },
+  }));
 
-  const s = SLIDES[slide];
+  const stats = STATS_NUMS.map((num, i) => ({ num, label: t(`stats.${i}.label`) }));
+
+  const WHY_US = Array.from({length: 6}, (_, i) => ({
+    title: t(`why.items.${i}.title`),
+    body: t(`why.items.${i}.body`),
+  }));
+
+  const TESTIMONIALS = Array.from({length: 3}, (_, i) => ({
+    name: t(`testimonials.items.${i}.name`),
+    country: t(`testimonials.items.${i}.country`),
+    tour: t(`testimonials.items.${i}.tour`),
+    text: t(`testimonials.items.${i}.text`),
+  }));
+
+  const FEATURED_TOURS_I18N = FEATURED_TOURS.map((tour, i) => ({
+    ...tour,
+    days: t(`featured.tours.${i}.days`),
+    title: t(`featured.tours.${i}.title`),
+    desc: t(`featured.tours.${i}.desc`),
+    tags: JSON.parse(t(`featured.tours.${i}.tags`)),
+  }));
+
+  useEffect(() => {
+    const timer = setInterval(() => setSlide(s => (s + 1) % slides.length), 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const s = slides[slide];
 
   return (
     <>
@@ -379,7 +361,7 @@ export default function Home() {
         <section className="hero-section" style={{ background: s.bg }}>
           <div className="hero-overlay" />
           <div className="hero-content">
-            <div className="hero-badge">✦ Private Morocco Tours</div>
+            <div className="hero-badge">✦ {t('hero.badge')}</div>
             <h1 className="hero-title">
               {s.headline.split('\n').map((line, i) => (
                 <span key={i}>{i === 1 ? <><br /><span style={{ color: s.accent }}>{line}</span></> : line}</span>
@@ -397,14 +379,14 @@ export default function Home() {
 
           {/* slide dots */}
           <div className="slide-dots">
-            {SLIDES.map((_, i) => (
+            {slides.map((_, i) => (
               <button key={i} className={`slide-dot${i === slide ? ' active' : ''}`} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`} />
             ))}
           </div>
 
           {/* stats bar */}
           <div className="stats-bar" style={{ gridTemplateColumns: `repeat(${STATS.length},1fr)` }}>
-            {STATS.map((st, i) => (
+            {stats.map((st, i) => (
               <div key={i}>
                 <div className="stat-num">{st.num}</div>
                 <div className="stat-label">{st.label}</div>
@@ -417,15 +399,15 @@ export default function Home() {
         <section className="section section-sand">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">Explore by interest</span>
-              <h2 className="sec-title">What kind of Morocco trip do you want?</h2>
-              <p className="sec-body mx-auto">Private tours built around your interests — from Sahara dunes to ancient medinas, birdsong to yoga sunsets.</p>
+              <span className="sec-eyebrow">{t('types.eyebrow')}</span>
+              <h2 className="sec-title">{t('types.title')}</h2>
+              <p className="sec-body mx-auto">{t('types.body')}</p>
             </div>
             <div className="type-grid">
               {TOUR_TYPES.map((t, i) => (
                 <Link key={i} href={`/${locale}${t.href}`} className="type-card">
                   <img src={t.img} alt={t.label} className="type-img" />
-                  <span className="type-label">{t.label}</span>
+                  <span className="type-label">{t2(`types.labels.${t.label}`) || t.label}</span>
                 </Link>
               ))}
             </div>
@@ -434,16 +416,16 @@ export default function Home() {
 
             {/* departure cities */}
             <div className="text-center">
-              <h3 style={{ fontFamily: 'Georgia,serif', fontSize: '1.1rem', color: 'var(--ink)', marginBottom: '0.25rem' }}>Where do you want to depart from?</h3>
+              <h3 style={{ fontFamily: 'Georgia,serif', fontSize: '1.1rem', color: 'var(--ink)', marginBottom: '0.25rem' }}>{t('types.depart_title')}</h3>
               <div className="city-pills">
                 {CITIES.map((c, i) => (
                   <Link key={i} href={`/${locale}/tours?from=${c.name.toLowerCase()}`} className="city-pill">
-                    Tours from {c.name} <span>{c.count}</span>
+                    {t('types.depart_from')} {c.name} <span>{c.count}</span>
                   </Link>
                 ))}
               </div>
               <div className="mt-2">
-                <Link href={`/${locale}/tours`} className="btn-gold">See all Morocco tours</Link>
+                <Link href={`/${locale}/tours`} className="btn-gold">{t('types.see_all')}</Link>
               </div>
             </div>
           </div>
@@ -453,12 +435,12 @@ export default function Home() {
         <section className="section section-white">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">Most popular</span>
-              <h2 className="sec-title">Featured Tours</h2>
-              <p className="sec-body mx-auto">Our most-requested private itineraries — each one fully customisable to your travel dates and group size.</p>
+              <span className="sec-eyebrow">{t('featured.eyebrow')}</span>
+              <h2 className="sec-title">{t('featured.title')}</h2>
+              <p className="sec-body mx-auto">{t('featured.body')}</p>
             </div>
             <div className="tours-grid">
-              {FEATURED_TOURS.map((tour, i) => (
+              {FEATURED_TOURS_I18N.map((tour, i) => (
                 <div key={i} className="tour-card">
                   <div className="tour-img" style={{backgroundImage: tour.img ? "url("+tour.img+")" : "none", backgroundSize: "cover", backgroundPosition: "center"}}></div>
                   <div className="tour-body">
@@ -468,22 +450,22 @@ export default function Home() {
                     <div className="tour-tags">
                       {tour.tags.map((tag, j) => <span key={j} className="tour-tag">{tag}</span>)}
                     </div>
-                    <Link href={`/${locale}${tour.href}`} className="tour-link">View itinerary →</Link>
+                    <Link href={`/${locale}${tour.href}`} className="tour-link">{t('featured.view_itinerary')} →</Link>
                   </div>
                 </div>
               ))}
             </div>
             <div className="text-center mt-2">
-              <Link href={`/${locale}/tours`} className="btn-ghost">Browse all tours</Link>
+              <Link href={`/${locale}/tours`} className="btn-ghost">{t('featured.browse_all')}</Link>
             </div>
           </div>
         </section>
 
         {/* ── QUOTE BAND ── */}
         <div className="quote-band" style={{background: "linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(/images/hero-quote.jpg) center/cover no-repeat"}}>
-          <p className="quote-text">"We love to share with our guests the peace and the Moroccan way of life — every journey is a chance to discover something genuine."</p>
+          <p className="quote-text">{t('quote.text')}</p>
           <Link href={`/${locale}/about`} className="btn-outline" style={{ display: 'inline-flex', borderColor: 'rgba(255,255,255,0.5)', color: '#fff' }}>
-            Meet our team & philosophy
+            {t('quote.link')}
           </Link>
         </div>
 
@@ -491,10 +473,10 @@ export default function Home() {
         <section className="section section-dark">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">Why Elbo Tours</span>
-              <h2 className="sec-title sec-title-light">Why should you travel with us?</h2>
+              <span className="sec-eyebrow">{t('why.eyebrow')}</span>
+              <h2 className="sec-title sec-title-light">{t('why.title')}</h2>
               <p className="sec-body mx-auto" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                Testimonials tell one story. Here's ours.
+                {t('why.body')}
               </p>
             </div>
             <div className="why-grid">
@@ -506,7 +488,7 @@ export default function Home() {
               ))}
             </div>
             <div className="text-center mt-2">
-              <Link href={`/${locale}/contact`} className="btn-gold">Plan my trip →</Link>
+              <Link href={`/${locale}/contact`} className="btn-gold">{t('why.cta')} →</Link>
             </div>
           </div>
         </section>
@@ -515,9 +497,9 @@ export default function Home() {
         <section className="section section-sand">
           <div className="container">
             <div className="text-center">
-              <span className="sec-eyebrow">What travellers say</span>
-              <h2 className="sec-title">Reviews from people like you</h2>
-              <p className="sec-body mx-auto">Our guests' stories are the most honest proof of what we do.</p>
+              <span className="sec-eyebrow">{t('testimonials.eyebrow')}</span>
+              <h2 className="sec-title">{t('testimonials.title')}</h2>
+              <p className="sec-body mx-auto">{t('testimonials.body')}</p>
             </div>
             <div className="test-grid">
               {TESTIMONIALS.map((r, i) => (
@@ -535,7 +517,7 @@ export default function Home() {
               ))}
             </div>
             <div className="text-center mt-2">
-              <Link href={`/${locale}/reviews`} className="btn-ghost">Read more reviews</Link>
+              <Link href={`/${locale}/reviews`} className="btn-ghost">{t('testimonials.read_more')}</Link>
             </div>
           </div>
         </section>
@@ -543,10 +525,10 @@ export default function Home() {
         {/* ── CTA BAND ── */}
         <section className="cta-band">
           <div className="container">
-            <h2 className="cta-title">Ready to explore Morocco?</h2>
-            <p className="cta-sub">Tell us your dates and we'll shape a trip that fits perfectly. No two journeys are the same.</p>
+            <h2 className="cta-title">{t('cta.title')}</h2>
+            <p className="cta-sub">{t('cta.sub')}</p>
             <div className="cta-btns">
-              <Link href={`/${locale}/contact`} className="btn-white">Book your tour →</Link>
+              <Link href={`/${locale}/contact`} className="btn-white">{t('cta.book')} →</Link>
               <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer" className="btn-white-outline">
                 <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 WhatsApp us
