@@ -23,12 +23,16 @@ const TOUR_TYPES = [
 
 // ─── Hero slides ──────────────────────────────────────────────────────────────
 const SLIDES_TEXT = [
+  { headline: '', sub: '', cta: 'Discover Morocco' },
+  { headline: 'Travel in Comfort,\nWith Our Modern Fleet', sub: 'Spacious vans, professional drivers — every journey safe, smooth, and on time', cta: 'View Our Fleet' },
   { headline: 'Discover the\nEssence of Morocco', sub: 'Private tailor-made tours from Marrakech', cta: 'Explore Tours' },
   { headline: 'Sahara Nights\nUnder a Billion Stars', sub: 'Glamping camps, camel treks, sunrise dunes', cta: 'Desert Tours' },
   { headline: 'Imperial Cities,\nTimeless Stories', sub: 'Marrakech · Fès · Meknès · Casablanca', cta: 'Cultural Tours' },
 ];
 
 const SLIDES_DATA = [
+  { bg: 'linear-gradient(rgba(0,0,0,0.25),rgba(0,0,0,0.25)), url(/images/hero-promo.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-fleet.jpg) center/cover no-repeat', accent: '#3E6B99', href: '/fleet' },
   { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-essence.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
   { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-sahara.jpg) center/cover no-repeat', accent: '#5aaa5a', href: '/tours?type=desert' },
   { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-cities.jpg) center/cover no-repeat', accent: '#C8440A', href: '/tours?type=culture' },

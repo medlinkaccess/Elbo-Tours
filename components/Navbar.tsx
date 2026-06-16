@@ -29,7 +29,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           <Link href={`/${locale}`} className="flex items-center">
             <Image
-              src="https://elbo-tours.com/wp-content/uploads/2026/04/WhatsApp-Image-2026-04-02-at-01.39.26-Photoroom.png"
+              src="/images/logo.png"
               alt="Elbo Tours"
               width={140}
               height={50}
