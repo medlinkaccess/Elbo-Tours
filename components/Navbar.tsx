@@ -26,14 +26,14 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-28">
           <Link href={`/${locale}`} className="flex items-center">
             <Image
               src="/images/logo.png"
               alt="Elbo Tours"
-              width={140}
-              height={50}
-              className="h-12 w-auto object-contain"
+              width={220}
+              height={160}
+              className="h-20 w-auto object-contain"
               priority
             />
           </Link>
@@ -91,7 +91,7 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="flex gap-3 pt-2">
-            <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-3 py-2 uppercase">{otherLocale}</Link>
+            <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-3 py-2 uppercase text-gray-600">{otherLocale}</Link>
             <Link href={`/${locale}/contact`} className="btn-gold !py-2 !px-5 text-sm" onClick={() => setOpen(false)}>{t('book')}</Link>
           </div>
         </div>
