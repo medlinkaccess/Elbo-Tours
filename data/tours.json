@@ -106,5 +106,77 @@
     "image": "/images/tours/tour-essaouira.jpg",
     "featured": false,
     "createdAt": "2026-06-14"
+  },
+  {
+    "id": "10",
+    "title": "Marrakech Menara Airport Transfer",
+    "category": "Airport Transfers",
+    "duration": "Door-to-door",
+    "from": "Marrakech Menara (RAK)",
+    "price": "From €17",
+    "desc": "Private airport pickup at Marrakech Menara with flight tracking, meet & greet, and a clean air-conditioned vehicle waiting for you.",
+    "image": "/images/airports/rak.webp",
+    "featured": false,
+    "createdAt": "2026-06-16"
+  },
+  {
+    "id": "11",
+    "title": "Casablanca Mohammed V Airport Transfer",
+    "category": "Airport Transfers",
+    "duration": "Door-to-door",
+    "from": "Casablanca Mohammed V (CMN)",
+    "price": "From €30",
+    "desc": "Reliable private transfer from Casablanca Mohammed V Airport with fixed pricing and real-time flight monitoring.",
+    "image": "/images/airports/cmn.webp",
+    "featured": false,
+    "createdAt": "2026-06-16"
+  },
+  {
+    "id": "12",
+    "title": "Agadir Al Massira Airport Transfer",
+    "category": "Airport Transfers",
+    "duration": "Door-to-door",
+    "from": "Agadir Al Massira (AGA)",
+    "price": "From €20",
+    "desc": "Comfortable airport pickup at Agadir Al Massira with a driver waiting at arrivals, name sign included.",
+    "image": "/images/airports/aga.webp",
+    "featured": false,
+    "createdAt": "2026-06-16"
+  },
+  {
+    "id": "13",
+    "title": "Tangier Ibn Battouta Airport Transfer",
+    "category": "Airport Transfers",
+    "duration": "Door-to-door",
+    "from": "Tangier Ibn Battouta (TNG)",
+    "price": "From €20",
+    "desc": "Private transfer service from Tangier Ibn Battouta Airport, available for any group size with fixed pricing.",
+    "image": "/images/airports/tng.webp",
+    "featured": false,
+    "createdAt": "2026-06-16"
+  },
+  {
+    "id": "14",
+    "title": "Fes Saiss Airport Transfer",
+    "category": "Airport Transfers",
+    "duration": "Door-to-door",
+    "from": "Fes Saïss (FEZ)",
+    "price": "From €25",
+    "desc": "Door-to-door private transfer from Fes Saïss Airport with flight tracking and a professional driver.",
+    "image": "/images/airports/fez.webp",
+    "featured": false,
+    "createdAt": "2026-06-16"
+  },
+  {
+    "id": "15",
+    "title": "Nador El Aroui Airport Transfer",
+    "category": "Airport Transfers",
+    "duration": "Door-to-door",
+    "from": "Nador El Aroui (NDR)",
+    "price": "From €22",
+    "desc": "Private airport transfer from Nador El Aroui with meet & greet and a clean, air-conditioned vehicle.",
+    "image": "/images/airports/ndr.jpg",
+    "featured": false,
+    "createdAt": "2026-06-16"
   }
 ]
