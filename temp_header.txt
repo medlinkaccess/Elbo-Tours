@@ -1,0 +1,19 @@
+﻿import { NextRequest, NextResponse } from 'next/server'
+import { sql } from '@/lib/db'
+
+const CAT_MAP: Record<string, string> = {
+  DAY_TRIP: 'Day Trips',
+  MULTI_DAY: 'Multi-day Tours',
+  DESERT: 'Desert Tours',
+  MOUNTAIN: 'City Tours',
+  CULTURAL: 'City Tours',
+  PRIVATE: 'Custom/Private Tours',
+}
+
+const CAT_REVERSE: Record<string, string> = {
+  'Day Trips': 'DAY_TRIP',
+  'Multi-day Tours': 'MULTI_DAY',
+  'Desert Tours': 'DESERT',
+  'City Tours': 'CULTURAL',
+  'Custom/Private Tours': 'PRIVATE',
+}
