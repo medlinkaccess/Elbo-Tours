@@ -17,6 +17,7 @@ const CAT_REVERSE: Record<string, string> = {
   'City Tours': 'CULTURAL',
   'Custom/Private Tours': 'PRIVATE',
   'Airport Transfers': 'DAY_TRIP',
+  'City Tours': 'CULTURAL',
 }
 
 function isAuthed(req: NextRequest) {
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
     await sql.query(
       `INSERT INTO tours (id, slug, category, "priceFrom", currency, "durationDays", "durationText", "maxGroupSize", "minGroupSize", featured, active, "sortOrder", "imageUrl", gallery, "createdAt", "updatedAt")
        VALUES ($1,$2,$3::\"TourCategory\",$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,'{}'::text[],NOW(),NOW())`,
-      [id, slug, category, parseFloat(body.price) || 0, 'USD', 1, body.duration || '', 12, 1, body.featured || false, true, 0, body.image || '']
+      [id, slug, category, parseFloat(String(body.price).replace(/[^0-9.]/g, "")) || 0, 'USD', 1, body.duration || '', 12, 1, body.featured || false, true, 0, body.image || '']
     )
 
     await sql.query(
@@ -110,7 +111,7 @@ export async function PUT(req: NextRequest) {
 
     await sql.query(
       `UPDATE tours SET category=$1::\"TourCategory\", "priceFrom"=$2, "durationText"=$3, "imageUrl"=$4, featured=$5, active=$6, "updatedAt"=NOW() WHERE id=$7`,
-      [category, parseFloat(body.price) || 0, body.duration || '', body.image || '', body.featured || false, body.active !== false, body.id]
+      [category, parseFloat(String(body.price).replace(/[^0-9.]/g, "")) || 0, body.duration || '', body.image || '', body.featured || false, body.active !== false, body.id]
     )
 
     await sql.query(`DELETE FROM tour_translations WHERE "tourId"=$1`, [body.id])
@@ -143,3 +144,5 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to delete tour' }, { status: 500 })
   }
 }
+
+
