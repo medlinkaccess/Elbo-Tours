@@ -248,3 +248,4 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
 }
 
 
+
