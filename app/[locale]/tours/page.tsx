@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import WhatsAppButton from '@/components/WhatsAppButton';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import WhatsAppButton from '@/components/chat/WhatsAppButton';
 
 const CATEGORIES = [
   'All',
@@ -223,7 +223,7 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
             <span className="font-bold text-[#C8960C] text-lg">{tour.price}</span>
           </div>
           <div className="flex gap-2">
-            
+            <a
               href={`https://wa.me/212665889258?text=${waMsg}`}
               target="_blank" rel="noopener noreferrer"
               className="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center justify-center transition-colors"

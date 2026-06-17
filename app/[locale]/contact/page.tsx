@@ -1,9 +1,9 @@
 "use client";
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import WhatsAppButton from '@/components/WhatsAppButton';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import WhatsAppButton from '@/components/chat/WhatsAppButton';
 
 export default function ContactPage() {
   const t = useTranslations('contact');

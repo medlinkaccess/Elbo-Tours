@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { sql } from '@/lib/db'
 
 export async function GET() {
@@ -10,3 +10,4 @@ export async function GET() {
     return NextResponse.json({ error: err.message })
   }
 }
+

@@ -4,8 +4,8 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Inter, Playfair_Display } from 'next/font/google';
 import '../globals.css';
-import ChatWidget from '@/components/ChatWidget';
-import WhatsAppButton from '@/components/WhatsAppButton';
+import ChatWidget from '@/components/chat/ChatWidget';
+import WhatsAppButton from '@/components/chat/WhatsAppButton';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });

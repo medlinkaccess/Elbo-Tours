@@ -20,6 +20,7 @@ export default function Navbar() {
     { href: `/${locale}/transfers`, label: locale === 'fr' ? 'Transferts' : 'Transfers' },
     { href: `/${locale}/fleet`, label: t('fleet') },
     { href: `/${locale}/about`, label: t('about') },
+    { href: `/${locale}/blog`, label: 'Blog' }, // Added Blog Link here
     { href: `/${locale}/contact`, label: t('contact') },
   ];
 

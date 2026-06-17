@@ -1,6 +1,6 @@
-﻿import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import WhatsAppButton from '@/components/WhatsAppButton';
+﻿import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import WhatsAppButton from '@/components/chat/WhatsAppButton';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import type { Metadata } from 'next';
