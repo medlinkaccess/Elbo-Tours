@@ -157,10 +157,12 @@ export default function AdminPage() {
     if (section === 'blog') setForm(EMPTY_BLOG_FORM);
   }
 
-  const currentList = 
+  const rawList = 
     activeSection === 'tours' ? tours :
     activeSection === 'transfers' ? transfers :
     activeSection === 'fleet' ? fleet : blogs;
+
+  const currentList = Array.isArray(rawList) ? rawList : [];
 
   if (!authed) {
     return (
