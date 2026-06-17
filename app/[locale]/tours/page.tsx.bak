@@ -19,8 +19,8 @@ const CATEGORIES = [
 const CATEGORY_ICONS: Record<string, string> = {
   'All': '🗺️',
   'Day Trips': '☀️',
-  'Desert Tours': '🏜️',
-  'City Tours': '🏙️',
+  'Desert Tours': 'ðŸœï¸',
+  'City Tours': 'ðŸ™ï¸',
   'Multi-day Tours': '🌍',
   'Airport Transfers': '✈️',
   'Custom/Private Tours': '🚐',
@@ -29,7 +29,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 // Fallback gradient colors per category
 const CATEGORY_GRADIENTS: Record<string, string> = {
   'Day Trips': 'from-amber-100 to-orange-100',
-  'Desert Tours': '🏜️',
+  'Desert Tours': 'from-yellow-100 to-amber-200',
   'City Tours': 'from-blue-100 to-indigo-100',
   'Multi-day Tours': 'from-emerald-100 to-teal-100',
   'Airport Transfers': 'from-sky-100 to-blue-100',
@@ -38,8 +38,8 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
 
 const CATEGORY_EMOJI: Record<string, string> = {
   'Day Trips': '☀️',
-  'Desert Tours': '🏜️',
-  'City Tours': '🏙️',
+  'Desert Tours': 'ðŸœï¸',
+  'City Tours': 'ðŸ™ï¸',
   'Multi-day Tours': '🌍',
   'Airport Transfers': '✈️',
   'Custom/Private Tours': '🚐',
@@ -246,7 +246,6 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
     </div>
   );
 }
-
 
 
 
