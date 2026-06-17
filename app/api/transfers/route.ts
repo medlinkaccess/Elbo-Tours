@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { sql } from '@/lib/db'
 
 const CAT_MAP: Record<string, string> = {

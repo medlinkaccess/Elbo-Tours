@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(req: NextRequest) {
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
       orderBy: { publishedAt: 'desc' },
     })
 
-    const result = blogs.map((b) => ({
+    const result = blogs.map((b: any) => ({
       id: b.id,
       slug: b.slug,
       status: b.status,
@@ -111,3 +111,5 @@ function isAuthed(req: NextRequest) {
 function unauthorized() {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 }
+
+

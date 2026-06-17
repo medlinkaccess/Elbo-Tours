@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createHash } from 'crypto'
 
@@ -7,7 +7,7 @@ function hashPassword(password: string) {
   return createHash('sha256').update(password).digest('hex')
 }
 
-// POST /api/auth — login
+// POST /api/auth â€” login
 export async function POST(req: NextRequest) {
   try {
     const { password } = await req.json()
@@ -53,9 +53,10 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE /api/auth — logout
+// DELETE /api/auth â€” logout
 export async function DELETE() {
   const res = NextResponse.json({ ok: true })
   res.cookies.set('admin_auth', '', { maxAge: 0, path: '/' })
   return res
 }
+

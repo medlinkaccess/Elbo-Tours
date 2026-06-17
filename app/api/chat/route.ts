@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const SYSTEM_PROMPT = `You are Elbo, a friendly travel assistant for Elbo Tours — a Moroccan travel company based in Marrakech.
+const SYSTEM_PROMPT = `You are Elbo, a friendly travel assistant for Elbo Tours â€” a Moroccan travel company based in Marrakech.
 
 You help customers with:
 - Tours & itineraries: desert trips, imperial cities, coastal routes, day trips (Essaouira, Ouarzazate, Fes, Chefchaouen, etc.)

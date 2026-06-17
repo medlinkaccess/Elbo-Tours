@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 
 const ADMIN_PASSWORD = 'elbo2025'; // Change this!
 
@@ -21,3 +21,4 @@ export async function DELETE() {
   res.cookies.delete('admin_auth');
   return res;
 }
+

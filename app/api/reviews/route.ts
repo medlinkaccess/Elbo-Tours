@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { sql } from '@/lib/db'
 
 function isAuthed(req: NextRequest) {
@@ -75,3 +75,4 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to delete review' }, { status: 500 })
   }
 }
+
