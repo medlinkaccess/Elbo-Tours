@@ -17,13 +17,13 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'All': 'ðŸ—ºï¸',
-  'Day Trips': 'â˜€ï¸',
+  'All': '🗺️',
+  'Day Trips': '☀️',
   'Desert Tours': 'ðŸœï¸',
   'City Tours': 'ðŸ™ï¸',
-  'Multi-day Tours': 'ðŸŒ',
-  'Airport Transfers': 'âœˆï¸',
-  'Custom/Private Tours': 'ðŸš',
+  'Multi-day Tours': '🌍',
+  'Airport Transfers': '✈️',
+  'Custom/Private Tours': '🚐',
 };
 
 // Fallback gradient colors per category
@@ -37,12 +37,12 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
 };
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  'Day Trips': 'â˜€ï¸',
+  'Day Trips': '☀️',
   'Desert Tours': 'ðŸœï¸',
   'City Tours': 'ðŸ™ï¸',
-  'Multi-day Tours': 'ðŸŒ',
-  'Airport Transfers': 'âœˆï¸',
-  'Custom/Private Tours': 'ðŸš',
+  'Multi-day Tours': '🌍',
+  'Airport Transfers': '✈️',
+  'Custom/Private Tours': '🚐',
 };
 
 interface Tour {
@@ -83,7 +83,7 @@ export default function ToursPage() {
           <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at 20% 50%, #C8960C 0%, transparent 60%), radial-gradient(circle at 80% 50%, #C8440A 0%, transparent 60%)'}} />
           <div className="relative z-10 text-center max-w-3xl mx-auto px-4">
             <span className="inline-flex items-center gap-2 bg-[#C8960C]/20 border border-[#C8960C]/40 text-[#F0C040] text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-              ðŸ—ºï¸ Explore Morocco
+              🗺️ Explore Morocco
             </span>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>
               Tours & Excursions
@@ -182,7 +182,7 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
   const title = locale === 'fr' && tour.titleFr ? tour.titleFr : tour.title;
   const desc = locale === 'fr' && tour.descFr ? tour.descFr : tour.desc;
   const gradient = CATEGORY_GRADIENTS[tour.category] || 'from-gray-100 to-gray-200';
-  const emoji = CATEGORY_EMOJI[tour.category] || 'ðŸ—ºï¸';
+  const emoji = CATEGORY_EMOJI[tour.category] || '🗺️';
 
   const waMsg = encodeURIComponent(`Hi! I'm interested in: ${tour.title} (${tour.price}). Can you give me more info?`);
 
@@ -246,4 +246,5 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
     </div>
   );
 }
+
 
