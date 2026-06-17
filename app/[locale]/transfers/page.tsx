@@ -1,11 +1,13 @@
 ﻿'use client';
+import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/chat/WhatsAppButton';
 import Link from 'next/link';
 
-const ROUTES = [
+// FALLBACK DATA (Shown if your Postgres database is empty)
+const FALLBACK_ROUTES = [
   { from: 'Marrakech', to: 'Agadir', duration: '2h 45min', distance: '250 km', price: '€90', popular: true },
   { from: 'Marrakech', to: 'Casablanca', duration: '2h 30min', distance: '240 km', price: '€110', popular: true },
   { from: 'Marrakech', to: 'Essaouira', duration: '2h 30min', distance: '190 km', price: '€80', popular: false },
@@ -16,7 +18,7 @@ const ROUTES = [
   { from: 'Tangier', to: 'Chefchaouen', duration: '2h', distance: '130 km', price: '€70', popular: false },
 ];
 
-const AIRPORTS = [
+const FALLBACK_AIRPORTS = [
   { code: 'RAK', city: 'Marrakech Menara', price: 'From €18', popular: true, img: '/images/airports/rak.webp' },
   { code: 'CMN', city: 'Casablanca Mohammed V', price: 'From €30', popular: true, img: '/images/airports/cmn.webp' },
   { code: 'AGA', city: 'Agadir Al Massira', price: 'From €20', popular: true, img: '/images/airports/aga.webp' },
@@ -32,6 +34,41 @@ export default function TransfersPage() {
   const why = t.raw('why') as { icon: string; title: string; desc: string }[];
   const steps = t.raw('steps') as { num: string; title: string; desc: string }[];
   const popular = t('popular');
+
+  const [dbTransfers, setDbTransfers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/transfers?locale=${locale}`)
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) setDbTransfers(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [locale]);
+
+  // SMART FILTER: Sorts database entries into Airport vs City-to-City routes automatically
+  const dbAirports = dbTransfers.filter(
+    item => 
+      item.slug.includes('airport') || 
+      item.title.toLowerCase().includes('airport') || 
+      item.title.toLowerCase().includes('aéroport') ||
+      item.title.length < 15
+  );
+
+  const dbCityRoutes = dbTransfers.filter(
+    item => 
+      !item.slug.includes('airport') && 
+      !item.title.toLowerCase().includes('airport') && 
+      !item.title.toLowerCase().includes('aéroport') &&
+      item.title.length >= 15
+  );
+
+  // Fallback triggers if database has no entries
+  const displayAirports = dbTransfers.length > 0 ? dbAirports : [];
+  const displayCityRoutes = dbTransfers.length > 0 ? dbCityRoutes : [];
+  const showFallbacks = dbTransfers.length === 0 && !loading;
 
   return (
     <>
@@ -106,42 +143,81 @@ export default function TransfersPage() {
               <h2 className="font-display text-3xl font-bold text-[#1A1A2E] mt-2" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>{t('airport_title')}</h2>
               <p className="text-gray-500 mt-3 max-w-lg mx-auto">{t('airport_sub')}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {AIRPORTS.map((airport, i) => {
-                const msg = encodeURIComponent(`Hi! I need an airport transfer at ${airport.city} (${airport.code}).`);
-                return (
-                  <div key={i} className="group border border-gray-200 rounded-2xl overflow-hidden hover:border-[#C8960C] hover:shadow-lg transition-all duration-200 relative bg-white">
-                    <div className="relative h-36 overflow-hidden">
-                      <img src={airport.img} alt={airport.city} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-3 left-4">
-                        <div className="font-bold text-2xl text-white">{airport.code}</div>
-                        <div className="text-xs text-white/80">{airport.city}</div>
+
+            {loading ? (
+              <div className="text-center py-10 text-gray-400">Loading transfers...</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {/* 1. Show Database Airport Transfers */}
+                {displayAirports.map((airport, i) => {
+                  const msg = encodeURIComponent(`Hi! I need an airport transfer: ${airport.title}.`);
+                  return (
+                    <div key={i} className="group border border-gray-200 rounded-2xl overflow-hidden hover:border-[#C8960C] hover:shadow-lg transition-all duration-200 relative bg-white">
+                      <div className="relative h-36 overflow-hidden">
+                        <img src={airport.image || '/images/logo.png'} alt={airport.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-3 left-4">
+                          <div className="font-bold text-xl text-white">{airport.title}</div>
+                          <div className="text-xs text-white/80">⏱️ {airport.duration}</div>
+                        </div>
                       </div>
-                      {airport.popular && (
-                        <span className="absolute top-3 right-3 bg-[#C8960C] text-white text-xs font-bold px-2.5 py-0.5 rounded-full">{popular}</span>
-                      )}
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs text-gray-400">{t('per_vehicle')}</span>
+                          <span className="font-bold text-[#C8960C] text-lg">{airport.price}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
+                            className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                            💬 WhatsApp
+                          </a>
+                          <Link href={`/${locale}/contact`}
+                            className="flex-1 bg-[#C8960C] hover:bg-[#b07e08] text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                            {t('book_now')} →
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs text-gray-400">{t('per_vehicle')}</span>
-                        <span className="font-bold text-[#C8960C] text-lg">{airport.price}</span>
+                  );
+                })}
+
+                {/* 2. Show Fallback Airport Transfers if database is empty */}
+                {showFallbacks && FALLBACK_AIRPORTS.map((airport, i) => {
+                  const msg = encodeURIComponent(`Hi! I need an airport transfer at ${airport.city} (${airport.code}).`);
+                  return (
+                    <div key={i} className="group border border-gray-200 rounded-2xl overflow-hidden hover:border-[#C8960C] hover:shadow-lg transition-all duration-200 relative bg-white">
+                      <div className="relative h-36 overflow-hidden">
+                        <img src={airport.img} alt={airport.city} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-3 left-4">
+                          <div className="font-bold text-2xl text-white">{airport.code}</div>
+                          <div className="text-xs text-white/80">{airport.city}</div>
+                        </div>
+                        {airport.popular && (
+                          <span className="absolute top-3 right-3 bg-[#C8960C] text-white text-xs font-bold px-2.5 py-0.5 rounded-full">{popular}</span>
+                        )}
                       </div>
-                      <div className="flex gap-2">
-                        <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
-                          className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
-                          💬 WhatsApp
-                        </a>
-                        <Link href={`/${locale}/contact`}
-                          className="flex-1 bg-[#C8960C] hover:bg-[#b07e08] text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
-                          {t('book_now')} →
-                        </Link>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs text-gray-400">{t('per_vehicle')}</span>
+                          <span className="font-bold text-[#C8960C] text-lg">{airport.price}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
+                            className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                            💬 WhatsApp
+                          </a>
+                          <Link href={`/${locale}/contact`}
+                            className="flex-1 bg-[#C8960C] hover:bg-[#b07e08] text-white text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                            {t('book_now')} →
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </section>
 
@@ -153,32 +229,65 @@ export default function TransfersPage() {
               <h2 className="font-display text-3xl font-bold text-[#1A1A2E] mt-2" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>{t('city_title')}</h2>
               <p className="text-gray-500 mt-3">{t('city_sub')}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {ROUTES.map((route, i) => {
-                const msg = encodeURIComponent(`Hi! I need a transfer from ${route.from} to ${route.to}.`);
-                return (
-                  <div key={i} className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-[#C8960C] hover:shadow-md transition-all duration-200 relative">
-                    {route.popular && (
-                      <span className="absolute -top-2.5 right-4 bg-[#1A1A2E] text-[#F0C040] text-xs font-bold px-2.5 py-0.5 rounded-full">{popular}</span>
-                    )}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="font-bold text-[#1A1A2E]">{route.from}</div>
-                      <div className="text-[#C8960C] font-bold text-lg px-2">→</div>
-                      <div className="font-bold text-[#1A1A2E]">{route.to}</div>
+            
+            {loading ? (
+              <div className="text-center py-10 text-gray-400">Loading routes...</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* 1. Show Database City to City Transfers */}
+                {displayCityRoutes.map((route, i) => {
+                  const msg = encodeURIComponent(`Hi! I need a transfer: ${route.title}.`);
+                  return (
+                    <div key={i} className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-[#C8960C] hover:shadow-md transition-all duration-200 relative flex flex-col justify-between">
+                      <div>
+                        <div className="font-bold text-[#1A1A2E] text-base mb-2 text-center">{route.title}</div>
+                        <div className="flex justify-between text-xs text-gray-400 mb-4">
+                          <span>⏱ {route.duration}</span>
+                          <span>📍 {route.from_location}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-center font-bold text-[#C8960C] text-xl mb-4">{route.price}</div>
+                        <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
+                          className="w-full block bg-[#C8960C] hover:bg-[#F0C040] text-white hover:text-[#1A1A2E] text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                          {t('book_route')}
+                        </a>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-400 mb-4">
-                      <span>⏱ {route.duration}</span>
-                      <span>📍 {route.distance}</span>
+                  );
+                })}
+
+                {/* 2. Show Fallback City to City Transfers if database is empty */}
+                {showFallbacks && FALLBACK_ROUTES.map((route, i) => {
+                  const msg = encodeURIComponent(`Hi! I need a transfer from ${route.from} to ${route.to}.`);
+                  return (
+                    <div key={i} className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-[#C8960C] hover:shadow-md transition-all duration-200 relative flex flex-col justify-between">
+                      {route.popular && (
+                        <span className="absolute -top-2.5 right-4 bg-[#1A1A2E] text-[#F0C040] text-xs font-bold px-2.5 py-0.5 rounded-full">{popular}</span>
+                      )}
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="font-bold text-[#1A1A2E]">{route.from}</div>
+                          <div className="text-[#C8960C] font-bold text-lg px-2">→</div>
+                          <div className="font-bold text-[#1A1A2E]">{route.to}</div>
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-400 mb-4">
+                          <span>⏱ {route.duration}</span>
+                          <span>📍 {route.distance}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-center font-bold text-[#C8960C] text-xl mb-4">{route.price}</div>
+                        <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
+                          className="w-full block bg-[#C8960C] hover:bg-[#F0C040] text-white hover:text-[#1A1A2E] text-sm font-semibold py-2 rounded-lg text-center transition-colors">
+                          {t('book_route')}
+                        </a>
+                      </div>
                     </div>
-                    <div className="text-center font-bold text-[#C8960C] text-xl mb-4">{route.price}</div>
-                    <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
-                      className="w-full block bg-[#C8960C] hover:bg-[#F0C040] text-white hover:text-[#1A1A2E] text-sm font-semibold py-2 rounded-lg text-center transition-colors">
-                      {t('book_route')}
-                    </a>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
             <p className="text-center text-sm text-gray-400 mt-8">
               <a href={`${waBase}${encodeURIComponent('Hi! I need a custom transfer route.')}`} target="_blank" rel="noopener noreferrer" className="text-[#C8960C] underline">
                 {t('custom_route')}
