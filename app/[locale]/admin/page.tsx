@@ -1,62 +1,60 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 
-const CATEGORIES = [
-  'Day Trips',
-  'Desert Tours',
-  'City Tours',
-  'Multi-day Tours',
-  'Custom/Private Tours',
-];
+const TOUR_CATEGORIES = ['Day Trips', 'Desert Tours', 'City Tours', 'Multi-day Tours', 'Custom/Private Tours'];
+const BLOG_CATEGORIES = ['Travel Tips', 'Guides', 'Culture', 'News'];
 
-interface Tour {
-  id: string;
-  title: string;
-  titleFr: string;
-  category: string;
-  duration: string;
-  from: string;
-  price: string;
-  desc: string;
-  descFr: string;
-  image: string;
-  featured: boolean;
-  createdAt: string;
-}
-
-const EMPTY_FORM = {
-  title: '', titleFr: '',
-  category: CATEGORIES[0],
-  duration: '', from: '',
-  price: '', desc: '', descFr: '',
-  image: '', featured: false,
-};
+const EMPTY_TOUR_FORM = { title: '', titleFr: '', category: TOUR_CATEGORIES[0], duration: '', from: '', price: '', desc: '', descFr: '', image: '', featured: false };
+const EMPTY_TRANSFER_FORM = { title: '', titleFr: '', from_location: '', duration: '', price: '', desc: '', descFr: '', image: '' };
+const EMPTY_FLEET_FORM = { name: '', nameFr: '', passengers: 4, bags: 3, price: '', desc: '', descFr: '', image: '' };
+const EMPTY_BLOG_FORM = { title: '', titleFr: '', category: BLOG_CATEGORIES[0], excerpt: '', excerptFr: '', content: '', contentFr: '', image: '' };
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
-  const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState<any>(EMPTY_FORM);
-  const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'tours' | 'add'>('tours');
-  const [filterCat, setFilterCat] = useState('All');
   const [successMsg, setSuccessMsg] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Tours list is public (GET /api/tours has no auth check), so we can
-  // preload it on mount even before the admin logs in.
+  // Section States
+  const [activeSection, setActiveSection] = useState<'tours' | 'transfers' | 'fleet' | 'blog'>('tours');
+  const [activeTab, setActiveTab] = useState<'list' | 'add'>('list');
+  const [editId, setEditId] = useState<string | null>(null);
+
+  // Data lists
+  const [tours, setTours] = useState<any[]>([]);
+  const [transfers, setTransfers] = useState<any[]>([]);
+  const [fleet, setFleet] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<any[]>([]);
+
+  // Adaptive Form State
+  const [form, setForm] = useState<any>(EMPTY_TOUR_FORM);
+
   useEffect(() => {
-    fetch('/api/tours')
-      .then(r => r.json())
-      .then(data => {
-        if (Array.isArray(data)) setTours(data);
-      })
-      .catch(() => setTours([]));
+    loadAllData();
   }, []);
+
+  async function loadAllData() {
+    setLoading(true);
+    try {
+      const [tRes, trRes, fRes, bRes] = await Promise.all([
+        fetch('/api/tours'),
+        fetch('/api/transfers'),
+        fetch('/api/fleet'),
+        fetch('/api/blog')
+      ]);
+      setTours(await tRes.json());
+      setTransfers(await trRes.json());
+      setFleet(await fRes.json());
+      setBlogs(await bRes.json());
+    } catch (e) {
+      console.error(e);
+    }
+    setLoading(false);
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -68,27 +66,15 @@ export default function AdminPage() {
     });
     if (res.ok) {
       setAuthed(true);
-      loadTours();
+      loadAllData();
     } else {
-      setAuthError('Wrong password. Try again.');
+      setAuthError('Wrong password.');
     }
   }
 
   async function handleLogout() {
     await fetch('/api/admin-auth', { method: 'DELETE' });
     setAuthed(false);
-  }
-
-  async function loadTours() {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/tours');
-      const data = await res.json();
-      setTours(Array.isArray(data) ? data : []);
-    } catch {
-      setTours([]);
-    }
-    setLoading(false);
   }
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -108,31 +94,30 @@ export default function AdminPage() {
     setSaving(true);
     const method = editId ? 'PUT' : 'POST';
     const body = editId ? { ...form, id: editId } : form;
-    const res = await fetch('/api/tours', {
+    
+    const res = await fetch(`/api/${activeSection}`, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
 
     if (res.status === 401) {
-      setAuthError('Session expired. Please sign in again.');
       setAuthed(false);
       setSaving(false);
       return;
     }
 
     setSaving(false);
-    setForm(EMPTY_FORM);
-    setEditId(null);
-    setActiveTab('tours');
-    setSuccessMsg(editId ? 'Tour updated!' : 'Tour added!');
+    resetForm();
+    setActiveTab('list');
+    setSuccessMsg('Saved successfully!');
     setTimeout(() => setSuccessMsg(''), 3000);
-    loadTours();
+    loadAllData();
   }
 
   async function handleDelete(id: string, title: string) {
     if (!confirm(`Delete "${title}"?`)) return;
-    const res = await fetch('/api/tours', {
+    const res = await fetch(`/api/${activeSection}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
@@ -143,280 +128,208 @@ export default function AdminPage() {
       return;
     }
 
-    setSuccessMsg('Tour deleted.');
+    setSuccessMsg('Deleted successfully.');
     setTimeout(() => setSuccessMsg(''), 3000);
-    loadTours();
+    loadAllData();
   }
 
-  function startEdit(tour: Tour) {
-    setForm({ ...tour });
-    setEditId(tour.id);
+  function startEdit(item: any) {
+    setForm({ ...item });
+    setEditId(item.id);
     setActiveTab('add');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function cancelEdit() {
-    setForm(EMPTY_FORM);
+  function resetForm() {
     setEditId(null);
-    setActiveTab('tours');
+    if (activeSection === 'tours') setForm(EMPTY_TOUR_FORM);
+    if (activeSection === 'transfers') setForm(EMPTY_TRANSFER_FORM);
+    if (activeSection === 'fleet') setForm(EMPTY_FLEET_FORM);
+    if (activeSection === 'blog') setForm(EMPTY_BLOG_FORM);
   }
 
-  const safeTours = Array.isArray(tours) ? tours : [];
-  const filtered = filterCat === 'All' ? safeTours : safeTours.filter(t => t.category === filterCat);
+  function switchSection(section: 'tours' | 'transfers' | 'fleet' | 'blog') {
+    setActiveSection(section);
+    setEditId(null);
+    setActiveTab('list');
+    if (section === 'tours') setForm(EMPTY_TOUR_FORM);
+    if (section === 'transfers') setForm(EMPTY_TRANSFER_FORM);
+    if (section === 'fleet') setForm(EMPTY_FLEET_FORM);
+    if (section === 'blog') setForm(EMPTY_BLOG_FORM);
+  }
 
-  // —— LOGIN SCREEN ——
+  const currentList = 
+    activeSection === 'tours' ? tours :
+    activeSection === 'transfers' ? transfers :
+    activeSection === 'fleet' ? fleet : blogs;
+
   if (!authed) {
     return (
       <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-[#C8960C] rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🔑</div>
-            <h1 className="font-bold text-2xl text-[#1A1A2E]">Admin Panel</h1>
-            <p className="text-gray-400 text-sm mt-1">Elbo Tours Management</p>
-          </div>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Enter admin password"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20"
-              autoFocus
-            />
-            {authError && <p className="text-red-500 text-sm text-center">{authError}</p>}
-            <button type="submit" className="w-full bg-[#C8960C] hover:bg-[#A77D0A] text-white rounded-xl py-3 font-semibold transition-colors">
-              Sign In →
-            </button>
-          </form>
-        </div>
+        <form onSubmit={handleLogin} className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm space-y-4">
+          <h1 className="text-center font-bold text-2xl text-[#1A1A2E]">Admin Portal</h1>
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none" autoFocus />
+          {authError && <p className="text-red-500 text-sm text-center">{authError}</p>}
+          <button type="submit" className="w-full bg-[#C8960C] text-white rounded-xl py-3 font-semibold">Sign In</button>
+        </form>
       </div>
     );
   }
 
-  // —— ADMIN DASHBOARD ——
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-[#1A1A2E] text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#C8960C] rounded-lg flex items-center justify-center font-bold text-sm">ET</div>
-          <div>
-            <div className="font-bold leading-none">Elbo Tours</div>
-            <div className="text-xs text-gray-400">Admin Panel</div>
-          </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+      {/* Sidebar navigation */}
+      <aside className="w-full lg:w-64 bg-[#1A1A2E] text-white flex-shrink-0 flex flex-col border-r border-gray-800">
+        <div className="p-6 border-b border-gray-800">
+          <h2 className="font-bold text-lg text-white">Elbo Tours</h2>
+          <p className="text-xs text-gray-400">Control Panel</p>
         </div>
-        <div className="flex items-center gap-4">
-          <a href="/" target="_blank" className="text-xs text-gray-400 hover:text-white transition-colors">
-            View Site ↗
-          </a>
-          <button onClick={handleLogout} className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors">
-            Logout
-          </button>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {successMsg && (
-          <div className="mb-6 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm font-medium flex items-center gap-2">
-            ✅ {successMsg}
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <nav className="flex-1 p-4 space-y-2">
           {[
-            { label: 'Total Tours', value: safeTours.length, icon: '🗺️' },
-            { label: 'Featured', value: safeTours.filter(t => t.featured).length, icon: '⭐' },
-            { label: 'With Photos', value: safeTours.filter(t => t.image).length, icon: '📷' },
-            { label: 'Categories', value: new Set(safeTours.map(t => t.category)).size, icon: '🎫' },
-          ].map((s, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-200 p-5 flex items-center gap-4">
-              <div className="text-3xl">{s.icon}</div>
-              <div>
-                <div className="text-2xl font-bold text-[#1A1A2E]">{s.value}</div>
-                <div className="text-xs text-gray-400">{s.label}</div>
-              </div>
-            </div>
+            { id: 'tours', label: 'Tours List', icon: '🗺️' },
+            { id: 'transfers', label: 'Transfers', icon: '🚐' },
+            { id: 'fleet', label: 'Fleet vehicles', icon: '🚗' },
+            { id: 'blog', label: 'Blog Posts', icon: '✍️' }
+          ].map(s => (
+            <button key={s.id} onClick={() => switchSection(s.id as any)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${activeSection === s.id ? 'bg-[#C8960C] text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
+              <span>{s.icon}</span>{s.label}
+            </button>
           ))}
-        </div>
+        </nav>
+      </aside>
 
-        <div className="flex gap-2 mb-6">
-          <button onClick={() => { setActiveTab('tours'); cancelEdit(); }}
-            className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${activeTab === 'tours' ? 'bg-[#1A1A2E] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-            📋 All Tours ({safeTours.length})
-          </button>
-          <button onClick={() => { setActiveTab('add'); if (!editId) setForm(EMPTY_FORM); }}
-            className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${activeTab === 'add' ? 'bg-[#C8960C] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-            {editId ? '📝 Edit Tour' : '➕ Add Tour'}
-          </button>
-        </div>
+      <div className="flex-1">
+        <header className="bg-white border-b px-6 py-4 flex items-center justify-between">
+          <h1 className="font-bold text-xl text-[#1A1A2E] capitalize">{activeSection}</h1>
+          <button onClick={handleLogout} className="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg">Logout</button>
+        </header>
 
-        {activeTab === 'tours' && (
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex gap-2 overflow-x-auto">
-              {['All', ...CATEGORIES].map(cat => (
-                <button key={cat} onClick={() => setFilterCat(cat)}
-                  className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-semibold transition-all ${filterCat === cat ? 'bg-[#C8960C] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
-                  {cat}
-                </button>
+        <div className="max-w-5xl mx-auto px-4 py-8">
+          {successMsg && <div className="mb-6 bg-green-50 border text-green-700 rounded-xl px-4 py-3 text-sm font-medium">✅ {successMsg}</div>}
+
+          <div className="flex gap-2 mb-6">
+            <button onClick={() => { setActiveTab('list'); resetForm(); }} className={`px-5 py-2.5 rounded-xl font-semibold text-sm ${activeTab === 'list' ? 'bg-[#1A1A2E] text-white' : 'bg-white border text-gray-600'}`}>
+              📋 View List
+            </button>
+            <button onClick={() => setActiveTab('add')} className={`px-5 py-2.5 rounded-xl font-semibold text-sm ${activeTab === 'add' ? 'bg-[#C8960C] text-white' : 'bg-white border text-gray-600'}`}>
+              {editId ? '📝 Edit Entry' : '➕ Add Entry'}
+            </button>
+          </div>
+
+          {activeTab === 'list' ? (
+            <div className="bg-white rounded-2xl border overflow-hidden divide-y">
+              {loading ? <div className="p-10 text-center text-gray-400">Loading data...</div> :
+               currentList.length === 0 ? <div className="p-10 text-center text-gray-400">No items found. Create some!</div> :
+               currentList.map((item: any) => (
+                <div key={item.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50">
+                  <img src={item.image || '/images/logo.png'} alt="" className="w-16 h-12 object-cover rounded-lg bg-gray-100 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <span className="font-semibold text-[#1A1A2E] block truncate">{item.title || item.name}</span>
+                    <span className="text-xs text-[#C8960C] font-semibold">{item.price}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => startEdit(item)} className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold">Edit</button>
+                    <button onClick={() => handleDelete(item.id, item.title || item.name)} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold">Delete</button>
+                  </div>
+                </div>
               ))}
             </div>
-
-            {loading ? (
-              <div className="py-20 text-center text-gray-400">Loading tours...</div>
-            ) : filtered.length === 0 ? (
-              <div className="py-20 text-center">
-                <div className="text-4xl mb-3">📥</div>
-                <p className="text-gray-500">No tours yet. Add your first one!</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-gray-100">
-                {filtered.map(tour => (
-                  <div key={tour.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-                    <div className="w-16 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                      {tour.image ? (
-                        <img src={tour.image} alt={tour.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-2xl">🗺️</div>
-                      )}
+          ) : (
+            <div className="bg-white rounded-2xl border p-6 md:p-8">
+              <form onSubmit={handleSave} className="space-y-6">
+                {/* Photo Upload */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Display Image</label>
+                  <div className="flex gap-4 items-center">
+                    <div className="w-24 h-20 border rounded-xl overflow-hidden flex items-center justify-center bg-gray-50">
+                      {form.image ? <img src={form.image} alt="" className="w-full h-full object-cover" /> : <span className="text-3xl">📷</span>}
                     </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span className="font-semibold text-[#1A1A2E] truncate">{tour.title}</span>
-                        {tour.featured && <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">⭐ Featured</span>}
-                      </div>
-                      <div className="flex gap-3 text-xs text-gray-400">
-                        <span className="bg-gray-100 px-2 py-0.5 rounded-full">{tour.category}</span>
-                        <span>⏱️ {tour.duration}</span>
-                        <span className="font-semibold text-[#C8960C]">{tour.price}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 flex-shrink-0">
-                      <button onClick={() => startEdit(tour)}
-                        className="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold transition-colors">
-                        📝 Edit
-                      </button>
-                      <button onClick={() => handleDelete(tour.id, tour.title)}
-                        className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors">
-                        🗑️ Delete
+                    <div>
+                      <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+                      <button type="button" onClick={() => fileRef.current?.click()} className="px-4 py-2 border rounded-lg text-sm font-medium">
+                        {uploading ? 'Uploading...' : 'Upload Image'}
                       </button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                </div>
 
-        {activeTab === 'add' && (
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8">
-            <h2 className="font-bold text-xl text-[#1A1A2E] mb-6">
-              {editId ? '📝 Edit Tour' : '➕ Add New Tour'}
-            </h2>
-            <form onSubmit={handleSave} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tour Photo</label>
-                <div className="flex gap-4 items-start">
-                  <div className="w-32 h-24 rounded-xl border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0">
-                    {form.image ? (
-                      <img src={form.image} alt="Preview" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-gray-300 text-3xl">📷</span>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
-                    <button type="button" onClick={() => fileRef.current?.click()}
-                      disabled={uploading}
-                      className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:border-[#C8960C] transition-colors disabled:opacity-50">
-                      {uploading ? '⏳ Uploading...' : '📤 Upload Photo'}
-                    </button>
-                    <p className="text-xs text-gray-400 mt-2">JPG, PNG, WebP — max 5MB. If no photo, a gradient placeholder will show.</p>
-                    {form.image && (
-                      <div className="mt-2 text-xs text-gray-500 break-all">{form.image}</div>
-                    )}
-                  </div>
-                </div>
-              </div>
+                {/* Form Fields depend dynamically on the active category */}
+                {activeSection === 'tours' && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Title (EN)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input value={form.titleFr} onChange={e => setForm({ ...form, titleFr: e.target.value })} placeholder="Title (FR)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <div className="grid grid-cols-4 gap-4">
+                      <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="border rounded-xl px-4 py-2.5 text-sm bg-white">
+                        {TOUR_CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                      </select>
+                      <input required value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} placeholder="Duration (e.g. 1 day)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input required value={form.from} onChange={e => setForm({ ...form, from: e.target.value })} placeholder="Depart city" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input required value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="Price (e.g. From €65)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <textarea required rows={4} value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} placeholder="Description (EN)" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
+                    <textarea rows={4} value={form.descFr} onChange={e => setForm({ ...form, descFr: e.target.value })} placeholder="Description (FR)" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
+                  </>
+                )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Title (English) *</label>
-                  <input required value={form.title} onChange={e => setForm((f: any) => ({...f, title: e.target.value}))}
-                    placeholder="e.g. Sahara Desert Circuit"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C]" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Title (French)</label>
-                  <input value={form.titleFr} onChange={e => setForm((f: any) => ({...f, titleFr: e.target.value}))}
-                    placeholder="e.g. Circuit Désert du Sahara"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C]" />
-                </div>
-              </div>
+                {activeSection === 'transfers' && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Route Name EN (e.g. Casablanca to Marrakech)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input value={form.titleFr} onChange={e => setForm({ ...form, titleFr: e.target.value })} placeholder="Route Name FR" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <input required value={form.from_location} onChange={e => setForm({ ...form, from_location: e.target.value })} placeholder="From Location" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input required value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} placeholder="Duration (e.g. 3 hours)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input required value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="Price (e.g. €120)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <textarea required rows={3} value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} placeholder="Description (EN)" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
+                  </>
+                )}
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Category *</label>
-                  <select required value={form.category} onChange={e => setForm((f: any) => ({...f, category: e.target.value}))}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C] bg-white">
-                    {CATEGORIES.map(c => <option key={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Duration *</label>
-                  <input required value={form.duration} onChange={e => setForm((f: any) => ({...f, duration: e.target.value}))}
-                    placeholder="e.g. 1 day"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C]" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Starting From *</label>
-                  <input required value={form.from} onChange={e => setForm((f: any) => ({...f, from: e.target.value}))}
-                    placeholder="e.g. Marrakech"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C]" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Price *</label>
-                  <input required value={form.price} onChange={e => setForm((f: any) => ({...f, price: e.target.value}))}
-                    placeholder="e.g. From €65/person"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C]" />
-                </div>
-              </div>
+                {activeSection === 'fleet' && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Vehicle Name EN" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input value={form.nameFr} onChange={e => setForm({ ...form, nameFr: e.target.value })} placeholder="Vehicle Name FR" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <input required type="number" value={form.passengers} onChange={e => setForm({ ...form, passengers: parseInt(e.target.value) })} placeholder="Passengers" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input required type="number" value={form.bags} onChange={e => setForm({ ...form, bags: parseInt(e.target.value) })} placeholder="Max Luggage Bags" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input required value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="Price per day" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <textarea required rows={3} value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} placeholder="Vehicle Details & features (EN)" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
+                  </>
+                )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Description (English) *</label>
-                  <textarea required rows={4} value={form.desc} onChange={e => setForm((f: any) => ({...f, desc: e.target.value}))}
-                    placeholder="Describe the tour in English..."
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C] resize-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Description (French)</label>
-                  <textarea rows={4} value={form.descFr} onChange={e => setForm((f: any) => ({...f, descFr: e.target.value}))}
-                    placeholder="Décrivez le tour en français..."
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C8960C] resize-none" />
-                </div>
-              </div>
+                {activeSection === 'blog' && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <input required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Post Title EN" className="border rounded-xl px-4 py-2.5 text-sm" />
+                      <input value={form.titleFr} onChange={e => setForm({ ...form, titleFr: e.target.value })} placeholder="Post Title FR" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="border rounded-xl px-4 py-2.5 text-sm bg-white">
+                        {BLOG_CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                      </select>
+                      <input required value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} placeholder="Short excerpt/intro (EN)" className="border rounded-xl px-4 py-2.5 text-sm" />
+                    </div>
+                    <textarea required rows={8} value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} placeholder="Post Article Content (EN) - Press enter for new paragraphs..." className="w-full border rounded-xl px-4 py-2.5 text-sm" />
+                    <textarea rows={8} value={form.contentFr} onChange={e => setForm({ ...form, contentFr: e.target.value })} placeholder="Post Article Content (FR)..." className="w-full border rounded-xl px-4 py-2.5 text-sm" />
+                  </>
+                )}
 
-              <div className="flex items-center gap-3">
-                <button type="button" onClick={() => setForm((f: any) => ({...f, featured: !f.featured}))}
-                  className={`w-12 h-6 rounded-full transition-colors ${form.featured ? 'bg-[#C8960C]' : 'bg-gray-200'} relative flex-shrink-0`}>
-                  <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.featured ? 'translate-x-6' : 'translate-x-0.5'}`} />
-                </button>
-                <span className="text-sm font-medium text-gray-700">⭐ Mark as Featured (shown prominently)</span>
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={saving} className="bg-[#C8960C] hover:bg-[#A77D0A] text-white rounded-xl px-8 py-3 font-semibold transition-colors disabled:opacity-50">
-                  {saving ? '⏳ Saving...' : editId ? '✅ Update Tour' : '➕ Add Tour'}
-                </button>
-                <button type="button" onClick={cancelEdit}
-                  className="px-6 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:border-gray-300 transition-colors">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+                <div className="flex gap-3">
+                  <button type="submit" disabled={saving} className="bg-[#C8960C] text-white rounded-xl px-8 py-3 font-semibold disabled:opacity-50">
+                    {saving ? 'Saving...' : 'Save Entry'}
+                  </button>
+                  <button type="button" onClick={() => { setActiveTab('list'); resetForm(); }} className="px-6 py-3 border rounded-xl text-sm font-semibold">Cancel</button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
