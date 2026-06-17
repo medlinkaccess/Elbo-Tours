@@ -3,11 +3,10 @@ import { unstable_setRequestLocale as setRequestLocale } from "next-intl/server"
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import WhatsAppButton from '@/components/WhatsAppButton';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import WhatsAppButton from '@/components/chat/WhatsAppButton';
 import { tours, getTourBySlug } from '@/data/tours';
-
 export async function generateStaticParams() {
   const locales = ['en', 'fr'];
   return locales.flatMap(locale =>
