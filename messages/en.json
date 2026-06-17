@@ -1,7 +1,8 @@
-{
+﻿{
   "nav": {
     "home": "Home",
     "tours": "Tours",
+    "transfers": "Transfers",
     "fleet": "Our Fleet",
     "about": "About",
     "contact": "Contact",
@@ -9,118 +10,181 @@
     "phone": "+212 665-889258"
   },
   "hero": {
-    "badge": "Private Transport · Morocco",
-    "title": "Premium Transfers\n& Excursions",
-    "subtitle": "Comfortable, reliable and personalised travel across Morocco — from airport pickups to Sahara circuits.",
-    "cta": "Book a Transfer",
-    "whatsapp": "WhatsApp Us"
+    "badge": "Private Morocco Tours",
+    "slides": [
+      { "headline": "Discover Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
+      { "headline": "Travel in Comfort,\nWith Our Modern Fleet", "sub": "Spacious vans, professional drivers — every journey safe, smooth, and on time", "cta": "View Our Fleet" },
+      { "headline": "Discover the\nEssence of Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
+      { "headline": "Sahara Nights\nUnder a Billion Stars", "sub": "Glamping camps, camel treks, sunrise dunes", "cta": "Desert Tours" },
+      { "headline": "Imperial Cities,\nTimeless Stories", "sub": "Marrakech · Fès · Meknès · Casablanca", "cta": "Cultural Tours" }
+    ]
   },
   "stats": [
-    {
-      "num": "10+",
-      "label": "Years experience"
-    },
-    {
-      "num": "5,000+",
-      "label": "Happy travellers"
-    },
-    {
-      "num": "24/7",
-      "label": "Availability"
-    },
-    {
-      "num": "3",
-      "label": "Languages"
-    }
+    { "num": "20+", "label": "Years of experience" },
+    { "num": "24", "label": "Curated tours" },
+    { "num": "7", "label": "Languages spoken" },
+    { "num": "1", "label": "Unique trip: yours" }
   ],
-  "services": {
-    "badge": "What We Offer",
-    "title": "Our Services",
-    "items": [
-      {
-        "icon": "plane",
-        "title": "Airport Transfers",
-        "desc": "Fixed-price, on-time pickups and drop-offs at all Moroccan airports. Flight tracking included."
-      },
-      {
-        "icon": "car",
-        "title": "Private City Transfers",
-        "desc": "Door-to-door transfers between Moroccan cities in air-conditioned, modern vehicles."
-      },
-      {
-        "icon": "hotel",
-        "title": "Hotel Pick-up & Drop-off",
-        "desc": "Seamless connections between your hotel and any destination across Morocco."
-      },
-      {
-        "icon": "compass",
-        "title": "Guided Excursions",
-        "desc": "Day trips and multi-day circuits to the Sahara, Atlas Mountains, Essaouira and beyond."
-      }
-    ]
+  "types": {
+    "eyebrow": "Explore by interest",
+    "title": "What kind of Morocco trip do you want?",
+    "body": "Private tours built around your interests — from Sahara dunes to ancient medinas, birdsong to yoga sunsets.",
+    "depart_title": "Where do you want to depart from?",
+    "depart_from": "Tours from",
+    "see_all": "See all Morocco tours",
+    "labels": {
+      "Desert": "Desert",
+      "Culture": "Culture",
+      "Adventure": "Adventure",
+      "Nature": "Nature",
+      "Luxury": "Luxury",
+      "Family": "Family",
+      "4x4 & Moto": "4x4 & Moto",
+      "Birdwatch": "Birdwatch",
+      "Yoga": "Yoga",
+      "City Break": "City Break"
+    }
   },
-  "fleet": {
-    "badge": "Travel in Comfort",
-    "title": "Our Fleet",
-    "items": [
-      {
-        "name": "Standard Car",
-        "capacity": "up to 3 passengers",
-        "img": "/fleet/standard.png"
-      },
-      {
-        "name": "Minivan",
-        "capacity": "up to 7 passengers",
-        "img": "/fleet/minivan.png"
-      },
-      {
-        "name": "Minibus",
-        "capacity": "up to 17 passengers",
-        "img": "/fleet/minibus.png"
-      }
-    ]
+  "featured": {
+    "eyebrow": "Most popular",
+    "title": "Featured Tours",
+    "body": "Our most-requested private itineraries — each one fully customisable to your travel dates and group size.",
+    "view_itinerary": "View itinerary",
+    "browse_all": "Browse all tours"
+  },
+  "quote": {
+    "text": "\"We love to share with our guests the peace and the Moroccan way of life — every journey is a chance to discover something genuine.\"",
+    "link": "Meet our team & philosophy"
   },
   "why": {
-    "badge": "Why Elbo Tours",
-    "title": "Your Trusted Partner in Morocco",
-    "points": [
-      "Professional English & French speaking drivers",
-      "Modern, air-conditioned vehicles",
-      "Fixed prices — no hidden fees",
-      "Personalised itineraries for your group",
-      "Instant confirmation by WhatsApp"
+    "eyebrow": "Why Elbo Tours",
+    "title": "Why should you travel with us?",
+    "body": "Testimonials tell one story. Here's ours.",
+    "cta": "Plan my trip",
+    "items": [
+      { "title": "Authenticity first", "body": "Local Berber guides who love sharing their culture, not just showing landmarks." },
+      { "title": "Completely private", "body": "Your group only — no strangers, no fixed schedules, no rushed stops." },
+      { "title": "Tailor-made for you", "body": "Every detail shaped around your pace, interests, and travel style." },
+      { "title": "Handpicked stays", "body": "Riads, desert camps and mountain lodges chosen for character and warmth." },
+      { "title": "Door-to-door service", "body": "We collect you from any arrival city and handle every transfer." },
+      { "title": "Sustainable travel", "body": "We support local communities and travel gently with nature and wildlife." }
     ]
   },
   "testimonials": {
-    "badge": "Customer Reviews",
-    "title": "What Travellers Say",
+    "eyebrow": "What travellers say",
+    "title": "Reviews from people like you",
+    "body": "Our guests' stories are the most honest proof of what we do.",
+    "read_more": "Read more reviews",
     "items": [
-      {
-        "text": "Reliable, professional, and very comfortable ride. We traveled from Agadir to Marrakech and everything went perfectly.",
-        "name": "David S.",
-        "country": "Germany"
-      },
-      {
-        "text": "Booking was simple and everything was exactly as promised. The driver was waiting with our name sign — very reassuring.",
-        "name": "Emily R.",
-        "country": "USA"
-      },
-      {
-        "text": "Top service from start to finish. The driver arrived on time, helped with luggage, and the car was spotless.",
-        "name": "Ahmed K.",
-        "country": "Morocco"
-      },
-      {
-        "text": "Elbo Tours made our trip so easy. Communication was perfect and the chauffeur was very kind and helpful.",
-        "name": "Sophie L.",
-        "country": "France"
-      },
-      {
-        "text": "The driver was punctual, professional, and very friendly. Transfer from Agadir to Taghazout was smooth and stress-free.",
-        "name": "John M.",
-        "country": "United Kingdom"
-      }
+      { "name": "Lars & Marja", "country": "Sweden", "tour": "Classic Morocco Tour", "text": "Exotic places we would never have found alone. A family atmosphere, charming riads, and dining experiences that were simply fantastic. Our best trip ever." },
+      { "name": "Anne", "country": "USA", "tour": "North Morocco Tour", "text": "Our guide's exceptional knowledge of history and culture, and his desire to share it with us, was truly extraordinary." },
+      { "name": "Toril & Andreas", "country": "Norway", "tour": "The Great South", "text": "Breakfast on top of a dune was truly amazing. Nothing but positive experiences — comfort, security, and a once-in-a-lifetime cultural encounter." }
     ]
+  },
+  "cta": {
+    "title": "Ready to explore Morocco?",
+    "sub": "Tell us your dates and we'll shape a trip that fits perfectly. No two journeys are the same.",
+    "book": "Book your tour",
+    "whatsapp": "WhatsApp us"
+  },
+  "about": {
+    "hero_title": "About Elbo Tours",
+    "hero_sub": "Your trusted private transport partner across Morocco since 2014.",
+    "intro": "Elbo Tours was founded in Marrakech with a simple mission: to provide travellers with safe, comfortable and affordable private transport throughout Morocco.",
+    "stats": [
+      { "icon": "🏆", "title": "10+ Years", "desc": "Serving travellers from across the world with premium transport services." },
+      { "icon": "🌍", "title": "3 Languages", "desc": "Our drivers speak English, French and Arabic for seamless communication." },
+      { "icon": "⭐", "title": "5,000+ Clients", "desc": "Thousands of happy travellers have trusted us with their Moroccan journey." }
+    ],
+    "cta_title": "Ready to travel with us?",
+    "cta_btn": "Get a Free Quote"
+  },
+  "transfers": {
+    "hero_title": "Morocco Transfer Services",
+    "hero_sub": "Getting Around Morocco From Anywhere — door-to-door, fixed price, no surprises.",
+    "badge": "Private Transfers · Morocco",
+    "quote_btn": "Get a Quote",
+    "whatsapp_btn": "WhatsApp Us",
+    "why": [
+      { "icon": "🔒", "title": "Fixed Prices", "desc": "No meters, no surprises. Pay what you agreed." },
+      { "icon": "⏱️", "title": "On Time", "desc": "Flight tracking for all airport pickups." },
+      { "icon": "🧳", "title": "Door to Door", "desc": "From your accommodation to your destination." },
+      { "icon": "🌍", "title": "All Morocco", "desc": "Any city, any airport, any time." }
+    ],
+    "how_badge": "Simple Process",
+    "how_title": "How It Works",
+    "steps": [
+      { "num": "01", "title": "Book Online or WhatsApp", "desc": "Send us your travel details — date, time, pickup/dropoff, number of passengers." },
+      { "num": "02", "title": "Get Instant Confirmation", "desc": "We confirm your transfer within minutes with driver details and fixed price." },
+      { "num": "03", "title": "We Track Your Flight", "desc": "For airport pickups, we monitor your flight in real-time and adjust if delayed." },
+      { "num": "04", "title": "Comfortable Journey", "desc": "Your driver meets you with a name sign. Enjoy a clean, air-conditioned vehicle." }
+    ],
+    "airport_badge": "Airport Pickups",
+    "airport_title": "Airport Transfer Prices",
+    "airport_sub": "Meet & greet, name sign, flight tracking — all included at every Moroccan airport.",
+    "per_vehicle": "per vehicle",
+    "popular": "Popular",
+    "city_badge": "City Transfers",
+    "city_title": "City-to-City Routes",
+    "city_sub": "All prices are per vehicle. Minivan and minibus also available for groups.",
+    "book_route": "Book This Route",
+    "custom_route": "Don't see your route? Ask us for a custom quote →",
+    "cta_title": "Ready to Travel?",
+    "cta_sub": "Book your transfer today. Fast WhatsApp confirmation, professional drivers.",
+    "book_now": "Book Now",
+    "whatsapp": "WhatsApp Us"
+  },
+  "fleet": {
+    "hero_title": "Our Fleet",
+    "hero_sub": "Modern, air-conditioned vehicles for every group size.",
+    "book_btn": "Book →",
+    "passengers": "passengers",
+    "bags": "bags",
+    "vehicles": [
+      { "name": "Standard Car", "capacity": "Up to 3 passengers", "bags": "3 bags", "desc": "Comfortable sedan ideal for individuals, couples and small families. Airport transfers and city rides." },
+      { "name": "Minivan", "capacity": "Up to 7 passengers", "bags": "7 bags", "desc": "Spacious, modern minivan perfect for families and small groups touring Morocco. Air-conditioned, generous luggage space, and a smooth ride for long desert or mountain routes." },
+      { "name": "Minibus", "capacity": "Up to 17 passengers", "bags": "17 bags", "desc": "Our largest vehicle, ideal for group tours, corporate travel and large family trips across Morocco." }
+    ]
+  },
+  "tours_page": {
+    "badge": "Explore Morocco",
+    "title": "Tours & Excursions",
+    "sub": "Hand-picked experiences across Morocco — from desert adventures to city discoveries and seamless transfers.",
+    "all": "All",
+    "count_single": "tour",
+    "count_plural": "tours",
+    "count_in": "in",
+    "count_available": "available",
+    "no_tours_title": "No tours in this category yet",
+    "no_tours_sub": "Check back soon or contact us for a custom itinerary.",
+    "contact_link": "contact us",
+    "starting_from": "Starting from",
+    "featured_badge": "Featured",
+    "cta_title": "Can't find what you're looking for?",
+    "cta_sub": "We create custom itineraries for any group size. Just tell us your dream trip.",
+    "cta_btn": "Request Custom Tour",
+    "whatsapp": "WhatsApp Us"
+  },
+  "tour_detail": {
+    "home": "Home",
+    "tours": "Tours",
+    "overview": "Overview",
+    "highlights": "Tour Highlights",
+    "itinerary": "Day-by-Day Itinerary",
+    "included": "What's Included",
+    "included_label": "Included",
+    "excluded_label": "Not included",
+    "ready_book": "Ready to book?",
+    "request_quote": "Request a Quote",
+    "whatsapp": "WhatsApp Us",
+    "no_obligation": "Fast response · No obligation",
+    "departs_from": "Departs from",
+    "enquire_dates": "Enquire about dates",
+    "tour_details": "Tour details",
+    "private_group": "Private group only",
+    "any_date": "Any departure date",
+    "customisable": "Fully customisable",
+    "you_may_like": "You might also like"
   },
   "contact": {
     "badge": "Get In Touch",
@@ -132,6 +196,8 @@
     "destination": "Destination or service",
     "message": "Tell us about your trip",
     "send": "Send Message",
+    "sent_title": "Message sent!",
+    "sent_sub": "We will get back to you shortly.",
     "whatsapp": "Chat on WhatsApp",
     "info": {
       "phone": "+212 665-889258",
@@ -142,6 +208,7 @@
   },
   "footer": {
     "desc": "Morocco-based private transport specialists. Comfortable, reliable and personalised transfers for every journey.",
-    "copyright": "© 2025 Elbo Tours. All rights reserved."
+    "copyright": "© 2026 Elbo Tours. All rights reserved."
   }
 }
+

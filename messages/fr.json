@@ -1,7 +1,8 @@
-{
+﻿{
   "nav": {
     "home": "Accueil",
     "tours": "Circuits",
+    "transfers": "Transferts",
     "fleet": "Notre Flotte",
     "about": "À propos",
     "contact": "Contact",
@@ -11,16 +12,18 @@
   "hero": {
     "badge": "Circuits Privés au Maroc",
     "slides": [
+      { "headline": "Découvrez le Maroc", "sub": "Circuits privés sur mesure au départ de Marrakech", "cta": "Explorer les circuits" },
+      { "headline": "Voyagez Confortablement,\nAvec Notre Flotte Moderne", "sub": "Vans spacieux, chauffeurs professionnels — chaque trajet sûr, fluide et ponctuel", "cta": "Notre Flotte" },
       { "headline": "Découvrez l'Essence\ndu Maroc", "sub": "Circuits privés sur mesure au départ de Marrakech", "cta": "Explorer les circuits" },
       { "headline": "Nuits au Sahara\nSous un Million d'Étoiles", "sub": "Camps de glamping, treks à chameau, dunes au lever du soleil", "cta": "Circuits Désert" },
       { "headline": "Villes Impériales,\nHistoires Intemporelles", "sub": "Marrakech · Fès · Meknès · Casablanca", "cta": "Circuits Culturels" }
     ]
   },
   "stats": [
-    { "label": "Années d'expérience" },
-    { "label": "Circuits sélectionnés" },
-    { "label": "Langues parlées" },
-    { "label": "Voyage unique : le vôtre" }
+    { "num": "20+", "label": "Années d'expérience" },
+    { "num": "24", "label": "Circuits sélectionnés" },
+    { "num": "7", "label": "Langues parlées" },
+    { "num": "1", "label": "Voyage unique : le vôtre" }
   ],
   "types": {
     "eyebrow": "Explorer par intérêt",
@@ -36,7 +39,7 @@
       "Nature": "Nature",
       "Luxury": "Luxe",
       "Family": "Famille",
-      "4×4 & Moto": "4×4 & Moto",
+      "4x4 & Moto": "4x4 & Moto",
       "Birdwatch": "Ornithologie",
       "Yoga": "Yoga",
       "City Break": "Escapade urbaine"
@@ -47,18 +50,7 @@
     "title": "Circuits Phares",
     "body": "Nos itinéraires privés les plus demandés — entièrement personnalisables selon vos dates et la taille de votre groupe.",
     "view_itinerary": "Voir l'itinéraire",
-    "browse_all": "Voir tous les circuits",
-    "tours": [
-      { "days": "10-14 jours", "title": "Grand Tour du Maroc", "desc": "L'expérience marocaine ultime : dunes dorées du Sahara, médinas bleues de Fès et Chefchaouen, sommets enneigés de l'Atlas et côte atlantique d'Essaouira." },
-      { "days": "7-11 jours", "title": "Le Grand Sud", "desc": "Traversez le Haut Atlas via Tizi n'Tichka, explorez la kasbah UNESCO d'Aït Benhaddou et arrivez aux dunes de Merzouga pour un trek à chameau sous les étoiles." },
-      { "days": "3-6 jours", "title": "Marrakech à Fès via le Désert", "desc": "Traversez l'Atlas, découvrez la kasbah d'Aït Benhaddou, la vallée du Ziz et les dunes dorées avant d'arriver dans l'ancienne médina de Fès." },
-      { "days": "7-10 jours", "title": "Tour du Nord du Maroc", "desc": "Découvrez les ruelles indigo de Chefchaouen, la gloire romaine de Volubilis, le port blanc d'Asilah et les souks de Fès et Meknès." },
-      { "days": "6-9 jours", "title": "Tour des Villes Impériales", "desc": "Marchez sur les traces des sultans à travers les quatre capitales royales du Maroc : Fès, Meknès, Casablanca, Rabat et la magie rose de Marrakech." },
-      { "days": "2-3 jours", "title": "Évasion Atlas et Cascades", "desc": "Visitez les spectaculaires cascades d'Ouzoud, les plus hautes d'Afrique du Nord. Nagez dans des bassins émeraude dans un village berbère." },
-      { "days": "1-2 jours", "title": "Excursion Vallée de l'Ourika", "desc": "À 30 minutes de Marrakech, la vallée de l'Ourika s'ouvre sur un monde berbère de rivières et de champs de safran en terrasses." },
-      { "days": "1-3 jours", "title": "Aventure Quad et Buggy", "desc": "Traversez les plaines volcaniques du désert d'Agafay en buggy ou quad. Combinez avec une balade à chameau et un dîner sous les étoiles." },
-      { "days": "2-3 jours", "title": "Évasion Atlantique à Essaouira", "desc": "Une médina classée UNESCO, des remparts portugais, un marché aux poissons animé et l'une des meilleures plages de kitesurf d'Afrique." }
-    ]
+    "browse_all": "Voir tous les circuits"
   },
   "quote": {
     "text": "« Nous aimons partager avec nos hôtes la paix et le mode de vie marocain — chaque voyage est une chance de découvrir quelque chose d'authentique. »",
@@ -92,26 +84,107 @@
   "cta": {
     "title": "Prêt à explorer le Maroc ?",
     "sub": "Dites-nous vos dates et nous créerons un voyage parfaitement adapté. Pas deux voyages identiques.",
-    "book": "Réserver votre circuit"
+    "book": "Réserver votre circuit",
+    "whatsapp": "WhatsApp"
   },
-  "services": {
-    "badge": "Ce Que Nous Offrons",
-    "title": "Nos Services",
-    "items": [
-      { "icon": "plane", "title": "Transferts Aéroport", "desc": "Prises en charge ponctuelles à prix fixe dans tous les aéroports marocains. Suivi de vol inclus." },
-      { "icon": "car", "title": "Transferts Privés", "desc": "Transferts porte-à-porte entre les villes marocaines en véhicules climatisés et modernes." },
-      { "icon": "hotel", "title": "Navette Hôtel", "desc": "Connexions sans souci entre votre hôtel et toute destination au Maroc." },
-      { "icon": "compass", "title": "Excursions Guidées", "desc": "Circuits à la journée et multi-jours vers le Sahara, l'Atlas, Essaouira et plus encore." }
-    ]
+  "about": {
+    "hero_title": "À propos d'Elbo Tours",
+    "hero_sub": "Votre partenaire de transport privé de confiance à travers le Maroc depuis 2014.",
+    "intro": "Elbo Tours a été fondé à Marrakech avec une mission simple : offrir aux voyageurs un transport privé sûr, confortable et abordable à travers tout le Maroc.",
+    "stats": [
+      { "icon": "🏆", "title": "10+ Ans", "desc": "Au service des voyageurs du monde entier avec des prestations de transport premium." },
+      { "icon": "🌍", "title": "3 Langues", "desc": "Nos chauffeurs parlent anglais, français et arabe pour une communication sans barrière." },
+      { "icon": "⭐", "title": "5 000+ Clients", "desc": "Des milliers de voyageurs satisfaits nous ont confié leur séjour au Maroc." }
+    ],
+    "cta_title": "Prêt à voyager avec nous ?",
+    "cta_btn": "Obtenir un devis gratuit"
+  },
+  "transfers": {
+    "hero_title": "Services de Transfert au Maroc",
+    "hero_sub": "Voyagez partout au Maroc — porte à porte, prix fixe, sans surprises.",
+    "badge": "Transferts Privés · Maroc",
+    "quote_btn": "Obtenir un devis",
+    "whatsapp_btn": "WhatsApp",
+    "why": [
+      { "icon": "🔒", "title": "Prix Fixes", "desc": "Pas de compteur, pas de surprises. Payez ce qui a été convenu." },
+      { "icon": "⏱️", "title": "Ponctuel", "desc": "Suivi de vol pour tous les transferts aéroport." },
+      { "icon": "🧳", "title": "Porte à Porte", "desc": "De votre hébergement à votre destination." },
+      { "icon": "🌍", "title": "Tout le Maroc", "desc": "N'importe quelle ville, n'importe quel aéroport, à toute heure." }
+    ],
+    "how_badge": "Processus Simple",
+    "how_title": "Comment ça marche",
+    "steps": [
+      { "num": "01", "title": "Réservez en ligne ou par WhatsApp", "desc": "Envoyez-nous vos détails de voyage — date, heure, lieu de prise en charge/dépose, nombre de passagers." },
+      { "num": "02", "title": "Confirmation instantanée", "desc": "Nous confirmons votre transfert en quelques minutes avec les coordonnées du chauffeur et le prix fixe." },
+      { "num": "03", "title": "Suivi de votre vol", "desc": "Pour les transferts aéroport, nous surveillons votre vol en temps réel et nous adaptons en cas de retard." },
+      { "num": "04", "title": "Voyage confortable", "desc": "Votre chauffeur vous accueille avec une pancarte à votre nom. Profitez d'un véhicule propre et climatisé." }
+    ],
+    "airport_badge": "Transferts Aéroport",
+    "airport_title": "Tarifs Transfert Aéroport",
+    "airport_sub": "Accueil personnalisé, pancarte nominative, suivi de vol — inclus dans tous les aéroports marocains.",
+    "per_vehicle": "par véhicule",
+    "popular": "Populaire",
+    "city_badge": "Transferts Ville",
+    "city_title": "Trajets Ville à Ville",
+    "city_sub": "Tous les prix sont par véhicule. Minivan et minibus également disponibles pour les groupes.",
+    "book_route": "Réserver ce trajet",
+    "custom_route": "Vous ne trouvez pas votre trajet ? Demandez un devis personnalisé →",
+    "cta_title": "Prêt à Voyager ?",
+    "cta_sub": "Réservez votre transfert aujourd'hui. Confirmation rapide par WhatsApp, chauffeurs professionnels.",
+    "book_now": "Réserver",
+    "whatsapp": "WhatsApp"
   },
   "fleet": {
-    "badge": "Voyagez Confortablement",
-    "title": "Notre Flotte",
-    "items": [
-      { "name": "Voiture Standard", "capacity": "jusqu'à 3 passagers", "img": "/fleet/standard.png" },
-      { "name": "Minivan", "capacity": "jusqu'à 7 passagers", "img": "/fleet/minivan.png" },
-      { "name": "Minibus", "capacity": "jusqu'à 17 passagers", "img": "/fleet/minibus.png" }
+    "hero_title": "Notre Flotte",
+    "hero_sub": "Véhicules modernes et climatisés pour toutes les tailles de groupe.",
+    "book_btn": "Réserver →",
+    "passengers": "passagers",
+    "bags": "bagages",
+    "vehicles": [
+      { "name": "Voiture Standard", "capacity": "Jusqu'à 3 passagers", "bags": "3 bagages", "desc": "Berline confortable idéale pour les individuels, les couples et les petites familles. Transferts aéroport et trajets en ville." },
+      { "name": "Minivan", "capacity": "Jusqu'à 7 passagers", "bags": "7 bagages", "desc": "Minivan spacieux et moderne, parfait pour les familles et les petits groupes en circuit au Maroc. Climatisé, grand coffre et trajet fluide pour les longues routes désert ou montagne." },
+      { "name": "Minibus", "capacity": "Jusqu'à 17 passagers", "bags": "17 bagages", "desc": "Notre plus grand véhicule, idéal pour les circuits de groupe, les déplacements professionnels et les grands voyages en famille à travers le Maroc." }
     ]
+  },
+  "tours_page": {
+    "badge": "Explorer le Maroc",
+    "title": "Circuits & Excursions",
+    "sub": "Des expériences soigneusement sélectionnées à travers le Maroc — des aventures désert aux découvertes urbaines.",
+    "all": "Tous",
+    "count_single": "circuit",
+    "count_plural": "circuits",
+    "count_in": "en",
+    "count_available": "disponibles",
+    "no_tours_title": "Aucun circuit dans cette catégorie pour l'instant",
+    "no_tours_sub": "Revenez bientôt ou contactez-nous pour un itinéraire personnalisé.",
+    "contact_link": "contactez-nous",
+    "starting_from": "À partir de",
+    "featured_badge": "En vedette",
+    "cta_title": "Vous ne trouvez pas ce que vous cherchez ?",
+    "cta_sub": "Nous créons des itinéraires sur mesure pour toutes les tailles de groupe.",
+    "cta_btn": "Demander un circuit personnalisé",
+    "whatsapp": "WhatsApp"
+  },
+  "tour_detail": {
+    "home": "Accueil",
+    "tours": "Circuits",
+    "overview": "Aperçu",
+    "highlights": "Points forts du circuit",
+    "itinerary": "Itinéraire jour par jour",
+    "included": "Ce qui est inclus",
+    "included_label": "Inclus",
+    "excluded_label": "Non inclus",
+    "ready_book": "Prêt à réserver ?",
+    "request_quote": "Demander un devis",
+    "whatsapp": "WhatsApp",
+    "no_obligation": "Réponse rapide · Sans engagement",
+    "departs_from": "Départ depuis",
+    "enquire_dates": "Renseigner les dates",
+    "tour_details": "Détails du circuit",
+    "private_group": "Groupe privé uniquement",
+    "any_date": "Toute date de départ",
+    "customisable": "Entièrement personnalisable",
+    "you_may_like": "Vous aimerez peut-être aussi"
   },
   "contact": {
     "badge": "Contactez-nous",
@@ -123,16 +196,19 @@
     "destination": "Destination ou service",
     "message": "Parlez-nous de votre voyage",
     "send": "Envoyer le message",
+    "sent_title": "Message envoyé !",
+    "sent_sub": "Nous vous répondrons dans les plus brefs délais.",
     "whatsapp": "Chat WhatsApp",
     "info": {
       "phone": "+212 665-889258",
       "email": "contact@elbo-tours.com",
       "address": "Marrakech, Maroc",
-      "hours": "7j/7, 8h — 21h"
+      "hours": "7j/7, 8h – 21h"
     }
   },
   "footer": {
     "desc": "Spécialistes marocains du transport privé. Transferts confortables, fiables et personnalisés pour chaque voyage.",
-    "copyright": "© 2025 Elbo Tours. Tous droits réservés."
+    "copyright": "© 2026 Elbo Tours. Tous droits réservés."
   }
 }
+

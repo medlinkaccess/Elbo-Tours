@@ -1,0 +1,449 @@
+// prisma/schema.prisma
+// Elbo Tours — Full Database Schema
+// Database: Neon PostgreSQL (neon-citron-curtain)
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Locale {
+  en
+  fr
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum VehicleType {
+  SEDAN
+  MINIVAN
+  MINIBUS
+}
+
+enum TourCategory {
+  DAY_TRIP
+  MULTI_DAY
+  DESERT
+  MOUNTAIN
+  CULTURAL
+  PRIVATE
+}
+
+enum TransferType {
+  AIRPORT
+  HOTEL
+  CITY
+  INTER_CITY
+}
+
+enum ActivityCategory {
+  ADVENTURE
+  CULTURAL
+  FOOD
+  WELLNESS
+  FAMILY
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ─────────────────────────────────────────────
+// DESTINATIONS
+// ─────────────────────────────────────────────
+
+model Destination {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  featured    Boolean  @default(false)
+  imageUrl    String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  translations DestinationTranslation[]
+  tours        Tour[]
+  activities   Activity[]
+  transfers    Transfer[]
+  blogs        Blog[]
+
+  @@map("destinations")
+}
+
+model DestinationTranslation {
+  id            String      @id @default(cuid())
+  destinationId String
+  locale        Locale
+  name          String
+  description   String?
+  metaTitle     String?
+  metaDesc      String?
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@unique([destinationId, locale])
+  @@map("destination_translations")
+}
+
+// ─────────────────────────────────────────────
+// TOURS
+// ─────────────────────────────────────────────
+
+model Tour {
+  id            String       @id @default(cuid())
+  slug          String       @unique
+  category      TourCategory
+  destinationId String?
+  priceFrom     Float
+  currency      String       @default("EUR")
+  durationDays  Int          @default(1)
+  durationText  String?      // e.g. "2 days / 1 night"
+  maxGroupSize  Int?
+  minGroupSize  Int          @default(1)
+  featured      Boolean      @default(false)
+  active        Boolean      @default(true)
+  sortOrder     Int          @default(0)
+  imageUrl      String?
+  gallery       String[]     @default([])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  destination  Destination?        @relation(fields: [destinationId], references: [id])
+  translations TourTranslation[]
+  bookings     Booking[]
+  reviews      Review[]
+  highlights   TourHighlight[]
+  inclusions   TourInclusion[]
+
+  @@map("tours")
+}
+
+model TourTranslation {
+  id          String @id @default(cuid())
+  tourId      String
+  locale      Locale
+  title       String
+  description String
+  itinerary   String? // Markdown or JSON string
+  metaTitle   String?
+  metaDesc    String?
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, locale])
+  @@map("tour_translations")
+}
+
+model TourHighlight {
+  id     String @id @default(cuid())
+  tourId String
+  locale Locale
+  text   String
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_highlights")
+}
+
+model TourInclusion {
+  id       String  @id @default(cuid())
+  tourId   String
+  locale   Locale
+  text     String
+  included Boolean @default(true) // true = included, false = excluded
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_inclusions")
+}
+
+// ─────────────────────────────────────────────
+// ACTIVITIES
+// ─────────────────────────────────────────────
+
+model Activity {
+  id            String           @id @default(cuid())
+  slug          String           @unique
+  category      ActivityCategory
+  destinationId String?
+  priceFrom     Float
+  currency      String           @default("EUR")
+  durationHours Float?
+  durationText  String?
+  maxGroupSize  Int?
+  featured      Boolean          @default(false)
+  active        Boolean          @default(true)
+  sortOrder     Int              @default(0)
+  imageUrl      String?
+  gallery       String[]         @default([])
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  destination  Destination?          @relation(fields: [destinationId], references: [id])
+  translations ActivityTranslation[]
+  bookings     Booking[]
+  reviews      Review[]
+
+  @@map("activities")
+}
+
+model ActivityTranslation {
+  id          String @id @default(cuid())
+  activityId  String
+  locale      Locale
+  title       String
+  description String
+  metaTitle   String?
+  metaDesc    String?
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, locale])
+  @@map("activity_translations")
+}
+
+// ─────────────────────────────────────────────
+// TRANSFERS
+// ─────────────────────────────────────────────
+
+model Transfer {
+  id            String       @id @default(cuid())
+  slug          String       @unique
+  type          TransferType
+  destinationId String?
+  fromLocation  String       // e.g. "Marrakech Menara Airport (RAK)"
+  toLocation    String?      // null = flexible/door-to-door
+  priceFrom     Float
+  currency      String       @default("EUR")
+  vehicleTypes  VehicleType[]
+  flightTracking Boolean     @default(false)
+  meetAndGreet   Boolean     @default(false)
+  featured      Boolean      @default(false)
+  active        Boolean      @default(true)
+  sortOrder     Int          @default(0)
+  imageUrl      String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  destination  Destination?          @relation(fields: [destinationId], references: [id])
+  translations TransferTranslation[]
+  bookings     Booking[]
+
+  @@map("transfers")
+}
+
+model TransferTranslation {
+  id          String @id @default(cuid())
+  transferId  String
+  locale      Locale
+  title       String
+  description String
+  metaTitle   String?
+  metaDesc    String?
+
+  transfer Transfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+  @@unique([transferId, locale])
+  @@map("transfer_translations")
+}
+
+// ─────────────────────────────────────────────
+// BOOKINGS
+// ─────────────────────────────────────────────
+
+model Booking {
+  id           String        @id @default(cuid())
+  reference    String        @unique @default(cuid()) // human-readable ref like ELBO-XXXX
+  status       BookingStatus @default(PENDING)
+
+  // What was booked (at least one must be set)
+  tourId       String?
+  activityId   String?
+  transferId   String?
+
+  // Guest info
+  guestName    String
+  guestEmail   String
+  guestPhone   String?
+  guestCount   Int           @default(1)
+
+  // Trip details
+  travelDate   DateTime
+  pickupTime   String?
+  pickupLocation String?
+  specialRequests String?
+
+  // Pricing snapshot at time of booking
+  totalPrice   Float?
+  currency     String        @default("EUR")
+
+  // Admin notes
+  notes        String?
+  confirmedAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  tour       Tour?       @relation(fields: [tourId], references: [id])
+  activity   Activity?   @relation(fields: [activityId], references: [id])
+  transfer   Transfer?   @relation(fields: [transferId], references: [id])
+
+  @@map("bookings")
+}
+
+// ─────────────────────────────────────────────
+// REVIEWS
+// ─────────────────────────────────────────────
+
+model Review {
+  id         String       @id @default(cuid())
+  status     ReviewStatus @default(PENDING)
+  rating     Int          // 1–5
+  tourId     String?
+  activityId String?
+  authorName String
+  authorCountry String?
+  body       String
+  source     String?      // "google", "tripadvisor", "direct"
+  sourceUrl  String?
+  featured   Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  tour     Tour?     @relation(fields: [tourId], references: [id])
+  activity Activity? @relation(fields: [activityId], references: [id])
+
+  @@map("reviews")
+}
+
+// ─────────────────────────────────────────────
+// BLOG
+// ─────────────────────────────────────────────
+
+model Blog {
+  id            String     @id @default(cuid())
+  slug          String     @unique
+  status        BlogStatus @default(DRAFT)
+  destinationId String?
+  imageUrl      String?
+  readingMins   Int        @default(5)
+  featured      Boolean    @default(false)
+  publishedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  destination  Destination?      @relation(fields: [destinationId], references: [id])
+  translations BlogTranslation[]
+
+  @@map("blogs")
+}
+
+model BlogTranslation {
+  id        String @id @default(cuid())
+  blogId    String
+  locale    Locale
+  title     String
+  excerpt   String?
+  content   String  // Markdown
+  metaTitle String?
+  metaDesc  String?
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([blogId, locale])
+  @@map("blog_translations")
+}
+
+// ─────────────────────────────────────────────
+// FAQ
+// ─────────────────────────────────────────────
+
+model Faq {
+  id        String   @id @default(cuid())
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  translations FaqTranslation[]
+
+  @@map("faqs")
+}
+
+model FaqTranslation {
+  id       String @id @default(cuid())
+  faqId    String
+  locale   Locale
+  question String
+  answer   String
+
+  faq Faq @relation(fields: [faqId], references: [id], onDelete: Cascade)
+
+  @@unique([faqId, locale])
+  @@map("faq_translations")
+}
+
+// ─────────────────────────────────────────────
+// MEDIA
+// ─────────────────────────────────────────────
+
+model Media {
+  id          String   @id @default(cuid())
+  url         String   // Cloudinary URL
+  publicId    String   @unique // Cloudinary public_id
+  altText     String?
+  mimeType    String?
+  width       Int?
+  height      Int?
+  sizeBytes   Int?
+  folder      String?  // e.g. "tours", "fleet", "blog"
+  createdAt   DateTime @default(now())
+
+  @@map("media")
+}
+
+// ─────────────────────────────────────────────
+// ADMIN USERS
+// ─────────────────────────────────────────────
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  lastLoginAt  DateTime?
+
+  @@map("admin_users")
+}
+
+// ─────────────────────────────────────────────
+// SITE SETTINGS (key-value store)
+// ─────────────────────────────────────────────
+
+model SiteSetting {
+  key       String   @id  // e.g. "phone", "whatsapp", "email", "address_en", "address_fr"
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
