@@ -12,37 +12,33 @@ const CATEGORIES = [
   'Desert Tours',
   'City Tours',
   'Multi-day Tours',
-  'Airport Transfers',
   'Custom/Private Tours',
 ];
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'All': '🗺️',
-  'Day Trips': '☀️',
+  'All': '🗺️',
+  'Day Trips': '☀️',
   'Desert Tours': '🏜️',
   'City Tours': '🏙️',
-  'Multi-day Tours': '🌍',
-  'Airport Transfers': '✈️',
-  'Custom/Private Tours': '🚐',
+  'Multi-day Tours': '🌍',
+  'Custom/Private Tours': '🚐',
 };
 
 // Fallback gradient colors per category
 const CATEGORY_GRADIENTS: Record<string, string> = {
   'Day Trips': 'from-amber-100 to-orange-100',
-  'Desert Tours': '🏜️',
+  'Desert Tours': 'from-yellow-100 to-orange-200',
   'City Tours': 'from-blue-100 to-indigo-100',
   'Multi-day Tours': 'from-emerald-100 to-teal-100',
-  'Airport Transfers': 'from-sky-100 to-blue-100',
   'Custom/Private Tours': 'from-purple-100 to-pink-100',
 };
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  'Day Trips': '☀️',
+  'Day Trips': '☀️',
   'Desert Tours': '🏜️',
   'City Tours': '🏙️',
-  'Multi-day Tours': '🌍',
-  'Airport Transfers': '✈️',
-  'Custom/Private Tours': '🚐',
+  'Multi-day Tours': '🌍',
+  'Custom/Private Tours': '🚐',
 };
 
 interface Tour {
@@ -70,7 +66,7 @@ export default function ToursPage() {
       .then(r => r.json())
       .then(data => { setTours(data); setLoading(false); })
       .catch(() => setLoading(false));
-  }, []);
+  }, [locale]);
 
   const filtered = active === 'All' ? tours : tours.filter(t => t.category === active);
 
@@ -83,13 +79,13 @@ export default function ToursPage() {
           <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at 20% 50%, #C8960C 0%, transparent 60%), radial-gradient(circle at 80% 50%, #C8440A 0%, transparent 60%)'}} />
           <div className="relative z-10 text-center max-w-3xl mx-auto px-4">
             <span className="inline-flex items-center gap-2 bg-[#C8960C]/20 border border-[#C8960C]/40 text-[#F0C040] text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-              🗺️ Explore Morocco
+              🗺️ Explore Morocco
             </span>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>
               Tours & Excursions
             </h1>
             <p className="text-gray-300 text-lg max-w-xl mx-auto">
-              Hand-picked experiences across Morocco â€” from desert adventures to city discoveries and seamless transfers.
+              Hand-picked experiences across Morocco — from desert adventures to city discoveries and seamless transfers.
             </p>
           </div>
         </section>
@@ -162,7 +158,7 @@ export default function ToursPage() {
             <p className="text-gray-400 mb-8">We create custom itineraries for any group size. Just tell us your dream trip.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href={`/${locale}/contact`} className="btn-gold px-8 py-4 text-base">
-                Request Custom Tour â†’
+                Request Custom Tour →
               </Link>
               <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer"
                 className="btn-outline px-8 py-4 text-base">
@@ -182,7 +178,7 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
   const title = locale === 'fr' && tour.titleFr ? tour.titleFr : tour.title;
   const desc = locale === 'fr' && tour.descFr ? tour.descFr : tour.desc;
   const gradient = CATEGORY_GRADIENTS[tour.category] || 'from-gray-100 to-gray-200';
-  const emoji = CATEGORY_EMOJI[tour.category] || '🗺️';
+  const emoji = CATEGORY_EMOJI[tour.category] || '🗺️';
 
   const waMsg = encodeURIComponent(`Hi! I'm interested in: ${tour.title} (${tour.price}). Can you give me more info?`);
 
@@ -199,7 +195,7 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
         )}
         {tour.featured && (
           <span className="absolute top-3 left-3 bg-[#C8960C] text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
-            â­ Featured
+            ⭐ Featured
           </span>
         )}
         <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-[#1A1A2E] text-xs font-semibold px-2.5 py-1 rounded-full">
@@ -227,7 +223,7 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
             <span className="font-bold text-[#C8960C] text-lg">{tour.price}</span>
           </div>
           <div className="flex gap-2">
-            <a
+            
               href={`https://wa.me/212665889258?text=${waMsg}`}
               target="_blank" rel="noopener noreferrer"
               className="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center justify-center transition-colors"
@@ -238,7 +234,7 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
               </svg>
             </a>
             <Link href={`/${locale}/tours/${tour.id}`} className="btn-gold !py-2 !px-4 text-sm">
-              View â†’
+              View →
             </Link>
           </div>
         </div>
@@ -246,8 +242,3 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
     </div>
   );
 }
-
-
-
-
-
