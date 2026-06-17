@@ -17,7 +17,6 @@ const CAT_REVERSE: Record<string, string> = {
   'City Tours': 'CULTURAL',
   'Custom/Private Tours': 'PRIVATE',
   'Airport Transfers': 'DAY_TRIP',
-  'City Tours': 'CULTURAL',
 }
 
 function isAuthed(req: NextRequest) {
@@ -144,6 +143,9 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to delete tour' }, { status: 500 })
   }
 }
+
+
+
 
 
 
