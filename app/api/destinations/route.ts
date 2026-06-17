@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       orderBy: [{ sortOrder: 'asc' }, { createdAt: 'desc' }],
     })
 
-    const result = destinations.map(($1: any) => ({
+    const result = destinations.map((d: any) => ({
       id: d.id,
       slug: d.slug,
       featured: d.featured,
@@ -88,4 +88,5 @@ function isAuthed(req: NextRequest) {
 function unauthorized() {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 }
+
 
