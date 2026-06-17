@@ -136,7 +136,7 @@ export default function ToursPage() {
               </div>
             ) : filtered.length === 0 ? (
               <div className="text-center py-24">
-                <div className="text-6xl mb-4">ðŸ”</div>
+                <div className="text-6xl mb-4">🗺️</div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">No tours in this category yet</h3>
                 <p className="text-gray-400">Check back soon or <Link href={`/${locale}/contact`} className="text-[#C8960C] underline">contact us</Link> for a custom itinerary.</p>
               </div>
@@ -166,7 +166,7 @@ export default function ToursPage() {
               </Link>
               <a href="https://wa.me/212665889258" target="_blank" rel="noopener noreferrer"
                 className="btn-outline px-8 py-4 text-base">
-                ðŸ’¬ WhatsApp Us
+                💬 WhatsApp Us
               </a>
             </div>
           </div>
@@ -211,10 +211,10 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
       <div className="p-6 flex flex-col flex-1">
         <div className="flex gap-2 mb-3 flex-wrap">
           <span className="text-xs bg-[#FEF3C7] text-[#92400E] px-2.5 py-1 rounded-full font-medium">
-            ðŸ• {tour.duration}
+            🕐 {tour.duration}
           </span>
           <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
-            ðŸ“ {tour.from}
+            📍 {tour.from}
           </span>
         </div>
 
