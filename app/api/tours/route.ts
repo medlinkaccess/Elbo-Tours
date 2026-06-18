@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
 
     const rows = await sql.query(
       `SELECT t.id, t.slug, t."imageUrl" as image, t."priceFrom", t."durationText",
-              t.featured, t.active, t.category, t."sortOrder",
+              t.featured, t.active, t.category, t."sortOrder", t."priceDisplay",
               tt.title, tt.description as desc,
               ttfr.title as "titleFr", ttfr.description as "descFr"
        FROM tours t
@@ -58,6 +58,7 @@ export async function GET(req: NextRequest) {
       priceFrom: t.priceFrom,
       featured: t.featured,
       active: t.active,
+      priceDisplay: t.priceDisplay || '',
     }))
 
     return NextResponse.json(result)
