@@ -164,7 +164,7 @@ export default function TransfersPage() {
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <span className="text-xs text-gray-400">{t('per_vehicle')}</span>
-                          <span className="font-bold text-[#C8960C] text-lg">{airport.price}</span>
+                          <span className="font-bold text-[#C8960C] text-lg">{airport.priceFrom > 0 ? `From €${airport.priceFrom}` : "Ask for price"}</span>
                         </div>
                         <div className="flex gap-2">
                           <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
@@ -200,7 +200,7 @@ export default function TransfersPage() {
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <span className="text-xs text-gray-400">{t('per_vehicle')}</span>
-                          <span className="font-bold text-[#C8960C] text-lg">{airport.price}</span>
+                          <span className="font-bold text-[#C8960C] text-lg">{airport.priceFrom > 0 ? `From €${airport.priceFrom}` : "Ask for price"}</span>
                         </div>
                         <div className="flex gap-2">
                           <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
@@ -247,7 +247,7 @@ export default function TransfersPage() {
                         </div>
                       </div>
                       <div>
-                        <div className="text-center font-bold text-[#C8960C] text-xl mb-4">{route.price}</div>
+                        <div className="text-center font-bold text-[#C8960C] text-xl mb-4">{route.priceFrom > 0 ? `From €${route.priceFrom}` : "Ask for price"}</div>
                         <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
                           className="w-full block bg-[#C8960C] hover:bg-[#F0C040] text-white hover:text-[#1A1A2E] text-sm font-semibold py-2 rounded-lg text-center transition-colors">
                           {t('book_route')}
