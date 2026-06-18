@@ -41,12 +41,12 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-// · Generic Form Row helpers ·
+// Â· Generic Form Row helpers Â·
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return <div><label style={lbl}>{label}</label>{children}</div>;
 }
 
-// · Tour Form ·
+// Â· Tour Form Â·
 function TourForm({ tour, onSave, onCancel }: { tour?: Tour | null; onSave: () => void; onCancel: () => void }) {
   const [form, setForm] = useState({
     title: tour?.title || '', titleFr: tour?.titleFr || '',
@@ -91,7 +91,7 @@ function TourForm({ tour, onSave, onCancel }: { tour?: Tour | null; onSave: () =
   );
 }
 
-// · Fleet Form ·
+// Â· Fleet Form Â·
 function FleetForm({ vehicle, onSave, onCancel }: { vehicle?: any; onSave: () => void; onCancel: () => void }) {
   const [form, setForm] = useState({
     name: vehicle?.name || '', nameFr: vehicle?.nameFr || '',
@@ -131,7 +131,7 @@ function FleetForm({ vehicle, onSave, onCancel }: { vehicle?: any; onSave: () =>
   );
 }
 
-// · Blog Form ·
+// Â· Blog Form Â·
 function BlogForm({ post, onSave, onCancel }: { post?: any; onSave: () => void; onCancel: () => void }) {
   const [form, setForm] = useState({
     title: post?.title || '', titleFr: post?.titleFr || '',
@@ -172,7 +172,7 @@ function BlogForm({ post, onSave, onCancel }: { post?: any; onSave: () => void; 
   );
 }
 
-// · Tours Tab ·
+// Â· Tours Tab Â·
 function ToursTab() {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
@@ -200,7 +200,7 @@ function ToursTab() {
               {t.image ? <img src={t.image} alt="" style={{ width: '64px', height: '44px', objectFit: 'cover', borderRadius: '5px', flexShrink: 0 }} /> : <div style={{ width: '64px', height: '44px', background: '#f0ebe0', borderRadius: '5px', flexShrink: 0 }} />}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, color: '#1a0d00', fontSize: '0.95rem' }}>{t.title}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{t.category} · {t.duration || '—'} · {t.price}</div>
+                <div style={{ fontSize: '0.75rem', color: '#888' }}>{t.category} Â· {t.duration || 'â€”'} Â· {t.price}</div>
               </div>
               <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
                 {t.featured && <span style={{ fontSize: '0.7rem', background: '#fff3cd', color: '#856404', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>Featured</span>}
@@ -277,7 +277,7 @@ function TransfersTab() {
             <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', border: '1px solid #e8e0d0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, color: '#1a0d00' }}>{t.title || t.slug}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{t.fromLocation} · from ·{t.priceFrom}</div>
+                <div style={{ fontSize: '0.75rem', color: '#888' }}>{t.fromLocation} Â· from Â·{t.priceFrom}</div>
               </div>
               <div style={{ display: 'flex', gap: '0.4rem' }}>
                 <button onClick={() => setEditing(t)} style={btn('#e8f4fd', '#2980b9')}>Edit</button>
@@ -291,7 +291,7 @@ function TransfersTab() {
   );
 }
 
-// · Fleet Tab ·
+// Â· Fleet Tab Â·
 function FleetTab() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -320,7 +320,7 @@ function FleetTab() {
               {v.image ? <img src={v.image} alt="" style={{ width: '64px', height: '44px', objectFit: 'cover', borderRadius: '5px', flexShrink: 0 }} /> : <div style={{ width: '64px', height: '44px', background: '#f0ebe0', borderRadius: '5px', flexShrink: 0 }} />}
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, color: '#1a0d00' }}>{v.name}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{v.passengers} passengers · {v.bags} bags · {v.price ? `·{v.price}` : 'Price TBD'}</div>
+                <div style={{ fontSize: '0.75rem', color: '#888' }}>{v.passengers} passengers Â· {v.bags} bags Â· {v.price ? `Â·{v.price}` : 'Price TBD'}</div>
               </div>
               <div style={{ display: 'flex', gap: '0.4rem' }}>
                 <button onClick={() => setEditing(v)} style={btn('#e8f4fd', '#2980b9')}>Edit</button>
@@ -334,7 +334,7 @@ function FleetTab() {
   );
 }
 
-// · Blog Tab ·
+// Â· Blog Tab Â·
 function BlogTab() {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -363,7 +363,7 @@ function BlogTab() {
               {p.image ? <img src={p.image} alt="" style={{ width: '64px', height: '44px', objectFit: 'cover', borderRadius: '5px', flexShrink: 0 }} /> : <div style={{ width: '64px', height: '44px', background: '#f0ebe0', borderRadius: '5px', flexShrink: 0 }} />}
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, color: '#1a0d00' }}>{p.title}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{p.category} · {p.date}</div>
+                <div style={{ fontSize: '0.75rem', color: '#888' }}>{p.category} Â· {p.date}</div>
               </div>
               <div style={{ display: 'flex', gap: '0.4rem' }}>
                 <button onClick={() => setEditing(p)} style={btn('#e8f4fd', '#2980b9')}>Edit</button>
@@ -377,7 +377,7 @@ function BlogTab() {
   );
 }
 
-// · Main ·
+// Â· Main Â·
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [tab, setTab] = useState<'tours' | 'transfers' | 'fleet' | 'blog'>('tours');
@@ -391,7 +391,7 @@ export default function AdminPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#f5f0e8' }}>
       <div style={{ background: '#1a0d00', color: '#fff', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '56px' }}>
-        <span style={{ fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: '1.1rem' }}>Elbo Tours Admin</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><img src='/logos/elbo-logo.png' alt='Elbo Tours' style={{ height: '36px', objectFit: 'contain' }} /><span style={{ fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: '1.1rem' }}>Admin</span></div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <a href="/en/tours" target="_blank" style={{ color: '#C8960C', fontSize: '0.85rem', textDecoration: 'none' }}>View Site</a>
           <button onClick={logout} style={{ padding: '0.35rem 0.9rem', background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '0.85rem' }}>Logout</button>
