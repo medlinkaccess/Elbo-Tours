@@ -134,7 +134,7 @@ function ToursTab() {
     title: "", titleFr: "", desc: "", descFr: "",
     category: CATEGORIES[0], duration: "", price: "", image: "",
     featured: false, active: true,
-    departsFrom: "Marrakech", maxGroupSize: "12", tags: "",
+    departsFrom: "Marrakech", maxGroupSize: "12", tags: "", priceDisplay: "",
     highlights: [] as string[],
     includes: [] as string[],
     excludes: [] as string[],
@@ -166,6 +166,7 @@ function ToursTab() {
       departsFrom: detail.departsFrom || "Marrakech",
       maxGroupSize: detail.maxGroupSize?.toString() || "12",
       tags: (detail.tags || []).join(", "),
+      priceDisplay: detail.priceDisplay || "",
       highlights: detail.highlights || [],
       includes: detail.includes || [],
       excludes: detail.excludes || [],
@@ -176,7 +177,7 @@ function ToursTab() {
 
   function startNew() {
     setEditing({});
-    setForm({ title: "", titleFr: "", desc: "", descFr: "", category: CATEGORIES[0], duration: "", price: "", image: "", featured: false, active: true, departsFrom: "Marrakech", maxGroupSize: "12", tags: "", highlights: [], includes: [], excludes: [], itinerary: [] });
+    setForm({ title: "", titleFr: "", desc: "", descFr: "", category: CATEGORIES[0], duration: "", price: "", image: "", featured: false, active: true, departsFrom: "Marrakech", maxGroupSize: "12", tags: "", priceDisplay: "", highlights: [], includes: [], excludes: [], itinerary: [] });
   }
 
   async function save() {
@@ -233,6 +234,7 @@ function ToursTab() {
             <Field label="Category"><select style={inp} value={form.category} onChange={e => set("category", e.target.value)}>{CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></Field>
             <Field label="Duration"><input style={inp} value={form.duration} onChange={e => set("duration", e.target.value)} placeholder="e.g. 3 days / 2 nights" /></Field>
             <Field label="Price (EUR)"><input style={inp} type="number" value={form.price} onChange={e => set("price", e.target.value)} placeholder="0 = Ask for price" /></Field>
+            <Field label="Price Display"><input style={inp} value={form.priceDisplay} onChange={e => set("priceDisplay", e.target.value)} placeholder="e.g. From EUR590" /></Field>
             <Field label="Departs From"><input style={inp} value={form.departsFrom} onChange={e => set("departsFrom", e.target.value)} placeholder="Marrakech" /></Field>
             <Field label="Max Group Size"><input style={inp} type="number" value={form.maxGroupSize} onChange={e => set("maxGroupSize", e.target.value)} /></Field>
             <Field label="Tags (comma separated)"><input style={inp} value={form.tags} onChange={e => set("tags", e.target.value)} placeholder="multi-day, classic, desert" /></Field>
