@@ -312,7 +312,7 @@ export default function TourDetailPage() {
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtn}>
               {locale === "fr" ? "Reserver sur WhatsApp" : "Book via WhatsApp"}
             </a>
-            <button onClick={() => setShowQuote(true)} className={styles.ctaBtnSecondary} style={{ cursor: "pointer", border: "none" }}>
+            <button onClick={() => setShowQuote(true)} className={styles.ctaBtnSecondary} style={{ cursor: "pointer", width: "100%", background: "#fff" }}>
               {locale === "fr" ? "Demander un devis" : "Request a Quote"}
             </button>
 
