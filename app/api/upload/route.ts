@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 export const runtime = 'nodejs';
 
@@ -14,15 +15,15 @@ export async function POST(req: NextRequest) {
     const mimeType = file.type || 'image/jpeg';
     const dataUri = `data:${mimeType};base64,${base64}`;
 
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'djrfxijvs';
     const apiKey = process.env.CLOUDINARY_API_KEY!;
     const apiSecret = process.env.CLOUDINARY_API_SECRET!;
 
+    console.log('[upload] cloudName:', cloudName);
+    console.log('[upload] apiKey prefix:', apiKey?.slice(0, 6));
+
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const folder = 'elbo-tours';
-
-    // Sign: folder=elbo-tours&timestamp=<ts><secret>
-    const crypto = await import('crypto');
     const signStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
     const signature = crypto.createHash('sha256').update(signStr).digest('hex');
 
@@ -39,14 +40,15 @@ export async function POST(req: NextRequest) {
     );
 
     const data = await res.json();
+    console.log('[upload] cloudinary status:', res.status, JSON.stringify(data).slice(0, 200));
+
     if (!res.ok) {
-      console.error('Cloudinary error:', data);
       return NextResponse.json({ error: data.error?.message || 'Upload failed' }, { status: 500 });
     }
 
     return NextResponse.json({ url: data.secure_url });
   } catch (err) {
-    console.error('Upload error:', err);
+    console.error('[upload] error:', err);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }
