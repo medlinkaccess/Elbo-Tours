@@ -49,7 +49,6 @@ interface TourDetail {
 }
 
 const WHATSAPP = "212665889258";
-  const [showQuote, setShowQuote] = useState(false);
 
 function formatPrice(tour: TourDetail): string {
   if (tour.priceDisplay) return tour.priceDisplay;
@@ -76,6 +75,7 @@ export default function TourDetailPage() {
   const slug = params?.slug as string;
 
   const [tour, setTour] = useState<TourDetail | null>(null);
+  const [showQuote, setShowQuote] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeDay, setActiveDay] = useState(0);
