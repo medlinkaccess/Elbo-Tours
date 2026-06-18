@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 export const runtime = 'nodejs';
@@ -15,12 +15,9 @@ export async function POST(req: NextRequest) {
     const mimeType = file.type || 'image/jpeg';
     const dataUri = `data:${mimeType};base64,${base64}`;
 
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'djrfxijvs';
+    const cloudName = 'djrfxijvs';
     const apiKey = process.env.CLOUDINARY_API_KEY!;
     const apiSecret = process.env.CLOUDINARY_API_SECRET!;
-
-    console.log('[upload] cloudName:', cloudName);
-    console.log('[upload] apiKey prefix:', apiKey?.slice(0, 6));
 
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const folder = 'elbo-tours';
@@ -40,8 +37,6 @@ export async function POST(req: NextRequest) {
     );
 
     const data = await res.json();
-    console.log('[upload] cloudinary status:', res.status, JSON.stringify(data).slice(0, 200));
-
     if (!res.ok) {
       return NextResponse.json({ error: data.error?.message || 'Upload failed' }, { status: 500 });
     }
