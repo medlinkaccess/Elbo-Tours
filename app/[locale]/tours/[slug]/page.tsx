@@ -315,9 +315,7 @@ export default function TourDetailPage() {
             <button onClick={() => setShowQuote(true)} className={styles.ctaBtnSecondary} style={{ cursor: "pointer", border: "none" }}>
               {locale === "fr" ? "Demander un devis" : "Request a Quote"}
             </button>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtnSecondary}>
-              {locale === "fr" ? "Demander un devis" : "Request a quote"}
-            </a>
+
           </div>
           {tour.tags.length > 0 && (
             <div className={styles.tagsBlock}>
