@@ -11,15 +11,19 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const locale = searchParams.get('locale') || 'en';
 
-    const rows = await sql.query(
-      `SELECT t.id, t.slug, t.price, t.duration, t.from_location, t.image_url as image,
-              tt.title, tt.description as desc,
-              ttfr.title as "titleFr", ttfr.description as "descFr"
-       FROM transfers t
-       LEFT JOIN transfer_translations tt ON tt.transfer_id = t.id AND tt.locale = 'en'
-       LEFT JOIN transfer_translations ttfr ON ttfr.transfer_id = t.id AND ttfr.locale = 'fr'
-       ORDER BY t.created_at DESC`
-    );
+    const rows = await sql`
+      SELECT
+        t.id, t.slug, t."priceFrom", t.currency, t."fromLocation", t."imageUrl" as image,
+        tt.title, tt.description as desc, tt."metaTitle", tt."metaDesc",
+        ttfr.title as "titleFr", ttfr.description as "descFr"
+      FROM transfers t
+      LEFT JOIN transfer_translations tt
+        ON tt."transferId" = t.id AND tt.locale = 'en'
+      LEFT JOIN transfer_translations ttfr
+        ON ttfr."transferId" = t.id AND ttfr.locale = 'fr'
+      WHERE t.active = true
+      ORDER BY t."sortOrder", t."createdAt" DESC
+    `;
 
     const result = rows.map((t: any) => ({
       id: t.id,
@@ -28,9 +32,9 @@ export async function GET(req: NextRequest) {
       titleFr: t.titleFr,
       desc: locale === 'fr' && t.descFr ? t.descFr : t.desc,
       descFr: t.descFr,
-      price: t.price,
-      duration: t.duration,
-      from_location: t.from_location,
+      priceFrom: t.priceFrom,
+      currency: t.currency,
+      fromLocation: t.fromLocation,
       image: t.image,
     }));
 
@@ -47,25 +51,28 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const id = randomUUID();
     const slug = body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const now = new Date().toISOString();
 
-    await sql.query(
-      `INSERT INTO transfers (id, slug, price, duration, from_location, image_url)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [id, slug, body.price, body.duration, body.from_location, body.image || '']
-    );
+    await sql`
+      INSERT INTO transfers (id, slug, type, "fromLocation", "priceFrom", currency, "vehicleTypes", "flightTracking", "meetAndGreet", active, "sortOrder", "imageUrl", "createdAt", "updatedAt")
+      VALUES (
+        ${id}, ${slug}, 'AIRPORT'::"TransferType",
+        ${body.fromLocation || ''}, ${body.priceFrom || 0}, ${body.currency || 'EUR'},
+        '{}', true, true, true, 0, ${body.image || ''},
+        ${now}, ${now}
+      )
+    `;
 
-    await sql.query(
-      `INSERT INTO transfer_translations (id, transfer_id, locale, title, description)
-       VALUES ($1, $2, 'en', $3, $4)`,
-      [randomUUID(), id, body.title, body.desc || '']
-    );
+    await sql`
+      INSERT INTO transfer_translations (id, "transferId", locale, title, description)
+      VALUES (${randomUUID()}, ${id}, 'en', ${body.title}, ${body.desc || ''})
+    `;
 
     if (body.titleFr) {
-      await sql.query(
-        `INSERT INTO transfer_translations (id, transfer_id, locale, title, description)
-         VALUES ($1, $2, 'fr', $3, $4)`,
-        [randomUUID(), id, body.titleFr, body.descFr || '']
-      );
+      await sql`
+        INSERT INTO transfer_translations (id, "transferId", locale, title, description)
+        VALUES (${randomUUID()}, ${id}, 'fr', ${body.titleFr}, ${body.descFr || ''})
+      `;
     }
 
     return NextResponse.json({ id }, { status: 201 });
@@ -80,21 +87,27 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
 
-    await sql.query(
-      `UPDATE transfers SET price=$1, duration=$2, from_location=$3, image_url=$4, updated_at=NOW() WHERE id=$5`,
-      [body.price, body.duration, body.from_location, body.image || '', body.id]
-    );
+    await sql`
+      UPDATE transfers
+      SET "priceFrom" = ${body.priceFrom || 0},
+          "fromLocation" = ${body.fromLocation || ''},
+          "imageUrl" = ${body.image || ''},
+          "updatedAt" = NOW()
+      WHERE id = ${body.id}
+    `;
 
-    await sql.query(`DELETE FROM transfer_translations WHERE transfer_id=$1`, [body.id]);
-    await sql.query(
-      `INSERT INTO transfer_translations (id, transfer_id, locale, title, description) VALUES ($1, $2, 'en', $3, $4)`,
-      [randomUUID(), body.id, body.title, body.desc || '']
-    );
+    await sql`DELETE FROM transfer_translations WHERE "transferId" = ${body.id}`;
+
+    await sql`
+      INSERT INTO transfer_translations (id, "transferId", locale, title, description)
+      VALUES (${randomUUID()}, ${body.id}, 'en', ${body.title}, ${body.desc || ''})
+    `;
+
     if (body.titleFr) {
-      await sql.query(
-        `INSERT INTO transfer_translations (id, transfer_id, locale, title, description) VALUES ($1, $2, 'fr', $3, $4)`,
-        [randomUUID(), body.id, body.titleFr, body.descFr || '']
-      );
+      await sql`
+        INSERT INTO transfer_translations (id, "transferId", locale, title, description)
+        VALUES (${randomUUID()}, ${body.id}, 'fr', ${body.titleFr}, ${body.descFr || ''})
+      `;
     }
 
     return NextResponse.json({ ok: true });
@@ -108,7 +121,8 @@ export async function DELETE(req: NextRequest) {
   if (!isAuthed(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const { id } = await req.json();
-    await sql.query(`DELETE FROM transfers WHERE id=$1`, [id]);
+    await sql`DELETE FROM transfer_translations WHERE "transferId" = ${id}`;
+    await sql`DELETE FROM transfers WHERE id = ${id}`;
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error(err);

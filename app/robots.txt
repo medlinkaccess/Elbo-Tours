@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /en/admin
+Disallow: /fr/admin
+Disallow: /api/
+
+Sitemap: https://elbo-tours.com/sitemap.xml

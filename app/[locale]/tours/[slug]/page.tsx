@@ -1,271 +1,392 @@
-﻿import { Metadata } from 'next';
-import { unstable_setRequestLocale as setRequestLocale } from "next-intl/server";
-import { getTranslations } from 'next-intl/server';
-import { notFound } from 'next/navigation';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/chat/WhatsAppButton';
-import { tours, getTourBySlug } from '@/data/tours';
-export async function generateStaticParams() {
-  const locales = ['en', 'fr'];
-  return locales.flatMap(locale =>
-    tours.map(tour => ({ locale, slug: tour.slug }))
+import styles from './tour.module.css';
+import { TourJsonLd } from '@/components/JsonLd';
+
+// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+interface ItineraryDay {
+  day: number;
+  title: string;
+  description: string;
+}
+
+interface RelatedTour {
+  slug: string;
+  title: string;
+  priceFrom: number;
+  priceDisplay: string | null;
+  imageUrl: string | null;
+  durationDays: number;
+}
+
+interface TourDetail {
+  id: string;
+  slug: string;
+  category: string;
+  priceFrom: number;
+  priceDisplay: string | null;
+  currency: string;
+  durationDays: number;
+  durationText: string | null;
+  maxGroupSize: number | null;
+  minGroupSize: number;
+  featured: boolean;
+  imageUrl: string | null;
+  gallery: string[];
+  tags: string[];
+  departsFrom: string;
+  destinationName: string | null;
+  title: string;
+  description: string;
+  metaTitle: string;
+  metaDesc: string;
+  itinerary: ItineraryDay[];
+  highlights: string[];
+  includes: string[];
+  excludes: string[];
+  related: RelatedTour[];
+}
+
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+const WHATSAPP = '212665889258';
+
+function formatPrice(tour: TourDetail): string {
+  if (tour.priceDisplay) return tour.priceDisplay;
+  if (tour.priceFrom && tour.priceFrom > 0)
+    return `From â‚¬${tour.priceFrom.toLocaleString()}`;
+  return 'Ask for price';
+}
+
+function categoryLabel(cat: string): string {
+  const map: Record<string, string> = {
+    DAY_TRIP: 'Day Trip',
+    MULTI_DAY: 'Multi-Day Tour',
+    DESERT: 'Desert Tour',
+    MOUNTAIN: 'Mountain Tour',
+    CULTURAL: 'Cultural Tour',
+    PRIVATE: 'Private Tour',
+  };
+  return map[cat] || cat;
+}
+
+// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export default function TourDetailPage() {
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en';
+  const slug = params?.slug as string;
+
+  const [tour, setTour] = useState<TourDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeDay, setActiveDay] = useState(0);
+
+  useEffect(() => {
+    if (!slug) return;
+    setLoading(true);
+    setError(null);
+
+    fetch(`/api/tours/${slug}?locale=${locale}`)
+      .then(res => {
+        if (!res.ok) throw new Error(res.status === 404 ? 'Tour not found' : 'Failed to load tour');
+        return res.json();
+      })
+      .then((data: TourDetail) => {
+        setTour(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [slug, locale]);
+
+  // â”€â”€ Loading â”€â”€
+  if (loading) {
+    return (
+      <div className={styles.loadingWrap}>
+        <div className={styles.spinner} />
+        <p>{locale === 'fr' ? 'Chargementâ€¦' : 'Loadingâ€¦'}</p>
+      </div>
+    );
+  }
+
+  // â”€â”€ Error / 404 â”€â”€
+  if (error || !tour) {
+    return (
+      <div className={styles.errorWrap}>
+        <h1>{error || 'Tour not found'}</h1>
+        <Link href={`/${locale}/tours`}>
+          â† {locale === 'fr' ? 'Retour aux circuits' : 'Back to tours'}
+        </Link>
+      </div>
+    );
+  }
+
+  const whatsappMsg = encodeURIComponent(
+    `Hi! I'm interested in the "${tour.title}" tour. Can you send me more details?`
   );
-}
-
-export async function generateMetadata({ params }: { params: { slug: string; locale: string } }): Promise<Metadata> {
-  setRequestLocale(params.locale);
-  const tour = getTourBySlug(params.slug);
-  if (!tour) return { title: 'Tour not found' };
-  return {
-    title: tour.metaTitle,
-    description: tour.metaDescription,
-    openGraph: {
-      title: tour.metaTitle,
-      description: tour.metaDescription,
-      images: [{ url: tour.heroImage, width: 1200, height: 630 }],
-      type: 'article',
-    },
-    twitter: { card: 'summary_large_image', title: tour.metaTitle, description: tour.metaDescription },
-    alternates: {
-      canonical: `https://www.elbo-tours.com/${params.locale}/tours/${params.slug}`,
-      languages: {
-        en: `https://www.elbo-tours.com/en/tours/${params.slug}`,
-        fr: `https://www.elbo-tours.com/fr/tours/${params.slug}`,
-      },
-    },
-  };
-}
-
-export default async function TourPage({ params }: { params: { slug: string; locale: string } }) {
-  setRequestLocale(params.locale);
-  const tour = getTourBySlug(params.slug);
-  if (!tour) notFound();
-
-  const locale = params.locale;
-  const t = await getTranslations({ locale, namespace: 'tour_detail' });
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'TouristTrip',
-    name: tour.title,
-    description: tour.metaDescription,
-    touristType: tour.tags,
-    itinerary: tour.itinerary.map(d => ({
-      '@type': 'TouristAttraction',
-      name: d.title,
-      description: d.description,
-    })),
-    provider: {
-      '@type': 'TravelAgency',
-      name: 'Elbo Tours',
-      url: 'https://www.elbo-tours.com',
-    },
-  };
+  const whatsappUrl = `https://wa.me/${WHATSAPP}?text=${whatsappMsg}`;
 
   return (
-    <>
-      <style>{`
-        :root { --gold:#C8960C; --gold-light:#F0C040; --sand:#F5EDD6; --dark:#1A1A2E; --ink:#1a0d00; }
-        .tour-hero { position:relative; height:70vh; min-height:420px; background:linear-gradient(135deg,#2d1b00 0%,#1a0a00 100%); display:flex; align-items:flex-end; overflow:hidden; }
-        .tour-hero-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.2) 60%,transparent 100%); }
-        .tour-hero-content { position:relative; z-index:2; padding:2.5rem 1.5rem; max-width:900px; margin:0 auto; width:100%; }
-        .tour-breadcrumb { display:flex; gap:0.5rem; align-items:center; font-size:0.72rem; color:rgba(255,255,255,0.6); margin-bottom:1rem; flex-wrap:wrap; }
-        .tour-breadcrumb a { color:rgba(255,255,255,0.6); text-decoration:none; }
-        .tour-breadcrumb a:hover { color:var(--gold-light); }
-        .tour-days-badge { display:inline-block; background:var(--gold); color:#fff; font-size:0.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:0.3rem 0.9rem; border-radius:999px; margin-bottom:0.75rem; }
-        .tour-hero-title { font-family:Georgia,'Times New Roman',serif; font-size:clamp(1.8rem,4vw,3rem); font-weight:700; color:#fff; line-height:1.15; margin-bottom:0.75rem; }
-        .tour-hero-tags { display:flex; flex-wrap:wrap; gap:0.4rem; }
-        .tour-hero-tag { font-size:0.65rem; background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.8); padding:0.25rem 0.7rem; border-radius:999px; border:1px solid rgba(255,255,255,0.2); }
-        .tour-layout { max-width:1100px; margin:0 auto; padding:3rem 1.5rem; display:grid; grid-template-columns:1fr 320px; gap:3rem; align-items:start; }
-        @media(max-width:860px){ .tour-layout { grid-template-columns:1fr; } }
-        .tour-section { margin-bottom:2.5rem; }
-        .tour-section-title { font-family:Georgia,serif; font-size:1.3rem; font-weight:700; color:var(--ink); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:2px solid var(--gold); display:inline-block; }
-        .tour-excerpt { font-size:1rem; color:#444; line-height:1.75; margin-bottom:1rem; }
-        .highlights-list { list-style:none; padding:0; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; }
-        @media(max-width:560px){ .highlights-list { grid-template-columns:1fr; } }
-        .highlight-item { display:flex; align-items:flex-start; gap:0.6rem; font-size:0.85rem; color:#444; }
-        .highlight-dot { width:20px; height:20px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
-        .highlight-dot svg { width:11px; height:11px; }
-        .itinerary-list { list-style:none; padding:0; margin:0; position:relative; }
-        .itinerary-list::before { content:''; position:absolute; left:28px; top:0; bottom:0; width:2px; background:#e8e0d0; }
-        .itin-item { display:flex; gap:1.25rem; margin-bottom:1.5rem; position:relative; }
-        .itin-dot { width:58px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; z-index:1; }
-        .itin-circle { width:18px; height:18px; border-radius:50%; background:var(--gold); border:3px solid #fff; box-shadow:0 0 0 2px var(--gold); margin-top:3px; }
-        .itin-day { font-size:0.62rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.06em; margin-top:4px; text-align:center; }
-        .itin-body { padding-bottom:0.5rem; }
-        .itin-title { font-weight:700; font-size:0.92rem; color:var(--ink); margin-bottom:0.3rem; }
-        .itin-desc { font-size:0.82rem; color:#666; line-height:1.6; }
-        .inc-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-        @media(max-width:560px){ .inc-grid { grid-template-columns:1fr; } }
-        .inc-col-title { font-weight:700; font-size:0.85rem; color:var(--ink); margin-bottom:0.5rem; }
-        .inc-list { list-style:none; padding:0; margin:0; }
-        .inc-list li { display:flex; gap:0.5rem; font-size:0.8rem; color:#555; margin-bottom:0.4rem; align-items:flex-start; }
-        .inc-icon-yes { color:#16a34a; font-size:0.9rem; flex-shrink:0; margin-top:1px; }
-        .inc-icon-no { color:#dc2626; font-size:0.9rem; flex-shrink:0; margin-top:1px; }
-        .tour-sidebar { position:sticky; top:100px; display:flex; flex-direction:column; gap:1.25rem; }
-        .sidebar-card { background:#fff; border:1px solid #e8e0d0; border-radius:14px; padding:1.5rem; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
-        .sidebar-card-gold { background:var(--gold); border-color:var(--gold); }
-        .sidebar-title { font-family:Georgia,serif; font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:0.75rem; }
-        .sidebar-title-light { color:#fff; }
-        .departs-list { list-style:none; padding:0; margin:0 0 1rem; }
-        .departs-list li { font-size:0.82rem; color:#555; padding:0.3rem 0; border-bottom:1px solid #f0ebe0; display:flex; align-items:center; gap:0.4rem; }
-        .departs-list li:last-child { border-bottom:none; }
-        .btn-book { display:block; text-align:center; background:#fff; color:var(--gold); font-weight:700; font-size:0.9rem; padding:0.9rem; border-radius:8px; text-decoration:none; transition:background .2s; }
-        .btn-book:hover { background:#f5f5f5; }
-        .btn-wa { display:flex; align-items:center; justify-content:center; gap:8px; background:#25D366; color:#fff; font-weight:700; font-size:0.88rem; padding:0.85rem; border-radius:8px; text-decoration:none; transition:background .2s; margin-top:0.6rem; }
-        .btn-wa:hover { background:#1ebe5d; }
-        .btn-enquire { display:block; text-align:center; background:var(--gold); color:#fff; font-weight:700; font-size:0.9rem; padding:0.9rem; border-radius:8px; text-decoration:none; transition:background .2s; }
-        .btn-enquire:hover { background:#b07e08; }
-        .sidebar-note { font-size:0.72rem; color:rgba(255,255,255,0.75); text-align:center; margin-top:0.6rem; }
-        .other-tours { background:var(--sand); padding:3rem 1.5rem; }
-        .other-title { font-family:Georgia,serif; font-size:1.4rem; font-weight:700; color:var(--ink); margin-bottom:1.5rem; text-align:center; }
-        .other-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; max-width:900px; margin:0 auto; }
-        @media(max-width:700px){ .other-grid { grid-template-columns:1fr 1fr; } }
-        @media(max-width:480px){ .other-grid { grid-template-columns:1fr; } }
-        .other-card { background:#fff; border:1px solid #e8e0d0; border-radius:10px; padding:1rem; text-decoration:none; transition:box-shadow .2s,transform .15s; display:block; }
-        .other-card:hover { box-shadow:0 4px 16px rgba(200,150,12,0.15); transform:translateY(-2px); }
-        .other-days { font-size:0.62rem; color:#999; font-weight:600; text-transform:uppercase; margin-bottom:0.25rem; }
-        .other-name { font-size:0.85rem; font-weight:700; color:var(--ink); line-height:1.3; }
-      `}</style>
-
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-
-      <Navbar />
-      <main>
-
-        <div className="tour-hero">
-          <div className="tour-hero-overlay" />
-          <div className="tour-hero-content">
-            <nav className="tour-breadcrumb" aria-label="Breadcrumb">
-              <Link href={`/${locale}`}>{t('home')}</Link>
-              <span>›</span>
-              <Link href={`/${locale}/tours`}>{t('tours')}</Link>
-              <span>›</span>
-              <span style={{ color: 'rgba(255,255,255,0.85)' }}>{tour.title}</span>
-            </nav>
-            <div className="tour-days-badge">⏱ {tour.days}</div>
-            <h1 className="tour-hero-title">{tour.title}</h1>
-            <div className="tour-hero-tags">
-              {tour.tags.map((tag, i) => <span key={i} className="tour-hero-tag">{tag}</span>)}
+    <main className={styles.page}>
+      {tour && <TourJsonLd tour={tour} locale={locale} />}
+      {/* â”€â”€ Hero â”€â”€ */}
+      <section className={styles.hero}>
+        {(tour.imageUrl && tour.imageUrl !== "") ? (
+          <Image
+            src={tour.imageUrl}
+            alt={tour.title}
+            fill
+            priority
+            className={styles.heroImg}
+            sizes="100vw"
+          />
+        ) : (
+          <div className={styles.heroPlaceholder} />
+        )}
+        <div className={styles.heroOverlay}>
+          <div className={styles.heroContent}>
+            <div className={styles.heroBadges}>
+              <span className={styles.badge}>{categoryLabel(tour.category)}</span>
+              {tour.featured && (
+                <span className={`${styles.badge} ${styles.badgeFeatured}`}>
+                  {locale === 'fr' ? 'RecommandÃ©' : 'Featured'}
+                </span>
+              )}
+            </div>
+            <h1 className={styles.heroTitle}>{tour.title}</h1>
+            <div className={styles.heroMeta}>
+              {tour.durationText && <span>â± {tour.durationText}</span>}
+              {tour.departsFrom && <span>ðŸ“ {locale === 'fr' ? 'DÃ©part de' : 'Departs from'} {tour.departsFrom}</span>}
+              {tour.maxGroupSize && (
+                <span>ðŸ‘¥ {locale === 'fr' ? 'Max' : 'Max'} {tour.maxGroupSize} {locale === 'fr' ? 'pers.' : 'people'}</span>
+              )}
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="tour-layout">
-          <div>
-            <div className="tour-section">
-              <h2 className="tour-section-title">{t('overview')}</h2>
-              <p className="tour-excerpt">{tour.excerpt}</p>
-            </div>
+      {/* â”€â”€ Body â”€â”€ */}
+      <div className={styles.body}>
+        <div className={styles.main}>
 
-            <div className="tour-section">
-              <h2 className="tour-section-title">{t('highlights')}</h2>
-              <ul className="highlights-list">
+          {/* Overview */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>
+              {locale === 'fr' ? 'AperÃ§u' : 'Overview'}
+            </h2>
+            <p className={styles.description}>{tour.description}</p>
+          </section>
+
+          {/* Highlights */}
+          {tour.highlights.length > 0 && (
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                {locale === 'fr' ? 'Points forts' : 'Highlights'}
+              </h2>
+              <ul className={styles.highlightList}>
                 {tour.highlights.map((h, i) => (
-                  <li key={i} className="highlight-item">
-                    <span className="highlight-dot">
-                      <svg fill="none" stroke="#fff" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
-                      </svg>
-                    </span>
+                  <li key={i} className={styles.highlightItem}>
+                    <span className={styles.checkIcon}>âœ“</span>
                     {h}
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
+          )}
 
-            <div className="tour-section">
-              <h2 className="tour-section-title">{t('itinerary')}</h2>
-              <ul className="itinerary-list">
-                {tour.itinerary.map((d, i) => (
-                  <li key={i} className="itin-item">
-                    <div className="itin-dot">
-                      <div className="itin-circle" />
-                      <div className="itin-day">{d.day}</div>
-                    </div>
-                    <div className="itin-body">
-                      <div className="itin-title">{d.title}</div>
-                      <div className="itin-desc">{d.description}</div>
-                    </div>
-                  </li>
+          {/* Itinerary */}
+          {tour.itinerary.length > 0 && (
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                {locale === 'fr' ? 'Programme' : 'Itinerary'}
+              </h2>
+              <div className={styles.itinerary}>
+                {tour.itinerary.map((day, i) => (
+                  <div key={i} className={styles.dayBlock}>
+                    <button
+                      className={`${styles.dayHeader} ${activeDay === i ? styles.dayHeaderActive : ''}`}
+                      onClick={() => setActiveDay(activeDay === i ? -1 : i)}
+                      aria-expanded={activeDay === i}
+                    >
+                      <span className={styles.dayNum}>
+                        {locale === 'fr' ? 'Jour' : 'Day'} {day.day}
+                      </span>
+                      <span className={styles.dayTitle}>{day.title}</span>
+                      <span className={styles.dayChevron}>{activeDay === i ? 'â–²' : 'â–½'}</span>
+                    </button>
+                    {activeDay === i && (
+                      <div className={styles.dayBody}>
+                        <p>{day.description}</p>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </ul>
-            </div>
-
-            <div className="tour-section">
-              <h2 className="tour-section-title">{t('included')}</h2>
-              <div className="inc-grid">
-                <div>
-                  <div className="inc-col-title">✅ {t('included_label')}</div>
-                  <ul className="inc-list">
-                    {tour.includes.map((item, i) => (
-                      <li key={i}><span className="inc-icon-yes">✓</span>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <div className="inc-col-title">❌ {t('excluded_label')}</div>
-                  <ul className="inc-list">
-                    {tour.excludes.map((item, i) => (
-                      <li key={i}><span className="inc-icon-no">✗</span>{item}</li>
-                    ))}
-                  </ul>
-                </div>
               </div>
-            </div>
-          </div>
+            </section>
+          )}
 
-          <aside className="tour-sidebar">
-            <div className="sidebar-card sidebar-card-gold">
-              <div className="sidebar-title sidebar-title-light">{t('ready_book')}</div>
-              <Link href={`/${locale}/contact?tour=${tour.slug}`} className="btn-book">{t('request_quote')} →</Link>
-              <a href={`https://wa.me/212665889258?text=Hi! I'm interested in the ${encodeURIComponent(tour.title)}`}
-                target="_blank" rel="noopener noreferrer" className="btn-wa">
-                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                </svg>
-                {t('whatsapp')}
-              </a>
-              <p className="sidebar-note">{t('no_obligation')}</p>
-            </div>
+          {/* Includes / Excludes */}
+          {(tour.includes.length > 0 || tour.excludes.length > 0) && (
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                {locale === 'fr' ? 'Inclus / Non inclus' : 'Included / Not included'}
+              </h2>
+              <div className={styles.inclusionsGrid}>
+                {tour.includes.length > 0 && (
+                  <div>
+                    <h3 className={styles.inclusionsSubtitle}>
+                      {locale === 'fr' ? 'âœ“ Inclus' : 'âœ“ Included'}
+                    </h3>
+                    <ul className={styles.inclusionList}>
+                      {tour.includes.map((item, i) => (
+                        <li key={i} className={styles.inclusionItem}>
+                          <span className={styles.checkIcon}>âœ“</span>{item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {tour.excludes.length > 0 && (
+                  <div>
+                    <h3 className={styles.inclusionsSubtitle}>
+                      {locale === 'fr' ? 'âœ— Non inclus' : 'âœ— Not included'}
+                    </h3>
+                    <ul className={styles.inclusionList}>
+                      {tour.excludes.map((item, i) => (
+                        <li key={i} className={`${styles.inclusionItem} ${styles.exclusionItem}`}>
+                          <span className={styles.xIcon}>âœ—</span>{item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
 
-            <div className="sidebar-card">
-              <div className="sidebar-title">{t('departs_from')}</div>
-              <ul className="departs-list">
-                {tour.departsFrom.map((city, i) => <li key={i}><span>📍</span> {city}</li>)}
-              </ul>
-              <Link href={`/${locale}/contact?tour=${tour.slug}`} className="btn-enquire">{t('enquire_dates')} →</Link>
-            </div>
-
-            <div className="sidebar-card">
-              <div className="sidebar-title">{t('tour_details')}</div>
-              <ul className="departs-list">
-                <li><span>⏱</span> {tour.days}</li>
-                <li><span>🚗</span> {t('private_group')}</li>
-                <li><span>🗓</span> {t('any_date')}</li>
-                <li><span>✏️</span> {t('customisable')}</li>
-              </ul>
-            </div>
-          </aside>
+          {/* Gallery */}
+          {tour.gallery.length > 0 && (
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                {locale === 'fr' ? 'Galerie' : 'Gallery'}
+              </h2>
+              <div className={styles.gallery}>
+                {tour.gallery.map((url, i) => (
+                  <div key={i} className={styles.galleryItem}>
+                    <Image src={url} alt={`${tour.title} photo ${i + 1}`} fill className={styles.galleryImg} sizes="(max-width: 768px) 50vw, 33vw" />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
-        <div className="other-tours">
-          <h2 className="other-title">{t('you_may_like')}</h2>
-          <div className="other-grid">
-            {tours.filter(t => t.slug !== tour.slug).slice(0, 3).map((t, i) => (
-              <Link key={i} href={`/${locale}/tours/${t.slug}`} className="other-card">
-                <div className="other-days">{t.days}</div>
-                <div className="other-name">{t.title}</div>
+        {/* â”€â”€ Sidebar â”€â”€ */}
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarCard}>
+            <div className={styles.priceBlock}>
+              <span className={styles.priceLabel}>
+                {locale === 'fr' ? 'Ã€ partir de' : 'Starting from'}
+              </span>
+              <span className={styles.price}>{formatPrice(tour)}</span>
+              <span className={styles.priceSub}>
+                {locale === 'fr' ? 'par personne' : 'per person'}
+              </span>
+            </div>
+
+            <div className={styles.tourMeta}>
+              <div className={styles.metaRow}>
+                <span className={styles.metaLabel}>
+                  {locale === 'fr' ? 'DurÃ©e' : 'Duration'}
+                </span>
+                <span className={styles.metaVal}>
+                  {tour.durationText || `${tour.durationDays} ${locale === 'fr' ? 'jours' : 'days'}`}
+                </span>
+              </div>
+              {tour.departsFrom && (
+                <div className={styles.metaRow}>
+                  <span className={styles.metaLabel}>
+                    {locale === 'fr' ? 'DÃ©part' : 'Departs'}
+                  </span>
+                  <span className={styles.metaVal}>{tour.departsFrom}</span>
+                </div>
+              )}
+              {tour.maxGroupSize && (
+                <div className={styles.metaRow}>
+                  <span className={styles.metaLabel}>
+                    {locale === 'fr' ? 'Groupe max' : 'Max group'}
+                  </span>
+                  <span className={styles.metaVal}>{tour.maxGroupSize}</span>
+                </div>
+              )}
+            </div>
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.ctaBtn}
+            >
+              {locale === 'fr' ? 'ðŸ“² RÃ©server sur WhatsApp' : 'ðŸ“² Book via WhatsApp'}
+            </a>
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.ctaBtnSecondary}
+            >
+              {locale === 'fr' ? 'ðŸ’¬ Demander un devis' : 'ðŸ’¬ Request a quote'}
+            </a>
+          </div>
+
+          {/* Tags */}
+          {tour.tags.length > 0 && (
+            <div className={styles.tagsBlock}>
+              {tour.tags.map(tag => (
+                <span key={tag} className={styles.tag}>{tag}</span>
+              ))}
+            </div>
+          )}
+        </aside>
+      </div>
+
+      {/* â”€â”€ Related Tours â”€â”€ */}
+      {tour.related.length > 0 && (
+        <section className={styles.relatedSection}>
+          <h2 className={styles.sectionTitle}>
+            {locale === 'fr' ? 'Circuits similaires' : 'Similar tours'}
+          </h2>
+          <div className={styles.relatedGrid}>
+            {tour.related.map(r => (
+              <Link key={r.slug} href={`/${locale}/tours/${r.slug}`} className={styles.relatedCard}>
+                <div className={styles.relatedImgWrap}>
+                  {(r.imageUrl && r.imageUrl !== "") ? (
+                    <Image src={r.imageUrl} alt={r.title} fill className={styles.relatedImg} sizes="300px" />
+                  ) : (
+                    <div className={styles.relatedImgPlaceholder} />
+                  )}
+                </div>
+                <div className={styles.relatedInfo}>
+                  <h3 className={styles.relatedTitle}>{r.title}</h3>
+                  <span className={styles.relatedPrice}>
+                    {r.priceDisplay || (r.priceFrom > 0 ? `From â‚¬${r.priceFrom}` : 'Ask for price')}
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
-        </div>
-
-      </main>
-      <Footer />
-      <WhatsAppButton />
-    </>
+        </section>
+      )}
+    </main>
   );
 }
+

@@ -1,9 +1,10 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Inter, Playfair_Display } from 'next/font/google';
-import '../globals.css';
+import '@/app/globals.css'; // Safe absolute import alias
+import { LocalBusinessJsonLd } from '@/components/JsonLd';
 import ChatWidget from '@/components/chat/ChatWidget';
 import WhatsAppButton from '@/components/chat/WhatsAppButton';
 
@@ -17,16 +18,16 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   return {
     title: {
       default: isEn
-        ? 'Elbo Tours – Private Tours & Transfers Morocco'
-        : 'Elbo Tours – Circuits & Transferts Privés au Maroc',
+        ? 'Elbo Tours - Private Tours & Transfers Morocco'
+        : 'Elbo Tours - Circuits & Transferts Prives au Maroc',
       template: '%s | Elbo Tours',
     },
     description: isEn
       ? 'Private tours and transfers across Morocco. Airport pickups, city-to-city routes, guided excursions. Book your Marrakech transfer or Morocco tour today.'
-      : 'Circuits privés et transferts à travers le Maroc. Transferts aéroport, trajets ville à ville, excursions guidées. Réservez votre circuit ou transfert dès aujourd\'hui.',
+      : 'Circuits prives et transferts a travers le Maroc. Transferts aeroport, trajets ville a ville, excursions guidees. Reservez votre circuit ou transfert des aujourd hui.',
     keywords: isEn
-      ? ['Morocco tours', 'Marrakech transfers', 'private driver Morocco', 'excursions Marrakech', 'minibus hire Morocco']
-      : ['circuits Maroc', 'transfert Marrakech', 'chauffeur privé Maroc', 'excursions Marrakech', 'minibus Maroc'],
+      ? ['Morocco tours', 'Marrakech transfers', 'private driver Morocco', 'excursions Marrakech', 'minibus hire Morocco', 'Morocco private tours', 'desert tours Morocco', 'Sahara tour Marrakech', 'Fes Marrakech tour', 'Chefchaouen day trip']
+      : ['circuits Maroc', 'transfert Marrakech', 'chauffeur prive Maroc', 'excursions Marrakech', 'minibus Maroc'],
     alternates: {
       canonical: `https://elbo-tours.com/${locale}`,
       languages: {
@@ -40,6 +41,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
       alternateLocale: isEn ? 'fr_FR' : 'en_US',
       siteName: 'Elbo Tours',
       url: `https://elbo-tours.com/${locale}`,
+      images: [{ url: 'https://elbo-tours.com/images/og-default.jpg', width: 1200, height: 630, alt: 'Elbo Tours Morocco' }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -62,12 +64,14 @@ export default async function LocaleLayout({
 }) {
   if (!locales.includes(locale)) notFound();
   const messages = await getMessages();
+  
   return (
     <html lang={locale} className={`${inter.variable} ${playfair.variable}`}>
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <LocalBusinessJsonLd />
         <ChatWidget />
         <WhatsAppButton />
       </body>
