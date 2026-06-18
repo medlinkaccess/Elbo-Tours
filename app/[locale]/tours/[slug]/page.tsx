@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
@@ -7,14 +6,12 @@ import Link from 'next/link';
 import styles from './tour.module.css';
 import { TourJsonLd } from '@/components/JsonLd';
 
-// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+// -- Types --
 interface ItineraryDay {
   day: number;
   title: string;
   description: string;
 }
-
 interface RelatedTour {
   slug: string;
   title: string;
@@ -23,7 +20,6 @@ interface RelatedTour {
   imageUrl: string | null;
   durationDays: number;
 }
-
 interface TourDetail {
   id: string;
   slug: string;
@@ -52,14 +48,13 @@ interface TourDetail {
   related: RelatedTour[];
 }
 
-// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+// -- Helpers --
 const WHATSAPP = '212665889258';
 
 function formatPrice(tour: TourDetail): string {
   if (tour.priceDisplay) return tour.priceDisplay;
   if (tour.priceFrom && tour.priceFrom > 0)
-    return `From â‚¬${tour.priceFrom.toLocaleString()}`;
+    return `From \u20ac${tour.priceFrom.toLocaleString()}`;
   return 'Ask for price';
 }
 
@@ -75,8 +70,7 @@ function categoryLabel(cat: string): string {
   return map[cat] || cat;
 }
 
-// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+// -- Component --
 export default function TourDetailPage() {
   const params = useParams();
   const locale = (params?.locale as string) || 'en';
@@ -107,23 +101,23 @@ export default function TourDetailPage() {
       });
   }, [slug, locale]);
 
-  // â”€â”€ Loading â”€â”€
+  // -- Loading --
   if (loading) {
     return (
       <div className={styles.loadingWrap}>
         <div className={styles.spinner} />
-        <p>{locale === 'fr' ? 'Chargementâ€¦' : 'Loadingâ€¦'}</p>
+        <p>{locale === 'fr' ? 'Chargement...' : 'Loading...'}</p>
       </div>
     );
   }
 
-  // â”€â”€ Error / 404 â”€â”€
+  // -- Error / 404 --
   if (error || !tour) {
     return (
       <div className={styles.errorWrap}>
         <h1>{error || 'Tour not found'}</h1>
         <Link href={`/${locale}/tours`}>
-          â† {locale === 'fr' ? 'Retour aux circuits' : 'Back to tours'}
+          &larr; {locale === 'fr' ? 'Retour aux circuits' : 'Back to tours'}
         </Link>
       </div>
     );
@@ -137,7 +131,7 @@ export default function TourDetailPage() {
   return (
     <main className={styles.page}>
       {tour && <TourJsonLd tour={tour} locale={locale} />}
-      {/* â”€â”€ Hero â”€â”€ */}
+      {/* Hero */}
       <section className={styles.hero}>
         {(tour.imageUrl && tour.imageUrl !== "") ? (
           <Image
@@ -157,30 +151,30 @@ export default function TourDetailPage() {
               <span className={styles.badge}>{categoryLabel(tour.category)}</span>
               {tour.featured && (
                 <span className={`${styles.badge} ${styles.badgeFeatured}`}>
-                  {locale === 'fr' ? 'RecommandÃ©' : 'Featured'}
+                  {locale === 'fr' ? 'Recommande' : 'Featured'}
                 </span>
               )}
             </div>
             <h1 className={styles.heroTitle}>{tour.title}</h1>
             <div className={styles.heroMeta}>
-              {tour.durationText && <span>â± {tour.durationText}</span>}
-              {tour.departsFrom && <span>ðŸ“ {locale === 'fr' ? 'DÃ©part de' : 'Departs from'} {tour.departsFrom}</span>}
+              {tour.durationText && <span>&#128336; {tour.durationText}</span>}
+              {tour.departsFrom && <span>&#128205; {locale === 'fr' ? 'Depart de' : 'Departs from'} {tour.departsFrom}</span>}
               {tour.maxGroupSize && (
-                <span>ðŸ‘¥ {locale === 'fr' ? 'Max' : 'Max'} {tour.maxGroupSize} {locale === 'fr' ? 'pers.' : 'people'}</span>
+                <span>&#128101; {locale === 'fr' ? 'Max' : 'Max'} {tour.maxGroupSize} {locale === 'fr' ? 'pers.' : 'people'}</span>
               )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* â”€â”€ Body â”€â”€ */}
+      {/* Body */}
       <div className={styles.body}>
         <div className={styles.main}>
 
           {/* Overview */}
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
-              {locale === 'fr' ? 'AperÃ§u' : 'Overview'}
+              {locale === 'fr' ? 'Apercu' : 'Overview'}
             </h2>
             <p className={styles.description}>{tour.description}</p>
           </section>
@@ -194,7 +188,7 @@ export default function TourDetailPage() {
               <ul className={styles.highlightList}>
                 {tour.highlights.map((h, i) => (
                   <li key={i} className={styles.highlightItem}>
-                    <span className={styles.checkIcon}>âœ“</span>
+                    <span className={styles.checkIcon}>&#10003;</span>
                     {h}
                   </li>
                 ))}
@@ -220,7 +214,7 @@ export default function TourDetailPage() {
                         {locale === 'fr' ? 'Jour' : 'Day'} {day.day}
                       </span>
                       <span className={styles.dayTitle}>{day.title}</span>
-                      <span className={styles.dayChevron}>{activeDay === i ? 'â–²' : 'â–½'}</span>
+                      <span className={styles.dayChevron}>{activeDay === i ? '\u25b2' : '\u25bc'}</span>
                     </button>
                     {activeDay === i && (
                       <div className={styles.dayBody}>
@@ -243,12 +237,12 @@ export default function TourDetailPage() {
                 {tour.includes.length > 0 && (
                   <div>
                     <h3 className={styles.inclusionsSubtitle}>
-                      {locale === 'fr' ? 'âœ“ Inclus' : 'âœ“ Included'}
+                      {locale === 'fr' ? '\u2714 Inclus' : '\u2714 Included'}
                     </h3>
                     <ul className={styles.inclusionList}>
                       {tour.includes.map((item, i) => (
                         <li key={i} className={styles.inclusionItem}>
-                          <span className={styles.checkIcon}>âœ“</span>{item}
+                          <span className={styles.checkIcon}>&#10003;</span>{item}
                         </li>
                       ))}
                     </ul>
@@ -257,12 +251,12 @@ export default function TourDetailPage() {
                 {tour.excludes.length > 0 && (
                   <div>
                     <h3 className={styles.inclusionsSubtitle}>
-                      {locale === 'fr' ? 'âœ— Non inclus' : 'âœ— Not included'}
+                      {locale === 'fr' ? '\u2718 Non inclus' : '\u2718 Not included'}
                     </h3>
                     <ul className={styles.inclusionList}>
                       {tour.excludes.map((item, i) => (
                         <li key={i} className={`${styles.inclusionItem} ${styles.exclusionItem}`}>
-                          <span className={styles.xIcon}>âœ—</span>{item}
+                          <span className={styles.xIcon}>&#10007;</span>{item}
                         </li>
                       ))}
                     </ul>
@@ -289,12 +283,12 @@ export default function TourDetailPage() {
           )}
         </div>
 
-        {/* â”€â”€ Sidebar â”€â”€ */}
+        {/* Sidebar */}
         <aside className={styles.sidebar}>
           <div className={styles.sidebarCard}>
             <div className={styles.priceBlock}>
               <span className={styles.priceLabel}>
-                {locale === 'fr' ? 'Ã€ partir de' : 'Starting from'}
+                {locale === 'fr' ? 'A partir de' : 'Starting from'}
               </span>
               <span className={styles.price}>{formatPrice(tour)}</span>
               <span className={styles.priceSub}>
@@ -305,7 +299,7 @@ export default function TourDetailPage() {
             <div className={styles.tourMeta}>
               <div className={styles.metaRow}>
                 <span className={styles.metaLabel}>
-                  {locale === 'fr' ? 'DurÃ©e' : 'Duration'}
+                  {locale === 'fr' ? 'Duree' : 'Duration'}
                 </span>
                 <span className={styles.metaVal}>
                   {tour.durationText || `${tour.durationDays} ${locale === 'fr' ? 'jours' : 'days'}`}
@@ -314,7 +308,7 @@ export default function TourDetailPage() {
               {tour.departsFrom && (
                 <div className={styles.metaRow}>
                   <span className={styles.metaLabel}>
-                    {locale === 'fr' ? 'DÃ©part' : 'Departs'}
+                    {locale === 'fr' ? 'Depart' : 'Departs'}
                   </span>
                   <span className={styles.metaVal}>{tour.departsFrom}</span>
                 </div>
@@ -329,22 +323,22 @@ export default function TourDetailPage() {
               )}
             </div>
 
-            <a
+            
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.ctaBtn}
             >
-              {locale === 'fr' ? 'ðŸ“² RÃ©server sur WhatsApp' : 'ðŸ“² Book via WhatsApp'}
+              {locale === 'fr' ? '&#128242; Reserver sur WhatsApp' : '&#128242; Book via WhatsApp'}
             </a>
 
-            <a
+            
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.ctaBtnSecondary}
             >
-              {locale === 'fr' ? 'ðŸ’¬ Demander un devis' : 'ðŸ’¬ Request a quote'}
+              {locale === 'fr' ? '&#128172; Demander un devis' : '&#128172; Request a quote'}
             </a>
           </div>
 
@@ -359,7 +353,7 @@ export default function TourDetailPage() {
         </aside>
       </div>
 
-      {/* â”€â”€ Related Tours â”€â”€ */}
+      {/* Related Tours */}
       {tour.related.length > 0 && (
         <section className={styles.relatedSection}>
           <h2 className={styles.sectionTitle}>
@@ -378,7 +372,7 @@ export default function TourDetailPage() {
                 <div className={styles.relatedInfo}>
                   <h3 className={styles.relatedTitle}>{r.title}</h3>
                   <span className={styles.relatedPrice}>
-                    {r.priceDisplay || (r.priceFrom > 0 ? `From â‚¬${r.priceFrom}` : 'Ask for price')}
+                    {r.priceDisplay || (r.priceFrom > 0 ? `From \u20ac${r.priceFrom}` : 'Ask for price')}
                   </span>
                 </div>
               </Link>
@@ -389,4 +383,3 @@ export default function TourDetailPage() {
     </main>
   );
 }
-
