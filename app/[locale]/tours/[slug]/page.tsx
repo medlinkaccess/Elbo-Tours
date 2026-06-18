@@ -1,12 +1,11 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import styles from './tour.module.css';
-import { TourJsonLd } from '@/components/JsonLd';
+"use client";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import styles from "./tour.module.css";
+import { TourJsonLd } from "@/components/JsonLd";
 
-// -- Types --
 interface ItineraryDay {
   day: number;
   title: string;
@@ -48,32 +47,30 @@ interface TourDetail {
   related: RelatedTour[];
 }
 
-// -- Helpers --
-const WHATSAPP = '212665889258';
+const WHATSAPP = "212665889258";
 
 function formatPrice(tour: TourDetail): string {
   if (tour.priceDisplay) return tour.priceDisplay;
   if (tour.priceFrom && tour.priceFrom > 0)
-    return `From \u20ac${tour.priceFrom.toLocaleString()}`;
-  return 'Ask for price';
+    return "From €" + tour.priceFrom.toLocaleString();
+  return "Ask for price";
 }
 
 function categoryLabel(cat: string): string {
   const map: Record<string, string> = {
-    DAY_TRIP: 'Day Trip',
-    MULTI_DAY: 'Multi-Day Tour',
-    DESERT: 'Desert Tour',
-    MOUNTAIN: 'Mountain Tour',
-    CULTURAL: 'Cultural Tour',
-    PRIVATE: 'Private Tour',
+    DAY_TRIP: "Day Trip",
+    MULTI_DAY: "Multi-Day Tour",
+    DESERT: "Desert Tour",
+    MOUNTAIN: "Mountain Tour",
+    CULTURAL: "Cultural Tour",
+    PRIVATE: "Private Tour",
   };
   return map[cat] || cat;
 }
 
-// -- Component --
 export default function TourDetailPage() {
   const params = useParams();
-  const locale = (params?.locale as string) || 'en';
+  const locale = (params?.locale as string) || "en";
   const slug = params?.slug as string;
 
   const [tour, setTour] = useState<TourDetail | null>(null);
@@ -85,10 +82,9 @@ export default function TourDetailPage() {
     if (!slug) return;
     setLoading(true);
     setError(null);
-
-    fetch(`/api/tours/${slug}?locale=${locale}`)
+    fetch("/api/tours/" + slug + "?locale=" + locale)
       .then(res => {
-        if (!res.ok) throw new Error(res.status === 404 ? 'Tour not found' : 'Failed to load tour');
+        if (!res.ok) throw new Error(res.status === 404 ? "Tour not found" : "Failed to load tour");
         return res.json();
       })
       .then((data: TourDetail) => {
@@ -101,37 +97,34 @@ export default function TourDetailPage() {
       });
   }, [slug, locale]);
 
-  // -- Loading --
   if (loading) {
     return (
       <div className={styles.loadingWrap}>
         <div className={styles.spinner} />
-        <p>{locale === 'fr' ? 'Chargement...' : 'Loading...'}</p>
+        <p>{locale === "fr" ? "Chargement..." : "Loading..."}</p>
       </div>
     );
   }
 
-  // -- Error / 404 --
   if (error || !tour) {
     return (
       <div className={styles.errorWrap}>
-        <h1>{error || 'Tour not found'}</h1>
-        <Link href={`/${locale}/tours`}>
-          ← {locale === 'fr' ? 'Retour aux circuits' : 'Back to tours'}
+        <h1>{error || "Tour not found"}</h1>
+        <Link href={"/" + locale + "/tours"}>
+          &larr; {locale === "fr" ? "Retour aux circuits" : "Back to tours"}
         </Link>
       </div>
     );
   }
 
   const whatsappMsg = encodeURIComponent(
-    `Hi! I'm interested in the "${tour.title}" tour. Can you send me more details?`
+    "Hi! I am interested in the " + tour.title + " tour. Can you send me more details?"
   );
-  const whatsappUrl = `https://wa.me/${WHATSAPP}?text=${whatsappMsg}`;
+  const whatsappUrl = "https://wa.me/" + WHATSAPP + "?text=" + whatsappMsg;
 
   return (
     <main className={styles.page}>
       {tour && <TourJsonLd tour={tour} locale={locale} />}
-      {/* Hero */}
       <section className={styles.hero}>
         {(tour.imageUrl && tour.imageUrl !== "") ? (
           <Image
@@ -150,40 +143,37 @@ export default function TourDetailPage() {
             <div className={styles.heroBadges}>
               <span className={styles.badge}>{categoryLabel(tour.category)}</span>
               {tour.featured && (
-                <span className={`${styles.badge} ${styles.badgeFeatured}`}>
-                  {locale === 'fr' ? 'Recommande' : 'Featured'}
+                <span className={styles.badge + " " + styles.badgeFeatured}>
+                  {locale === "fr" ? "Recommande" : "Featured"}
                 </span>
               )}
             </div>
             <h1 className={styles.heroTitle}>{tour.title}</h1>
             <div className={styles.heroMeta}>
               {tour.durationText && <span>&#128336; {tour.durationText}</span>}
-              {tour.departsFrom && <span>&#128205; {locale === 'fr' ? 'Depart de' : 'Departs from'} {tour.departsFrom}</span>}
+              {tour.departsFrom && <span>&#128205; {locale === "fr" ? "Depart de" : "Departs from"} {tour.departsFrom}</span>}
               {tour.maxGroupSize && (
-                <span>&#128101; {locale === 'fr' ? 'Max' : 'Max'} {tour.maxGroupSize} {locale === 'fr' ? 'pers.' : 'people'}</span>
+                <span>&#128101; Max {tour.maxGroupSize} {locale === "fr" ? "pers." : "people"}</span>
               )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Body */}
       <div className={styles.body}>
         <div className={styles.main}>
 
-          {/* Overview */}
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
-              {locale === 'fr' ? 'Apercu' : 'Overview'}
+              {locale === "fr" ? "Apercu" : "Overview"}
             </h2>
             <p className={styles.description}>{tour.description}</p>
           </section>
 
-          {/* Highlights */}
           {tour.highlights.length > 0 && (
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>
-                {locale === 'fr' ? 'Points forts' : 'Highlights'}
+                {locale === "fr" ? "Points forts" : "Highlights"}
               </h2>
               <ul className={styles.highlightList}>
                 {tour.highlights.map((h, i) => (
@@ -196,25 +186,24 @@ export default function TourDetailPage() {
             </section>
           )}
 
-          {/* Itinerary */}
           {tour.itinerary.length > 0 && (
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>
-                {locale === 'fr' ? 'Programme' : 'Itinerary'}
+                {locale === "fr" ? "Programme" : "Itinerary"}
               </h2>
               <div className={styles.itinerary}>
                 {tour.itinerary.map((day, i) => (
                   <div key={i} className={styles.dayBlock}>
                     <button
-                      className={`${styles.dayHeader} ${activeDay === i ? styles.dayHeaderActive : ''}`}
+                      className={styles.dayHeader + (activeDay === i ? " " + styles.dayHeaderActive : "")}
                       onClick={() => setActiveDay(activeDay === i ? -1 : i)}
                       aria-expanded={activeDay === i}
                     >
                       <span className={styles.dayNum}>
-                        {locale === 'fr' ? 'Jour' : 'Day'} {day.day}
+                        {locale === "fr" ? "Jour" : "Day"} {day.day}
                       </span>
                       <span className={styles.dayTitle}>{day.title}</span>
-                      <span className={styles.dayChevron}>{activeDay === i ? '\u25b2' : '\u25bc'}</span>
+                      <span className={styles.dayChevron}>{activeDay === i ? "▲" : "▼"}</span>
                     </button>
                     {activeDay === i && (
                       <div className={styles.dayBody}>
@@ -227,17 +216,16 @@ export default function TourDetailPage() {
             </section>
           )}
 
-          {/* Includes / Excludes */}
           {(tour.includes.length > 0 || tour.excludes.length > 0) && (
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>
-                {locale === 'fr' ? 'Inclus / Non inclus' : 'Included / Not included'}
+                {locale === "fr" ? "Inclus / Non inclus" : "Included / Not included"}
               </h2>
               <div className={styles.inclusionsGrid}>
                 {tour.includes.length > 0 && (
                   <div>
                     <h3 className={styles.inclusionsSubtitle}>
-                      {locale === 'fr' ? '\u2714 Inclus' : '\u2714 Included'}
+                      {locale === "fr" ? "✔ Inclus" : "✔ Included"}
                     </h3>
                     <ul className={styles.inclusionList}>
                       {tour.includes.map((item, i) => (
@@ -251,11 +239,11 @@ export default function TourDetailPage() {
                 {tour.excludes.length > 0 && (
                   <div>
                     <h3 className={styles.inclusionsSubtitle}>
-                      {locale === 'fr' ? '\u2718 Non inclus' : '\u2718 Not included'}
+                      {locale === "fr" ? "✘ Non inclus" : "✘ Not included"}
                     </h3>
                     <ul className={styles.inclusionList}>
                       {tour.excludes.map((item, i) => (
-                        <li key={i} className={`${styles.inclusionItem} ${styles.exclusionItem}`}>
+                        <li key={i} className={styles.inclusionItem + " " + styles.exclusionItem}>
                           <span className={styles.xIcon}>&#10007;</span>{item}
                         </li>
                       ))}
@@ -266,16 +254,15 @@ export default function TourDetailPage() {
             </section>
           )}
 
-          {/* Gallery */}
           {tour.gallery.length > 0 && (
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>
-                {locale === 'fr' ? 'Galerie' : 'Gallery'}
+                {locale === "fr" ? "Galerie" : "Gallery"}
               </h2>
               <div className={styles.gallery}>
                 {tour.gallery.map((url, i) => (
                   <div key={i} className={styles.galleryItem}>
-                    <Image src={url} alt={`${tour.title} photo ${i + 1}`} fill className={styles.galleryImg} sizes="(max-width: 768px) 50vw, 33vw" />
+                    <Image src={url} alt={tour.title + " photo " + (i+1)} fill className={styles.galleryImg} sizes="(max-width: 768px) 50vw, 33vw" />
                   </div>
                 ))}
               </div>
@@ -283,32 +270,30 @@ export default function TourDetailPage() {
           )}
         </div>
 
-        {/* Sidebar */}
         <aside className={styles.sidebar}>
           <div className={styles.sidebarCard}>
             <div className={styles.priceBlock}>
               <span className={styles.priceLabel}>
-                {locale === 'fr' ? 'A partir de' : 'Starting from'}
+                {locale === "fr" ? "A partir de" : "Starting from"}
               </span>
               <span className={styles.price}>{formatPrice(tour)}</span>
               <span className={styles.priceSub}>
-                {locale === 'fr' ? 'par personne' : 'per person'}
+                {locale === "fr" ? "par personne" : "per person"}
               </span>
             </div>
-
             <div className={styles.tourMeta}>
               <div className={styles.metaRow}>
                 <span className={styles.metaLabel}>
-                  {locale === 'fr' ? 'Duree' : 'Duration'}
+                  {locale === "fr" ? "Duree" : "Duration"}
                 </span>
                 <span className={styles.metaVal}>
-                  {tour.durationText || `${tour.durationDays} ${locale === 'fr' ? 'jours' : 'days'}`}
+                  {tour.durationText || (tour.durationDays + " " + (locale === "fr" ? "jours" : "days"))}
                 </span>
               </div>
               {tour.departsFrom && (
                 <div className={styles.metaRow}>
                   <span className={styles.metaLabel}>
-                    {locale === 'fr' ? 'Depart' : 'Departs'}
+                    {locale === "fr" ? "Depart" : "Departs"}
                   </span>
                   <span className={styles.metaVal}>{tour.departsFrom}</span>
                 </div>
@@ -316,33 +301,19 @@ export default function TourDetailPage() {
               {tour.maxGroupSize && (
                 <div className={styles.metaRow}>
                   <span className={styles.metaLabel}>
-                    {locale === 'fr' ? 'Groupe max' : 'Max group'}
+                    {locale === "fr" ? "Groupe max" : "Max group"}
                   </span>
                   <span className={styles.metaVal}>{tour.maxGroupSize}</span>
                 </div>
               )}
             </div>
-
-            
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaBtn}
-            >
-              {locale === 'fr' ? '&#128242; Reserver sur WhatsApp' : '&#128242; Book via WhatsApp'}
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtn}>
+              {locale === "fr" ? "Reserver sur WhatsApp" : "Book via WhatsApp"}
             </a>
-
-            
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaBtnSecondary}
-            >
-              {locale === 'fr' ? '&#128172; Demander un devis' : '&#128172; Request a quote'}
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtnSecondary}>
+              {locale === "fr" ? "Demander un devis" : "Request a quote"}
             </a>
           </div>
-
-          {/* Tags */}
           {tour.tags.length > 0 && (
             <div className={styles.tagsBlock}>
               {tour.tags.map(tag => (
@@ -353,15 +324,14 @@ export default function TourDetailPage() {
         </aside>
       </div>
 
-      {/* Related Tours */}
       {tour.related.length > 0 && (
         <section className={styles.relatedSection}>
           <h2 className={styles.sectionTitle}>
-            {locale === 'fr' ? 'Circuits similaires' : 'Similar tours'}
+            {locale === "fr" ? "Circuits similaires" : "Similar tours"}
           </h2>
           <div className={styles.relatedGrid}>
             {tour.related.map(r => (
-              <Link key={r.slug} href={`/${locale}/tours/${r.slug}`} className={styles.relatedCard}>
+              <Link key={r.slug} href={"/" + locale + "/tours/" + r.slug} className={styles.relatedCard}>
                 <div className={styles.relatedImgWrap}>
                   {(r.imageUrl && r.imageUrl !== "") ? (
                     <Image src={r.imageUrl} alt={r.title} fill className={styles.relatedImg} sizes="300px" />
@@ -372,7 +342,7 @@ export default function TourDetailPage() {
                 <div className={styles.relatedInfo}>
                   <h3 className={styles.relatedTitle}>{r.title}</h3>
                   <span className={styles.relatedPrice}>
-                    {r.priceDisplay || (r.priceFrom > 0 ? `From \u20ac${r.priceFrom}` : 'Ask for price')}
+                    {r.priceDisplay || (r.priceFrom > 0 ? "From €" + r.priceFrom : "Ask for price")}
                   </span>
                 </div>
               </Link>
