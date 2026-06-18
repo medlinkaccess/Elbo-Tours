@@ -117,7 +117,7 @@ export default function TourDetailPage() {
       <div className={styles.errorWrap}>
         <h1>{error || 'Tour not found'}</h1>
         <Link href={`/${locale}/tours`}>
-          &larr; {locale === 'fr' ? 'Retour aux circuits' : 'Back to tours'}
+          \u2190 {locale === 'fr' ? 'Retour aux circuits' : 'Back to tours'}
         </Link>
       </div>
     );
