@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./tour.module.css";
 import { TourJsonLd } from "@/components/JsonLd";
+import QuoteModal from "@/components/tours/QuoteModal";
 
 interface ItineraryDay {
   day: number;
@@ -48,6 +49,7 @@ interface TourDetail {
 }
 
 const WHATSAPP = "212665889258";
+  const [showQuote, setShowQuote] = useState(false);
 
 function formatPrice(tour: TourDetail): string {
   if (tour.priceDisplay) return tour.priceDisplay;
@@ -310,6 +312,9 @@ export default function TourDetailPage() {
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtn}>
               {locale === "fr" ? "Reserver sur WhatsApp" : "Book via WhatsApp"}
             </a>
+            <button onClick={() => setShowQuote(true)} className={styles.ctaBtnSecondary} style={{ cursor: "pointer", border: "none" }}>
+              {locale === "fr" ? "Demander un devis" : "Request a Quote"}
+            </button>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtnSecondary}>
               {locale === "fr" ? "Demander un devis" : "Request a quote"}
             </a>
