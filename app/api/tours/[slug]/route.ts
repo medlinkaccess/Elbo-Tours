@@ -180,6 +180,7 @@ export async function PUT(
         "departsFrom" = ${body.departsFrom || "Marrakech"},
         "maxGroupSize" = ${maxGroup},
         gallery = ${gallery},
+        "priceDisplay" = ${body.priceDisplay || null},
         "updatedAt" = NOW()
       WHERE id = ${id}
     `;
