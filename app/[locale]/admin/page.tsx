@@ -96,7 +96,7 @@ function ToursTab() {
 
   function startEdit(tour: any) {
     setEditing(tour);
-    setForm({ title: tour.title || '', titleFr: tour.titleFr || '', desc: tour.description || '', descFr: tour.descriptionFr || '', category: tour.category || CATEGORIES[0], duration: tour.durationText || '', price: tour.priceFrom?.toString() || '', image: tour.imageUrl || '', featured: tour.featured || false, active: tour.active !== false });
+    setForm({ title: tour.title || '', titleFr: tour.titleFr || '', desc: tour.desc || '', descFr: tour.descFr || '', category: tour.category || CATEGORIES[0], duration: tour.duration || '', price: tour.priceFrom?.toString() || '', image: tour.image || '', featured: tour.featured || false, active: tour.active !== false });
   }
 
   function startNew() { setEditing({}); setForm({ title: '', titleFr: '', desc: '', descFr: '', category: CATEGORIES[0], duration: '', price: '', image: '', featured: false, active: true }); }
@@ -153,10 +153,10 @@ function ToursTab() {
         {tours.map((t: any) => (
           <div key={t.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              {t.imageUrl && <img src={t.imageUrl} alt={t.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              {t.image && <img src={t.image} alt={t.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
               <div>
                 <div style={{ fontWeight: 600, color: '#1a0d00' }}>{t.title}</div>
-                <div style={{ fontSize: '0.8rem', color: '#888' }}>{t.category} &middot; {t.durationText || t.durationDays + ' days'}</div>
+                <div style={{ fontSize: '0.8rem', color: '#888' }}>{t.category} &middot; {t.duration}</div>
               </div>
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -179,7 +179,7 @@ function FleetTab() {
 
   useEffect(() => { fetch('/api/fleet').then(r => r.json()).then(setItems); }, []);
   function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
-  function startEdit(item: any) { setEditing(item); setForm({ name: item.name || '', nameFr: item.nameFr || '', desc: item.description || '', passengers: item.passengers?.toString() || '', bags: item.bags?.toString() || '', price: item.pricePerDay?.toString() || '', image: item.imageUrl || '' }); }
+  function startEdit(item: any) { setEditing(item); setForm({ name: item.name || '', nameFr: item.nameFr || '', desc: item.desc || '', passengers: item.passengers?.toString() || '', bags: item.bags?.toString() || '', price: item.price?.toString() || '', image: item.image || '' }); }
   function startNew() { setEditing({}); setForm({ name: '', nameFr: '', desc: '', passengers: '', bags: '', price: '', image: '' }); }
 
   async function save() {
@@ -227,7 +227,7 @@ function FleetTab() {
         {items.map((t: any) => (
           <div key={t.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              {t.imageUrl && <img src={t.imageUrl} alt={t.name} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              {t.image && <img src={t.image} alt={t.name} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
               <div>
                 <div style={{ fontWeight: 600, color: '#1a0d00' }}>{t.name}</div>
                 <div style={{ fontSize: '0.8rem', color: '#888' }}>{t.passengers} pax &middot; {t.bags} bags</div>
@@ -253,7 +253,7 @@ function BlogTab() {
 
   useEffect(() => { fetch('/api/blog').then(r => r.json()).then(setPosts); }, []);
   function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
-  function startEdit(post: any) { setEditing(post); setForm({ title: post.title || '', titleFr: post.titleFr || '', excerpt: post.excerpt || '', excerptFr: post.excerptFr || '', category: post.category || BLOG_CATS[0], image: post.imageUrl || '', status: post.status || 'PUBLISHED' }); }
+  function startEdit(post: any) { setEditing(post); setForm({ title: post.title || '', titleFr: post.titleFr || '', excerpt: post.excerpt || '', excerptFr: post.excerptFr || '', category: post.category || BLOG_CATS[0], image: post.image || '', status: post.status || 'PUBLISHED' }); }
   function startNew() { setEditing({}); setForm({ title: '', titleFr: '', excerpt: '', excerptFr: '', category: BLOG_CATS[0], image: '', status: 'PUBLISHED' }); }
 
   async function save() {
@@ -301,10 +301,10 @@ function BlogTab() {
         {posts.map((p: any) => (
           <div key={p.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              {p.imageUrl && <img src={p.imageUrl} alt={p.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              {p.image && <img src={p.image} alt={p.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
               <div>
                 <div style={{ fontWeight: 600, color: '#1a0d00' }}>{p.title}</div>
-                <div style={{ fontSize: '0.8rem', color: '#888' }}>{p.category} &middot; {p.status}</div>
+                <div style={{ fontSize: '0.8rem', color: '#888' }}>{p.date}</div>
               </div>
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -327,7 +327,7 @@ function TransfersTab() {
 
   useEffect(() => { fetch('/api/transfers').then(r => r.json()).then(setItems); }, []);
   function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
-  function startEdit(item: any) { setEditing(item); setForm({ title: item.title || '', titleFr: item.titleFr || '', fromLocation: item.fromLocation || '', toLocation: item.toLocation || '', priceFrom: item.priceFrom?.toString() || '', image: item.imageUrl || '', active: item.active !== false }); }
+  function startEdit(item: any) { setEditing(item); setForm({ title: item.title || '', titleFr: item.titleFr || '', fromLocation: item.fromLocation || '', toLocation: item.toLocation || '', priceFrom: item.priceFrom?.toString() || '', image: item.image || '', active: item.active !== false }); }
   function startNew() { setEditing({}); setForm({ title: '', titleFr: '', fromLocation: '', toLocation: '', priceFrom: '', image: '', active: true }); }
 
   async function save() {
@@ -377,7 +377,7 @@ function TransfersTab() {
         {items.map((t: any) => (
           <div key={t.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              {t.imageUrl && <img src={t.imageUrl} alt={t.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              {t.image && <img src={t.image} alt={t.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
               <div>
                 <div style={{ fontWeight: 600, color: '#1a0d00' }}>{t.title}</div>
                 <div style={{ fontSize: '0.8rem', color: '#888' }}>{t.fromLocation} &rarr; {t.toLocation}</div>

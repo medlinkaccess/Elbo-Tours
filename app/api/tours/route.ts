@@ -55,6 +55,7 @@ export async function GET(req: NextRequest) {
       duration: t.durationText || '',
       from: 'Marrakech',
       price: t.priceFrom > 0 ? `From $${t.priceFrom}` : 'Ask for price',
+      priceFrom: t.priceFrom,
       featured: t.featured,
       active: t.active,
     }))
