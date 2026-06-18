@@ -1,19 +1,61 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface Tour {
   id: string; slug: string; title: string; titleFr: string;
   desc: string; descFr: string; image: string; category: string;
   duration: string; price: string; featured: boolean; active: boolean;
 }
-
 const CATEGORIES = ['Day Trips', 'Multi-day Tours', 'Desert Tours', 'City Tours', 'Custom/Private Tours'];
 const BLOG_CATS = ['Travel Tips', 'Destinations', 'Culture', 'Food', 'Adventure'];
-
 const inp = { width: '100%', padding: '0.6rem 0.8rem', border: '1.5px solid #e0d8cc', borderRadius: '6px', fontSize: '0.9rem', boxSizing: 'border-box' as const };
 const lbl = { display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#666', marginBottom: '0.3rem', textTransform: 'uppercase' as const, letterSpacing: '.05em' };
 const btn = (bg: string, color: string) => ({ padding: '0.35rem 0.75rem', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, background: bg, color });
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div><label style={lbl}>{label}</label>{children}</div>;
+}
+
+function ImageUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const fd = new FormData();
+    fd.append('file', file);
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.url) onChange(data.url);
+    } catch (err) {
+      console.error('Upload failed', err);
+    }
+    setUploading(false);
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <input style={{ ...inp, flex: 1 }} value={value} onChange={e => onChange(e.target.value)} placeholder="/images/tours/..." />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          style={{ ...btn('#C8960C', '#fff'), padding: '0.6rem 1rem', whiteSpace: 'nowrap' as const }}
+        >
+          {uploading ? 'Uploading...' : 'Upload Image'}
+        </button>
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
+      </div>
+      {value && value.startsWith('http') && (
+        <img src={value} alt="preview" style={{ marginTop: '0.5rem', height: '80px', borderRadius: '6px', objectFit: 'cover' }} />
+      )}
+    </div>
+  );
+}
 
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const [pw, setPw] = useState('');
@@ -41,366 +83,345 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-// Â· Generic Form Row helpers Â·
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label style={lbl}>{label}</label>{children}</div>;
-}
-
-// Â· Tour Form Â·
-function TourForm({ tour, onSave, onCancel }: { tour?: Tour | null; onSave: () => void; onCancel: () => void }) {
-  const [form, setForm] = useState({
-    title: tour?.title || '', titleFr: tour?.titleFr || '',
-    desc: tour?.desc || '', descFr: tour?.descFr || '',
-    image: tour?.image || '', category: tour?.category || 'Multi-day Tours',
-    duration: tour?.duration || '', price: tour?.price?.replace(/[^0-9.]/g, '') || '',
-    featured: tour?.featured || false, active: tour?.active !== false,
-  });
-  const [saving, setSaving] = useState(false);
-  const [err, setErr] = useState('');
-  const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
-  async function save() {
-    if (!form.title) { setErr('Title is required'); return; }
-    setSaving(true); setErr('');
-    const r = await fetch('/api/tours', { method: tour ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(tour ? { ...form, id: tour.id } : form) });
-    if (r.ok) { onSave(); } else { setErr('Failed to save'); }
-    setSaving(false);
-  }
-  return (
-    <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0' }}>
-      <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{tour ? 'Edit Tour' : 'New Tour'}</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <Field label="Title (EN)"><input style={inp} value={form.title} onChange={e => set('title', e.target.value)} /></Field>
-        <Field label="Title (FR)"><input style={inp} value={form.titleFr} onChange={e => set('titleFr', e.target.value)} /></Field>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Description (EN)"><textarea style={{ ...inp, height: '80px', resize: 'vertical' }} value={form.desc} onChange={e => set('desc', e.target.value)} /></Field></div>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Description (FR)"><textarea style={{ ...inp, height: '80px', resize: 'vertical' }} value={form.descFr} onChange={e => set('descFr', e.target.value)} /></Field></div>
-        <Field label="Category"><select style={inp} value={form.category} onChange={e => set('category', e.target.value)}>{CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></Field>
-        <Field label="Duration"><input style={inp} value={form.duration} onChange={e => set('duration', e.target.value)} placeholder="e.g. 3 days / 2 nights" /></Field>
-        <Field label="Price (EUR)"><input style={inp} type="number" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0 = Ask for price" /></Field>
-        <Field label="Image URL"><input style={inp} value={form.image} onChange={e => set('image', e.target.value)} placeholder="/images/tours/..." /></Field>
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', cursor: 'pointer' }}><input type="checkbox" checked={form.featured} onChange={e => set('featured', e.target.checked)} /> Featured</label>
-          <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', cursor: 'pointer' }}><input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} /> Active</label>
-        </div>
-      </div>
-      {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
-      <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
-        <button onClick={save} disabled={saving} style={{ padding: '0.65rem 1.5rem', background: '#C8960C', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>{saving ? 'Saving...' : 'Save Tour'}</button>
-        <button onClick={onCancel} style={{ padding: '0.65rem 1.25rem', background: '#f5f0e8', color: '#666', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Cancel</button>
-      </div>
-    </div>
-  );
-}
-
-// Â· Fleet Form Â·
-function FleetForm({ vehicle, onSave, onCancel }: { vehicle?: any; onSave: () => void; onCancel: () => void }) {
-  const [form, setForm] = useState({
-    name: vehicle?.name || '', nameFr: vehicle?.nameFr || '',
-    desc: vehicle?.desc || '', descFr: vehicle?.descFr || '',
-    image: vehicle?.image || '', price: vehicle?.price || '',
-    passengers: vehicle?.passengers || '', bags: vehicle?.bags || '',
-  });
-  const [saving, setSaving] = useState(false);
-  const [err, setErr] = useState('');
-  const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
-  async function save() {
-    if (!form.name) { setErr('Name is required'); return; }
-    setSaving(true); setErr('');
-    const r = await fetch('/api/fleet', { method: vehicle ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(vehicle ? { ...form, id: vehicle.id } : form) });
-    if (r.ok) { onSave(); } else { setErr('Failed to save'); }
-    setSaving(false);
-  }
-  return (
-    <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0' }}>
-      <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{vehicle ? 'Edit Vehicle' : 'New Vehicle'}</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <Field label="Name (EN)"><input style={inp} value={form.name} onChange={e => set('name', e.target.value)} /></Field>
-        <Field label="Name (FR)"><input style={inp} value={form.nameFr} onChange={e => set('nameFr', e.target.value)} /></Field>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Description (EN)"><textarea style={{ ...inp, height: '70px', resize: 'vertical' }} value={form.desc} onChange={e => set('desc', e.target.value)} /></Field></div>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Description (FR)"><textarea style={{ ...inp, height: '70px', resize: 'vertical' }} value={form.descFr} onChange={e => set('descFr', e.target.value)} /></Field></div>
-        <Field label="Passengers"><input style={inp} type="number" value={form.passengers} onChange={e => set('passengers', e.target.value)} /></Field>
-        <Field label="Bags"><input style={inp} type="number" value={form.bags} onChange={e => set('bags', e.target.value)} /></Field>
-        <Field label="Price / day (EUR)"><input style={inp} value={form.price} onChange={e => set('price', e.target.value)} placeholder="e.g. 120" /></Field>
-        <Field label="Image URL"><input style={inp} value={form.image} onChange={e => set('image', e.target.value)} placeholder="/images/fleet/..." /></Field>
-      </div>
-      {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
-      <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
-        <button onClick={save} disabled={saving} style={{ padding: '0.65rem 1.5rem', background: '#C8960C', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>{saving ? 'Saving...' : 'Save Vehicle'}</button>
-        <button onClick={onCancel} style={{ padding: '0.65rem 1.25rem', background: '#f5f0e8', color: '#666', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Cancel</button>
-      </div>
-    </div>
-  );
-}
-
-// Â· Blog Form Â·
-function BlogForm({ post, onSave, onCancel }: { post?: any; onSave: () => void; onCancel: () => void }) {
-  const [form, setForm] = useState({
-    title: post?.title || '', titleFr: post?.titleFr || '',
-    excerpt: post?.excerpt || '', excerptFr: post?.excerptFr || '',
-    content: Array.isArray(post?.content) ? post.content.join('\n\n') : post?.content || '',
-    contentFr: Array.isArray(post?.contentFr) ? post.contentFr.join('\n\n') : post?.contentFr || '',
-    image: post?.image || '', category: post?.category || 'Travel Tips',
-  });
-  const [saving, setSaving] = useState(false);
-  const [err, setErr] = useState('');
-  const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
-  async function save() {
-    if (!form.title) { setErr('Title is required'); return; }
-    setSaving(true); setErr('');
-    const r = await fetch('/api/blog', { method: post ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(post ? { ...form, id: post.id } : form) });
-    if (r.ok) { onSave(); } else { setErr('Failed to save'); }
-    setSaving(false);
-  }
-  return (
-    <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0' }}>
-      <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{post ? 'Edit Post' : 'New Blog Post'}</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <Field label="Title (EN)"><input style={inp} value={form.title} onChange={e => set('title', e.target.value)} /></Field>
-        <Field label="Title (FR)"><input style={inp} value={form.titleFr} onChange={e => set('titleFr', e.target.value)} /></Field>
-        <Field label="Category"><select style={inp} value={form.category} onChange={e => set('category', e.target.value)}>{BLOG_CATS.map(c => <option key={c}>{c}</option>)}</select></Field>
-        <Field label="Image URL"><input style={inp} value={form.image} onChange={e => set('image', e.target.value)} placeholder="/images/blog/..." /></Field>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Excerpt (EN)"><textarea style={{ ...inp, height: '60px', resize: 'vertical' }} value={form.excerpt} onChange={e => set('excerpt', e.target.value)} /></Field></div>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Excerpt (FR)"><textarea style={{ ...inp, height: '60px', resize: 'vertical' }} value={form.excerptFr} onChange={e => set('excerptFr', e.target.value)} /></Field></div>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Content (EN) - separate paragraphs with blank lines"><textarea style={{ ...inp, height: '160px', resize: 'vertical' }} value={form.content} onChange={e => set('content', e.target.value)} /></Field></div>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Content (FR)"><textarea style={{ ...inp, height: '160px', resize: 'vertical' }} value={form.contentFr} onChange={e => set('contentFr', e.target.value)} /></Field></div>
-      </div>
-      {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
-      <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
-        <button onClick={save} disabled={saving} style={{ padding: '0.65rem 1.5rem', background: '#C8960C', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>{saving ? 'Saving...' : 'Save Post'}</button>
-        <button onClick={onCancel} style={{ padding: '0.65rem 1.25rem', background: '#f5f0e8', color: '#666', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Cancel</button>
-      </div>
-    </div>
-  );
-}
-
-// Â· Tours Tab Â·
 function ToursTab() {
-  const [tours, setTours] = useState<Tour[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<Tour | null | undefined>(undefined);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  async function load() { setLoading(true); const r = await fetch('/api/tours?locale=en'); setTours(await r.json()); setLoading(false); }
-  useEffect(() => { load(); }, []);
-  async function del(id: string) {
-    if (!confirm('Delete this tour?')) return;
-    setDeleting(id);
-    await fetch('/api/tours', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
-    setDeleting(null); load();
-  }
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-        <h2 style={{ margin: 0, color: '#1a0d00' }}>Tours <span style={{ color: '#aaa', fontWeight: 400 }}>({tours.length})</span></h2>
-        {editing === undefined && <button onClick={() => setEditing(null)} style={{ ...btn('#C8960C', '#fff'), padding: '0.5rem 1.25rem' }}>+ New Tour</button>}
-      </div>
-      {editing !== undefined && <div style={{ marginBottom: '1.5rem' }}><TourForm tour={editing} onSave={() => { setEditing(undefined); load(); }} onCancel={() => setEditing(undefined)} /></div>}
-      {loading ? <p style={{ color: '#888' }}>Loading...</p> : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          {tours.map(t => (
-            <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', border: '1px solid #e8e0d0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-              {t.image ? <img src={t.image} alt="" style={{ width: '64px', height: '44px', objectFit: 'cover', borderRadius: '5px', flexShrink: 0 }} /> : <div style={{ width: '64px', height: '44px', background: '#f0ebe0', borderRadius: '5px', flexShrink: 0 }} />}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 700, color: '#1a0d00', fontSize: '0.95rem' }}>{t.title}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{t.category} Â· {t.duration || 'â€”'} Â· {t.price}</div>
-              </div>
-              <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
-                {t.featured && <span style={{ fontSize: '0.7rem', background: '#fff3cd', color: '#856404', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>Featured</span>}
-                <button onClick={() => setEditing(t)} style={btn('#e8f4fd', '#2980b9')}>Edit</button>
-                <button onClick={() => del(t.id)} disabled={deleting === t.id} style={btn('#fdecea', '#c0392b')}>{deleting === t.id ? '...' : 'Delete'}</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function TransferForm({ transfer, onSave, onCancel }: { transfer?: any; onSave: () => void; onCancel: () => void }) {
-  const [form, setForm] = useState({
-    title: transfer?.title || '', titleFr: transfer?.titleFr || '',
-    desc: transfer?.desc || '', descFr: transfer?.descFr || '',
-    fromLocation: transfer?.fromLocation || '', priceFrom: transfer?.priceFrom || '', image: transfer?.image || '',
-  });
-  const [saving, setSaving] = useState(false);
+  const [tours, setTours] = useState<any[]>([]);
+  const [editing, setEditing] = useState<any | null>(null);
+  const [form, setForm] = useState({ title: '', titleFr: '', desc: '', descFr: '', category: CATEGORIES[0], duration: '', price: '', image: '', featured: false, active: true });
   const [err, setErr] = useState('');
-  const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { fetch('/api/tours').then(r => r.json()).then(setTours); }, []);
+
+  function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
+
+  function startEdit(tour: any) {
+    setEditing(tour);
+    setForm({ title: tour.title || '', titleFr: tour.titleFr || '', desc: tour.description || '', descFr: tour.descriptionFr || '', category: tour.category || CATEGORIES[0], duration: tour.durationText || '', price: tour.priceFrom?.toString() || '', image: tour.imageUrl || '', featured: tour.featured || false, active: tour.active !== false });
+  }
+
+  function startNew() { setEditing({}); setForm({ title: '', titleFr: '', desc: '', descFr: '', category: CATEGORIES[0], duration: '', price: '', image: '', featured: false, active: true }); }
+
   async function save() {
-    if (!form.title) { setErr('Title is required'); return; }
     setSaving(true); setErr('');
-    const r = await fetch('/api/transfers', { method: transfer ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(transfer ? { ...form, id: transfer.id } : form) });
-    if (r.ok) { onSave(); } else { setErr('Failed to save'); }
+    const method = editing?.id ? 'PUT' : 'POST';
+    const url = editing?.id ? '/api/tours/' + editing.id : '/api/tours';
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, price: parseFloat(form.price) || 0 }) });
+    if (res.ok) { const updated = await fetch('/api/tours').then(r => r.json()); setTours(updated); setEditing(null); }
+    else { setErr('Save failed'); }
     setSaving(false);
   }
-  return (
-    <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0' }}>
-      <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{transfer ? 'Edit Transfer' : 'New Transfer'}</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <Field label="Title (EN)"><input style={inp} value={form.title} onChange={e => set('title', e.target.value)} /></Field>
-        <Field label="Title (FR)"><input style={inp} value={form.titleFr} onChange={e => set('titleFr', e.target.value)} /></Field>
-        <Field label="From Location"><input style={inp} value={form.fromLocation} onChange={e => set('fromLocation', e.target.value)} placeholder="e.g. Marrakech Menara Airport" /></Field>
-        <Field label="Price From (EUR)"><input style={inp} type="number" value={form.priceFrom} onChange={e => set('priceFrom', e.target.value)} /></Field>
-        <Field label="Image URL"><input style={inp} value={form.image} onChange={e => set('image', e.target.value)} placeholder="/images/airports/..." /></Field>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Description (EN)"><textarea style={{ ...inp, height: '60px', resize: 'vertical' }} value={form.desc} onChange={e => set('desc', e.target.value)} /></Field></div>
-        <div style={{ gridColumn: '1/-1' }}><Field label="Description (FR)"><textarea style={{ ...inp, height: '60px', resize: 'vertical' }} value={form.descFr} onChange={e => set('descFr', e.target.value)} /></Field></div>
-      </div>
-      {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
-      <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
-        <button onClick={save} disabled={saving} style={{ padding: '0.65rem 1.5rem', background: '#C8960C', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer' }}>{saving ? 'Saving...' : 'Save Transfer'}</button>
-        <button onClick={onCancel} style={{ padding: '0.65rem 1.25rem', background: '#f5f0e8', color: '#666', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Cancel</button>
-      </div>
-    </div>
-  );
-}
-function TransfersTab() {
-  const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<any>(undefined);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  async function load() { setLoading(true); try { const r = await fetch('/api/transfers?locale=en'); const d = await r.json(); setItems(Array.isArray(d) ? d : []); } catch {} finally { setLoading(false); } }
-  useEffect(() => { load(); }, []);
-  async function del(id: string) {
-    if (!confirm('Delete this transfer?')) return;
-    setDeleting(id);
-    await fetch('/api/transfers', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
-    setDeleting(null); load();
+
+  async function deleteTour(id: string) {
+    if (!confirm('Delete this tour?')) return;
+    await fetch('/api/tours/' + id, { method: 'DELETE' });
+    setTours(t => t.filter(x => x.id !== id));
   }
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-        <h2 style={{ margin: 0, color: '#1a0d00' }}>Transfers <span style={{ color: '#aaa', fontWeight: 400 }}>({items.length})</span></h2>
-        {editing === undefined && <button onClick={() => setEditing(null)} style={{ ...btn('#C8960C', '#fff'), padding: '0.5rem 1.25rem' }}>+ New Transfer</button>}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <span style={{ color: '#666', fontSize: '0.9rem' }}>{tours.length} tours</span>
+        <button onClick={startNew} style={btn('#C8960C', '#fff')}>+ New Tour</button>
       </div>
-      {editing !== undefined && <div style={{ marginBottom: '1.5rem' }}><TransferForm transfer={editing} onSave={() => { setEditing(undefined); load(); }} onCancel={() => setEditing(undefined)} /></div>}
-      {loading ? <p style={{ color: '#888' }}>Loading...</p> : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          {items.map((t: any) => (
-            <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', border: '1px solid #e8e0d0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, color: '#1a0d00' }}>{t.title || t.slug}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{t.fromLocation} Â· from Â·{t.priceFrom}</div>
-              </div>
-              <div style={{ display: 'flex', gap: '0.4rem' }}>
-                <button onClick={() => setEditing(t)} style={btn('#e8f4fd', '#2980b9')}>Edit</button>
-                <button onClick={() => del(t.id)} disabled={deleting === t.id} style={btn('#fdecea', '#c0392b')}>{deleting === t.id ? '...' : 'Delete'}</button>
-              </div>
+
+      {editing !== null && (
+        <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0', marginBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{editing?.id ? 'Edit Tour' : 'New Tour'}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <Field label="Title (EN)"><input style={inp} value={form.title} onChange={e => set('title', e.target.value)} /></Field>
+            <Field label="Title (FR)"><input style={inp} value={form.titleFr} onChange={e => set('titleFr', e.target.value)} /></Field>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Description (EN)"><textarea style={{ ...inp, height: '80px', resize: 'vertical' }} value={form.desc} onChange={e => set('desc', e.target.value)} /></Field></div>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Description (FR)"><textarea style={{ ...inp, height: '80px', resize: 'vertical' }} value={form.descFr} onChange={e => set('descFr', e.target.value)} /></Field></div>
+            <Field label="Category"><select style={inp} value={form.category} onChange={e => set('category', e.target.value)}>{CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></Field>
+            <Field label="Duration"><input style={inp} value={form.duration} onChange={e => set('duration', e.target.value)} placeholder="e.g. 3 days / 2 nights" /></Field>
+            <Field label="Price (EUR)"><input style={inp} type="number" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0 = Ask for price" /></Field>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', paddingTop: '1.5rem' }}>
+              <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', cursor: 'pointer' }}><input type="checkbox" checked={form.featured} onChange={e => set('featured', e.target.checked)} /> Featured</label>
+              <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', cursor: 'pointer' }}><input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} /> Active</label>
             </div>
-          ))}
+            <div style={{ gridColumn: '1/-1' }}><Field label="Image"><ImageUpload value={form.image} onChange={v => set('image', v)} /></Field></div>
+          </div>
+          {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+            <button onClick={save} disabled={saving} style={btn('#C8960C', '#fff')}>{saving ? 'Saving...' : 'Save'}</button>
+            <button onClick={() => setEditing(null)} style={btn('#e8e0d0', '#555')}>Cancel</button>
+          </div>
         </div>
       )}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {tours.map((t: any) => (
+          <div key={t.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {t.imageUrl && <img src={t.imageUrl} alt={t.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              <div>
+                <div style={{ fontWeight: 600, color: '#1a0d00' }}>{t.title}</div>
+                <div style={{ fontSize: '0.8rem', color: '#888' }}>{t.category} &middot; {t.durationText || t.durationDays + ' days'}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button onClick={() => startEdit(t)} style={btn('#f0e8d8', '#8B6914')}>Edit</button>
+              <button onClick={() => deleteTour(t.id)} style={btn('#fdecea', '#c0392b')}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-// Â· Fleet Tab Â·
 function FleetTab() {
   const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<any>(undefined);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  async function load() { setLoading(true); const r = await fetch('/api/fleet?locale=en'); setItems(await r.json()); setLoading(false); }
-  useEffect(() => { load(); }, []);
-  async function del(id: string) {
-    if (!confirm('Delete this vehicle?')) return;
-    setDeleting(id);
-    await fetch('/api/fleet', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
-    setDeleting(null); load();
+  const [editing, setEditing] = useState<any | null>(null);
+  const [form, setForm] = useState({ name: '', nameFr: '', desc: '', passengers: '', bags: '', price: '', image: '' });
+  const [err, setErr] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { fetch('/api/fleet').then(r => r.json()).then(setItems); }, []);
+  function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
+  function startEdit(item: any) { setEditing(item); setForm({ name: item.name || '', nameFr: item.nameFr || '', desc: item.description || '', passengers: item.passengers?.toString() || '', bags: item.bags?.toString() || '', price: item.pricePerDay?.toString() || '', image: item.imageUrl || '' }); }
+  function startNew() { setEditing({}); setForm({ name: '', nameFr: '', desc: '', passengers: '', bags: '', price: '', image: '' }); }
+
+  async function save() {
+    setSaving(true); setErr('');
+    const method = editing?.id ? 'PUT' : 'POST';
+    const url = editing?.id ? '/api/fleet/' + editing.id : '/api/fleet';
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, passengers: parseInt(form.passengers) || 0, bags: parseInt(form.bags) || 0, price: parseFloat(form.price) || 0 }) });
+    if (res.ok) { const updated = await fetch('/api/fleet').then(r => r.json()); setItems(updated); setEditing(null); }
+    else { setErr('Save failed'); }
+    setSaving(false);
   }
+
+  async function deleteItem(id: string) {
+    if (!confirm('Delete this vehicle?')) return;
+    await fetch('/api/fleet/' + id, { method: 'DELETE' });
+    setItems(i => i.filter(x => x.id !== id));
+  }
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-        <h2 style={{ margin: 0, color: '#1a0d00' }}>Fleet <span style={{ color: '#aaa', fontWeight: 400 }}>({items.length})</span></h2>
-        {editing === undefined && <button onClick={() => setEditing(null)} style={{ ...btn('#C8960C', '#fff'), padding: '0.5rem 1.25rem' }}>+ New Vehicle</button>}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <span style={{ color: '#666', fontSize: '0.9rem' }}>{items.length} vehicles</span>
+        <button onClick={startNew} style={btn('#C8960C', '#fff')}>+ New Vehicle</button>
       </div>
-      {editing !== undefined && <div style={{ marginBottom: '1.5rem' }}><FleetForm vehicle={editing} onSave={() => { setEditing(undefined); load(); }} onCancel={() => setEditing(undefined)} /></div>}
-      {loading ? <p style={{ color: '#888' }}>Loading...</p> : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          {items.length === 0 && <p style={{ color: '#aaa' }}>No vehicles yet.</p>}
-          {items.map((v: any) => (
-            <div key={v.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', border: '1px solid #e8e0d0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-              {v.image ? <img src={v.image} alt="" style={{ width: '64px', height: '44px', objectFit: 'cover', borderRadius: '5px', flexShrink: 0 }} /> : <div style={{ width: '64px', height: '44px', background: '#f0ebe0', borderRadius: '5px', flexShrink: 0 }} />}
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, color: '#1a0d00' }}>{v.name}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{v.passengers} passengers Â· {v.bags} bags Â· {v.price ? `Â·{v.price}` : 'Price TBD'}</div>
-              </div>
-              <div style={{ display: 'flex', gap: '0.4rem' }}>
-                <button onClick={() => setEditing(v)} style={btn('#e8f4fd', '#2980b9')}>Edit</button>
-                <button onClick={() => del(v.id)} disabled={deleting === v.id} style={btn('#fdecea', '#c0392b')}>{deleting === v.id ? '...' : 'Delete'}</button>
-              </div>
-            </div>
-          ))}
+      {editing !== null && (
+        <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0', marginBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{editing?.id ? 'Edit Vehicle' : 'New Vehicle'}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <Field label="Name (EN)"><input style={inp} value={form.name} onChange={e => set('name', e.target.value)} /></Field>
+            <Field label="Name (FR)"><input style={inp} value={form.nameFr} onChange={e => set('nameFr', e.target.value)} /></Field>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Description"><textarea style={{ ...inp, height: '80px', resize: 'vertical' }} value={form.desc} onChange={e => set('desc', e.target.value)} /></Field></div>
+            <Field label="Passengers"><input style={inp} type="number" value={form.passengers} onChange={e => set('passengers', e.target.value)} /></Field>
+            <Field label="Bags"><input style={inp} type="number" value={form.bags} onChange={e => set('bags', e.target.value)} /></Field>
+            <Field label="Price / day (EUR)"><input style={inp} value={form.price} onChange={e => set('price', e.target.value)} /></Field>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Image"><ImageUpload value={form.image} onChange={v => set('image', v)} /></Field></div>
+          </div>
+          {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+            <button onClick={save} disabled={saving} style={btn('#C8960C', '#fff')}>{saving ? 'Saving...' : 'Save'}</button>
+            <button onClick={() => setEditing(null)} style={btn('#e8e0d0', '#555')}>Cancel</button>
+          </div>
         </div>
       )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {items.map((t: any) => (
+          <div key={t.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {t.imageUrl && <img src={t.imageUrl} alt={t.name} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              <div>
+                <div style={{ fontWeight: 600, color: '#1a0d00' }}>{t.name}</div>
+                <div style={{ fontSize: '0.8rem', color: '#888' }}>{t.passengers} pax &middot; {t.bags} bags</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button onClick={() => startEdit(t)} style={btn('#f0e8d8', '#8B6914')}>Edit</button>
+              <button onClick={() => deleteItem(t.id)} style={btn('#fdecea', '#c0392b')}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-// Â· Blog Tab Â·
 function BlogTab() {
   const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<any>(undefined);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  async function load() { setLoading(true); try { const r = await fetch('/api/blog?locale=en'); const d = await r.json(); setPosts(Array.isArray(d) ? d : []); } catch {} finally { setLoading(false); } }
-  useEffect(() => { load(); }, []);
-  async function del(id: string) {
-    if (!confirm('Delete this post?')) return;
-    setDeleting(id);
-    await fetch('/api/blog', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
-    setDeleting(null); load();
+  const [editing, setEditing] = useState<any | null>(null);
+  const [form, setForm] = useState({ title: '', titleFr: '', excerpt: '', excerptFr: '', category: BLOG_CATS[0], image: '', status: 'PUBLISHED' });
+  const [err, setErr] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { fetch('/api/blog').then(r => r.json()).then(setPosts); }, []);
+  function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
+  function startEdit(post: any) { setEditing(post); setForm({ title: post.title || '', titleFr: post.titleFr || '', excerpt: post.excerpt || '', excerptFr: post.excerptFr || '', category: post.category || BLOG_CATS[0], image: post.imageUrl || '', status: post.status || 'PUBLISHED' }); }
+  function startNew() { setEditing({}); setForm({ title: '', titleFr: '', excerpt: '', excerptFr: '', category: BLOG_CATS[0], image: '', status: 'PUBLISHED' }); }
+
+  async function save() {
+    setSaving(true); setErr('');
+    const method = editing?.id ? 'PUT' : 'POST';
+    const url = editing?.id ? '/api/blog/' + editing.id : '/api/blog';
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+    if (res.ok) { const updated = await fetch('/api/blog').then(r => r.json()); setPosts(updated); setEditing(null); }
+    else { setErr('Save failed'); }
+    setSaving(false);
   }
+
+  async function deletePost(id: string) {
+    if (!confirm('Delete this post?')) return;
+    await fetch('/api/blog/' + id, { method: 'DELETE' });
+    setPosts(p => p.filter(x => x.id !== id));
+  }
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-        <h2 style={{ margin: 0, color: '#1a0d00' }}>Blog Posts <span style={{ color: '#aaa', fontWeight: 400 }}>({posts.length})</span></h2>
-        {editing === undefined && <button onClick={() => setEditing(null)} style={{ ...btn('#C8960C', '#fff'), padding: '0.5rem 1.25rem' }}>+ New Post</button>}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <span style={{ color: '#666', fontSize: '0.9rem' }}>{posts.length} posts</span>
+        <button onClick={startNew} style={btn('#C8960C', '#fff')}>+ New Post</button>
       </div>
-      {editing !== undefined && <div style={{ marginBottom: '1.5rem' }}><BlogForm post={editing} onSave={() => { setEditing(undefined); load(); }} onCancel={() => setEditing(undefined)} /></div>}
-      {loading ? <p style={{ color: '#888' }}>Loading...</p> : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          {posts.length === 0 && <p style={{ color: '#aaa' }}>No blog posts yet.</p>}
-          {posts.map((p: any) => (
-            <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', border: '1px solid #e8e0d0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-              {p.image ? <img src={p.image} alt="" style={{ width: '64px', height: '44px', objectFit: 'cover', borderRadius: '5px', flexShrink: 0 }} /> : <div style={{ width: '64px', height: '44px', background: '#f0ebe0', borderRadius: '5px', flexShrink: 0 }} />}
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, color: '#1a0d00' }}>{p.title}</div>
-                <div style={{ fontSize: '0.75rem', color: '#888' }}>{p.category} Â· {p.date}</div>
-              </div>
-              <div style={{ display: 'flex', gap: '0.4rem' }}>
-                <button onClick={() => setEditing(p)} style={btn('#e8f4fd', '#2980b9')}>Edit</button>
-                <button onClick={() => del(p.id)} disabled={deleting === p.id} style={btn('#fdecea', '#c0392b')}>{deleting === p.id ? '...' : 'Delete'}</button>
-              </div>
-            </div>
-          ))}
+      {editing !== null && (
+        <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0', marginBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{editing?.id ? 'Edit Post' : 'New Post'}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <Field label="Title (EN)"><input style={inp} value={form.title} onChange={e => set('title', e.target.value)} /></Field>
+            <Field label="Title (FR)"><input style={inp} value={form.titleFr} onChange={e => set('titleFr', e.target.value)} /></Field>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Excerpt (EN)"><textarea style={{ ...inp, height: '80px', resize: 'vertical' }} value={form.excerpt} onChange={e => set('excerpt', e.target.value)} /></Field></div>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Excerpt (FR)"><textarea style={{ ...inp, height: '80px', resize: 'vertical' }} value={form.excerptFr} onChange={e => set('excerptFr', e.target.value)} /></Field></div>
+            <Field label="Category"><select style={inp} value={form.category} onChange={e => set('category', e.target.value)}>{BLOG_CATS.map(c => <option key={c}>{c}</option>)}</select></Field>
+            <Field label="Status"><select style={inp} value={form.status} onChange={e => set('status', e.target.value)}><option value="PUBLISHED">Published</option><option value="DRAFT">Draft</option></select></Field>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Image"><ImageUpload value={form.image} onChange={v => set('image', v)} /></Field></div>
+          </div>
+          {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+            <button onClick={save} disabled={saving} style={btn('#C8960C', '#fff')}>{saving ? 'Saving...' : 'Save'}</button>
+            <button onClick={() => setEditing(null)} style={btn('#e8e0d0', '#555')}>Cancel</button>
+          </div>
         </div>
       )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {posts.map((p: any) => (
+          <div key={p.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {p.imageUrl && <img src={p.imageUrl} alt={p.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              <div>
+                <div style={{ fontWeight: 600, color: '#1a0d00' }}>{p.title}</div>
+                <div style={{ fontSize: '0.8rem', color: '#888' }}>{p.category} &middot; {p.status}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button onClick={() => startEdit(p)} style={btn('#f0e8d8', '#8B6914')}>Edit</button>
+              <button onClick={() => deletePost(p.id)} style={btn('#fdecea', '#c0392b')}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-// Â· Main Â·
+function TransfersTab() {
+  const [items, setItems] = useState<any[]>([]);
+  const [editing, setEditing] = useState<any | null>(null);
+  const [form, setForm] = useState({ title: '', titleFr: '', fromLocation: '', toLocation: '', priceFrom: '', image: '', active: true });
+  const [err, setErr] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { fetch('/api/transfers').then(r => r.json()).then(setItems); }, []);
+  function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
+  function startEdit(item: any) { setEditing(item); setForm({ title: item.title || '', titleFr: item.titleFr || '', fromLocation: item.fromLocation || '', toLocation: item.toLocation || '', priceFrom: item.priceFrom?.toString() || '', image: item.imageUrl || '', active: item.active !== false }); }
+  function startNew() { setEditing({}); setForm({ title: '', titleFr: '', fromLocation: '', toLocation: '', priceFrom: '', image: '', active: true }); }
+
+  async function save() {
+    setSaving(true); setErr('');
+    const method = editing?.id ? 'PUT' : 'POST';
+    const url = editing?.id ? '/api/transfers/' + editing.id : '/api/transfers';
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, priceFrom: parseFloat(form.priceFrom) || 0 }) });
+    if (res.ok) { const updated = await fetch('/api/transfers').then(r => r.json()); setItems(updated); setEditing(null); }
+    else { setErr('Save failed'); }
+    setSaving(false);
+  }
+
+  async function deleteItem(id: string) {
+    if (!confirm('Delete this transfer?')) return;
+    await fetch('/api/transfers/' + id, { method: 'DELETE' });
+    setItems(i => i.filter(x => x.id !== id));
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <span style={{ color: '#666', fontSize: '0.9rem' }}>{items.length} transfers</span>
+        <button onClick={startNew} style={btn('#C8960C', '#fff')}>+ New Transfer</button>
+      </div>
+      {editing !== null && (
+        <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', border: '1px solid #e8e0d0', marginBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1.25rem', color: '#1a0d00' }}>{editing?.id ? 'Edit Transfer' : 'New Transfer'}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <Field label="Title (EN)"><input style={inp} value={form.title} onChange={e => set('title', e.target.value)} /></Field>
+            <Field label="Title (FR)"><input style={inp} value={form.titleFr} onChange={e => set('titleFr', e.target.value)} /></Field>
+            <Field label="From Location"><input style={inp} value={form.fromLocation} onChange={e => set('fromLocation', e.target.value)} /></Field>
+            <Field label="To Location"><input style={inp} value={form.toLocation} onChange={e => set('toLocation', e.target.value)} /></Field>
+            <Field label="Price From (EUR)"><input style={inp} type="number" value={form.priceFrom} onChange={e => set('priceFrom', e.target.value)} placeholder="0 = Ask for price" /></Field>
+            <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1.5rem' }}>
+              <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', cursor: 'pointer' }}><input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} /> Active</label>
+            </div>
+            <div style={{ gridColumn: '1/-1' }}><Field label="Image"><ImageUpload value={form.image} onChange={v => set('image', v)} /></Field></div>
+          </div>
+          {err && <p style={{ color: '#c0392b', fontSize: '0.85rem', margin: '0.75rem 0 0' }}>{err}</p>}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+            <button onClick={save} disabled={saving} style={btn('#C8960C', '#fff')}>{saving ? 'Saving...' : 'Save'}</button>
+            <button onClick={() => setEditing(null)} style={btn('#e8e0d0', '#555')}>Cancel</button>
+          </div>
+        </div>
+      )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {items.map((t: any) => (
+          <div key={t.id} style={{ background: '#fff', borderRadius: '10px', padding: '1rem 1.25rem', border: '1px solid #e8e0d0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {t.imageUrl && <img src={t.imageUrl} alt={t.title} style={{ width: '60px', height: '45px', objectFit: 'cover', borderRadius: '6px' }} />}
+              <div>
+                <div style={{ fontWeight: 600, color: '#1a0d00' }}>{t.title}</div>
+                <div style={{ fontSize: '0.8rem', color: '#888' }}>{t.fromLocation} &rarr; {t.toLocation}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button onClick={() => startEdit(t)} style={btn('#f0e8d8', '#8B6914')}>Edit</button>
+              <button onClick={() => deleteItem(t.id)} style={btn('#fdecea', '#c0392b')}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
-  const [tab, setTab] = useState<'tours' | 'transfers' | 'fleet' | 'blog'>('tours');
-  async function logout() { await fetch('/api/admin-auth', { method: 'DELETE' }); setAuthed(false); }
+  const [tab, setTab] = useState<'tours' | 'fleet' | 'blog' | 'transfers'>('tours');
+
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
-  const tabBtn = (t: string, active: boolean) => ({
-    padding: '0.65rem 1.25rem', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', background: 'transparent',
-    borderBottom: active ? '2px solid #C8960C' : '2px solid transparent', color: active ? '#C8960C' : '#666',
-  });
-  const TABS = [{ id: 'tours', label: 'Tours' }, { id: 'transfers', label: 'Transfers' }, { id: 'fleet', label: 'Fleet' }, { id: 'blog', label: 'Blog' }];
+
+  const tabs = [
+    { id: 'tours', label: 'Tours' },
+    { id: 'transfers', label: 'Transfers' },
+    { id: 'fleet', label: 'Fleet' },
+    { id: 'blog', label: 'Blog' },
+  ] as const;
+
   return (
     <div style={{ minHeight: '100vh', background: '#f5f0e8' }}>
-      <div style={{ background: '#1a0d00', color: '#fff', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '56px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><img src='/logos/elbo-logo.png' alt='Elbo Tours' style={{ height: '36px', objectFit: 'contain' }} /><span style={{ fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: '1.1rem' }}>Admin</span></div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <a href="/en/tours" target="_blank" style={{ color: '#C8960C', fontSize: '0.85rem', textDecoration: 'none' }}>View Site</a>
-          <button onClick={logout} style={{ padding: '0.35rem 0.9rem', background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '0.85rem' }}>Logout</button>
+      <header style={{ background: '#1a0d00', color: '#fff', padding: '0 2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', height: '56px' }}>
+        <img src="/logos/elbo-logo.png" alt="Elbo Tours" style={{ height: '36px', objectFit: 'contain' }} />
+        <span style={{ fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: '1.1rem' }}>Admin</span>
+      </header>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', borderBottom: '2px solid #e8e0d0', paddingBottom: '0' }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              style={{ padding: '0.6rem 1.25rem', border: 'none', borderRadius: '8px 8px 0 0', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', background: tab === t.id ? '#C8960C' : 'transparent', color: tab === t.id ? '#fff' : '#888', borderBottom: tab === t.id ? '2px solid #C8960C' : 'none', marginBottom: '-2px' }}>
+              {t.label}
+            </button>
+          ))}
         </div>
-      </div>
-      <div style={{ background: '#fff', borderBottom: '1px solid #e8e0d0', padding: '0 1.5rem', display: 'flex' }}>
-        {TABS.map(t => <button key={t.id} style={tabBtn(t.id, tab === t.id)} onClick={() => setTab(t.id as any)}>{t.label}</button>)}
-      </div>
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1.5rem' }}>
         {tab === 'tours' && <ToursTab />}
         {tab === 'transfers' && <TransfersTab />}
         {tab === 'fleet' && <FleetTab />}
