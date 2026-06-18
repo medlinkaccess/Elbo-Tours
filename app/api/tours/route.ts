@@ -38,9 +38,9 @@ export async function GET(req: NextRequest) {
        FROM tours t
        LEFT JOIN tour_translations tt ON tt."tourId" = t.id AND tt.locale = 'en'
        LEFT JOIN tour_translations ttfr ON ttfr."tourId" = t.id AND ttfr.locale = 'fr'
-       WHERE t.active = true
+       WHERE (t.active = true OR $1 = 'admin')
        ORDER BY t."sortOrder" ASC, t."createdAt" DESC`,
-      []
+      [searchParams.get('admin') || '']
     )
 
     const result = rows.map((t: any) => ({
