@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+path = r"E:\projects\Elbo-Tours\app\api\upload\route.ts"
+
+content = """import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
@@ -50,3 +52,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }
+"""
+
+with open(path, "w", encoding="utf-8") as f:
+    f.write(content)
+
+print("OK: upload route rewritten to use direct Cloudinary REST API")
