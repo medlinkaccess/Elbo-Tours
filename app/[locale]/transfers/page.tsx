@@ -200,7 +200,7 @@ export default function TransfersPage() {
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <span className="text-xs text-gray-400">{t('per_vehicle')}</span>
-                          <span className="font-bold text-[#C8960C] text-lg">{airport.priceFrom > 0 ? `From €${airport.priceFrom}` : "Ask for price"}</span>
+                          <span className="font-bold text-[#C8960C] text-lg">{airport.price}</span>
                         </div>
                         <div className="flex gap-2">
                           <a href={`https://wa.me/212665889258?text=${msg}`} target="_blank" rel="noopener noreferrer"
