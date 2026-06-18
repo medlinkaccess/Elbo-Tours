@@ -355,6 +355,7 @@ export default function TourDetailPage() {
           </div>
         </section>
       )}
+      {showQuote && tour && <QuoteModal tourId={tour.id} tourTitle={tour.title} onClose={() => setShowQuote(false)} />}
     </main>
   );
 }
