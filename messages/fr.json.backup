@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Accueil",
     "tours": "Circuits",
@@ -15,15 +15,15 @@
       { "headline": "Découvrez le Maroc", "sub": "Circuits privés sur mesure au départ de Marrakech", "cta": "Explorer les circuits" },
       { "headline": "Voyagez Confortablement,\nAvec Notre Flotte Moderne", "sub": "Vans spacieux, chauffeurs professionnels — chaque trajet sûr, fluide et ponctuel", "cta": "Notre Flotte" },
       { "headline": "Découvrez l'Essence\ndu Maroc", "sub": "Circuits privés sur mesure au départ de Marrakech", "cta": "Explorer les circuits" },
-      { "headline": "Transferts Fluides,\nDepuis l'Aéroport de Marrakech", "sub": "Prise en charge privée dès votre arrivée — sans attente, sans stress", "cta": "Réserver un Transfert" },
-      { "headline": "Aéroport de Casablanca,\nPris en Charge Dès l'Arrivée", "sub": "Chauffeurs professionnels prêts à vous accueillir, pancarte à votre nom", "cta": "Réserver un Transfert" }
+      { "headline": "Nuits au Sahara\nSous un Million d'Étoiles", "sub": "Camps de glamping, treks à chameau, dunes au lever du soleil", "cta": "Circuits Désert" },
+      { "headline": "Villes Impériales,\nHistoires Intemporelles", "sub": "Marrakech · Fès · Meknès · Casablanca", "cta": "Circuits Culturels" }
     ]
   },
   "stats": [
-    { "num": "6+", "label": "Années d'expérience" },
+    { "num": "20+", "label": "Années d'expérience" },
     { "num": "24", "label": "Circuits sélectionnés" },
     { "num": "7", "label": "Langues parlées" },
-    { "num": "5★", "label": "Note Google" }
+    { "num": "1", "label": "Voyage unique : le vôtre" }
   ],
   "types": {
     "eyebrow": "Explorer par intérêt",
@@ -55,27 +55,6 @@
   "quote": {
     "text": "« Nous aimons partager avec nos hôtes la paix et le mode de vie marocain — chaque voyage est une chance de découvrir quelque chose d'authentique. »",
     "link": "Rencontrez notre équipe et notre philosophie"
-  },
-  "homepage_about": {
-    "eyebrow": "Qui Sommes-Nous",
-    "title": "Spécialistes des Circuits Privés au Maroc — Basés à Marrakech et Casablanca",
-    "p1": "Elbo Tours est une agence de voyage marocaine familiale avec plus de 6 ans d'expérience dans l'organisation de circuits privés et de transferts à travers le pays. Nous ne sommes pas un centre d'appels ou une plateforme de réservation — nous sommes une petite équipe passionnée de guides et chauffeurs locaux qui vivent et respirent le Maroc.",
-    "p2": "Que vous ayez besoin d'un transfert aéroport, d'une excursion d'une journée dans l'Atlas, ou d'un grand circuit de 10 jours à travers le Sahara et les villes impériales, nous construisons chaque voyage autour de vous — votre rythme, vos intérêts, votre groupe.",
-    "cta": "Rencontrez notre équipe",
-    "img_badge": "Années d'expérience"
-  },
-  "homepage_services": {
-    "eyebrow": "Nos Services",
-    "title": "Tout ce dont vous avez besoin pour le Maroc",
-    "tours_title": "Circuits Privés",
-    "tours_body": "Itinéraires sur mesure à travers le Maroc — désert, montagnes, côte et médinas. Votre groupe uniquement.",
-    "airport_title": "Transferts Aéroport",
-    "airport_body": "Prise en charge ponctuelle à l'aéroport Menara de Marrakech et tous les aéroports marocains.",
-    "city_title": "Transferts Inter-Villes",
-    "city_body": "Transferts privés confortables entre toutes les villes du Maroc. Sans bus partagés ni horaires fixes.",
-    "fleet_title": "Location Minibus & Flotte",
-    "fleet_body": "Véhicules modernes et climatisés, des berlines aux minibus 19 places — avec chauffeurs expérimentés.",
-    "details": "Découvrir"
   },
   "why": {
     "eyebrow": "Pourquoi Elbo Tours",
@@ -109,32 +88,18 @@
     "whatsapp": "WhatsApp"
   },
   "about": {
-      "hero_title": "À propos d'Elbo Tours",
-      "hero_sub": "Votre partenaire de transport privé de confiance à travers le Maroc depuis 2020.",
-      "story_badge": "Notre Histoire",
-      "story_title": "De Casablanca à Tout le Maroc",
-      "story_p1": "Elbo Tours est né en 2020 à Casablanca, d'une frustration simple : trop de visiteurs au Maroc devaient choisir entre des navettes partagées impersonnelles et des taxis chers et peu fiables. Nous avons commencé avec un seul véhicule et une promesse — chaque client serait traité comme un membre de la famille, chaque trajet serait ponctuel, et chaque prix serait fixé avant même de prendre la route.",
-      "story_p2": "Aujourd'hui, notre flotte couvre les circuits privés, les transferts aéroport, les trajets de ville à ville et le transport de groupe à travers tout le pays — des souks de Marrakech aux dunes du Sahara, jusqu'à la côte de Casablanca. Ce qui n'a pas changé, c'est qui nous sommes : une petite équipe marocaine et impliquée, qui sélectionne personnellement chaque chauffeur, planifie chaque itinéraire et répond elle-même à chaque message WhatsApp.",
-      "mission_badge": "Ce Qui Nous Anime",
-      "mission_title": "Notre Mission et Nos Valeurs",
-      "values": [
-        { "icon": "🤝", "title": "Confiance et Transparence", "desc": "Prix fixés avant le départ — sans compteur, sans frais cachés, sans surprise de dernière minute." },
-        { "icon": "🧭", "title": "Expertise Locale", "desc": "Chaque chauffeur et guide est marocain, formé, et connaît les routes, la culture et les meilleurs endroits cachés." },
-        { "icon": "⏱️", "title": "Fiabilité", "desc": "Suivi des vols, prises en charge ponctuelles et communication claire de la réservation à l'arrivée." },
-        { "icon": "❤️", "title": "Attention Personnalisée", "desc": "Chaque voyage est adapté à vous — votre rythme, vos intérêts, votre groupe, pas un horaire de bus touristique figé." }
-      ],
-      "stats": [
-        { "icon": "🏆", "title": "6+ Ans", "desc": "Au service des voyageurs du monde entier avec des prestations de transport premium." },
-        { "icon": "🌍", "title": "3 Langues", "desc": "Nos chauffeurs parlent anglais, français et arabe pour une communication sans barrière." },
-        { "icon": "⭐", "title": "5 000+ Clients", "desc": "Des milliers de voyageurs satisfaits nous ont confié leur séjour au Maroc." }
-      ],
-      "team_badge": "Les Visages d'Elbo",
-      "team_title": "Notre Équipe",
-      "team_body": "Derrière chaque transfert fluide et chaque circuit bien organisé se trouve une petite équipe de chauffeurs et coordinateurs basée à Marrakech et Casablanca — les mêmes visages qui vous accueilleront à l'aéroport et qui répondent à vos appels.",
-      "cta_title": "Prêt à voyager avec nous ?",
-      "cta_btn": "Obtenir un devis gratuit"
-    },
-    "transfers": {
+    "hero_title": "À propos d'Elbo Tours",
+    "hero_sub": "Votre partenaire de transport privé de confiance à travers le Maroc depuis 2014.",
+    "intro": "Elbo Tours a été fondé à Marrakech avec une mission simple : offrir aux voyageurs un transport privé sûr, confortable et abordable à travers tout le Maroc.",
+    "stats": [
+      { "icon": "🏆", "title": "10+ Ans", "desc": "Au service des voyageurs du monde entier avec des prestations de transport premium." },
+      { "icon": "🌍", "title": "3 Langues", "desc": "Nos chauffeurs parlent anglais, français et arabe pour une communication sans barrière." },
+      { "icon": "⭐", "title": "5 000+ Clients", "desc": "Des milliers de voyageurs satisfaits nous ont confié leur séjour au Maroc." }
+    ],
+    "cta_title": "Prêt à voyager avec nous ?",
+    "cta_btn": "Obtenir un devis gratuit"
+  },
+  "transfers": {
     "hero_title": "Services de Transfert au Maroc",
     "hero_sub": "Voyagez partout au Maroc — porte à porte, prix fixe, sans surprises.",
     "badge": "Transferts Privés · Maroc",
@@ -238,8 +203,6 @@
       "phone": "+212 665-889258",
       "email": "contact@elbo-tours.com",
       "address": "Marrakech, Maroc",
-        "address_marrakech": "Marrakech, Maroc",
-        "address_casablanca": "Hay Sadri GRP 4, Rue 19 NR11, Casablanca, Maroc",
       "hours": "7j/7, 8h – 21h"
     }
   },
@@ -248,3 +211,4 @@
     "copyright": "© 2026 Elbo Tours. Tous droits réservés."
   }
 }
+

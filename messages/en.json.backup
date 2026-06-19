@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Home",
     "tours": "Tours",
@@ -15,15 +15,15 @@
       { "headline": "Discover Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
       { "headline": "Travel in Comfort,\nWith Our Modern Fleet", "sub": "Spacious vans, professional drivers — every journey safe, smooth, and on time", "cta": "View Our Fleet" },
       { "headline": "Discover the\nEssence of Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
-      { "headline": "Smooth Transfers,\nFrom Marrakech Airport", "sub": "Private pickup the moment you land — no waiting, no hassle", "cta": "Book a Transfer" },
-      { "headline": "Casablanca Airport,\nSorted From Arrival", "sub": "Professional drivers ready and waiting with your name on the sign", "cta": "Book a Transfer" }
+      { "headline": "Sahara Nights\nUnder a Billion Stars", "sub": "Glamping camps, camel treks, sunrise dunes", "cta": "Desert Tours" },
+      { "headline": "Imperial Cities,\nTimeless Stories", "sub": "Marrakech · Fès · Meknès · Casablanca", "cta": "Cultural Tours" }
     ]
   },
   "stats": [
-    { "num": "6+", "label": "Years of experience" },
+    { "num": "20+", "label": "Years of experience" },
     { "num": "24", "label": "Curated tours" },
     { "num": "7", "label": "Languages spoken" },
-    { "num": "5★", "label": "Google rating" }
+    { "num": "1", "label": "Unique trip: yours" }
   ],
   "types": {
     "eyebrow": "Explore by interest",
@@ -55,27 +55,6 @@
   "quote": {
     "text": "\"We love to share with our guests the peace and the Moroccan way of life — every journey is a chance to discover something genuine.\"",
     "link": "Meet our team & philosophy"
-  },
-  "homepage_about": {
-    "eyebrow": "Who We Are",
-    "title": "Morocco's Private Tour Specialists — Based in Marrakech & Casablanca",
-    "p1": "Elbo Tours is a family-run Moroccan travel company with over 6 years of experience organising private tours and transfers across the country. We are not a call centre or a booking platform — we are a small, passionate team of local guides and drivers who live and breathe Morocco.",
-    "p2": "Whether you need a seamless airport pickup, a day trip to the Atlas Mountains, or a 10-day grand journey through the Sahara and imperial cities, we build every trip around you — your pace, your interests, your group.",
-    "cta": "Meet our team",
-    "img_badge": "Years of experience"
-  },
-  "homepage_services": {
-    "eyebrow": "What We Offer",
-    "title": "Everything you need for Morocco",
-    "tours_title": "Private Tours",
-    "tours_body": "Tailor-made multi-day itineraries across Morocco — desert, mountains, coast, and medinas. Your group only.",
-    "airport_title": "Airport Transfers",
-    "airport_body": "Reliable, on-time pickups and drop-offs at Marrakech Menara and all major Moroccan airports.",
-    "city_title": "City-to-City Transfers",
-    "city_body": "Comfortable private transfers between any two cities in Morocco. No shared buses, no fixed timetables.",
-    "fleet_title": "Minibus & Fleet Hire",
-    "fleet_body": "Modern, air-conditioned vehicles from saloon cars to 19-seat minibuses — with experienced drivers.",
-    "details": "Explore"
   },
   "why": {
     "eyebrow": "Why Elbo Tours",
@@ -109,32 +88,18 @@
     "whatsapp": "WhatsApp us"
   },
   "about": {
-      "hero_title": "About Elbo Tours",
-      "hero_sub": "Your trusted private transport partner across Morocco since 2020.",
-      "story_badge": "Our Story",
-      "story_title": "From Casablanca to All of Morocco",
-      "story_p1": "Elbo Tours began in 2020 in Casablanca, born from a simple frustration: too many visitors to Morocco were stuck choosing between impersonal shared shuttles and overpriced, unreliable taxis. We started with a single vehicle and a promise — every guest would be treated like family, every journey would run on time, and every price would be fixed before the wheels ever turned.",
-      "story_p2": "Today, our fleet covers private tours, airport transfers, city-to-city routes, and group transport across the entire country — from the souks of Marrakech to the Sahara dunes and the coast of Casablanca. What hasn't changed is who we are: a small, hands-on Moroccan team who still personally vet every driver, plan every itinerary, and answer every WhatsApp message ourselves.",
-      "mission_badge": "What Drives Us",
-      "mission_title": "Our Mission & Core Values",
-      "values": [
-        { "icon": "🤝", "title": "Trust & Transparency", "desc": "Fixed prices agreed before you travel — no meters, no hidden fees, no last-minute surprises." },
-        { "icon": "🧭", "title": "Local Expertise", "desc": "Every driver and guide is Moroccan, trained, and knows the roads, the culture, and the best hidden spots." },
-        { "icon": "⏱️", "title": "Reliability", "desc": "Flight tracking, punctual pickups, and clear communication from booking to drop-off." },
-        { "icon": "❤️", "title": "Personal Care", "desc": "Every trip is tailored to you — your pace, your interests, your group, not a fixed tour bus schedule." }
-      ],
-      "stats": [
-        { "icon": "🏆", "title": "6+ Years", "desc": "Serving travellers from across the world with premium transport services." },
-        { "icon": "🌍", "title": "3 Languages", "desc": "Our drivers speak English, French and Arabic for seamless communication." },
-        { "icon": "⭐", "title": "5,000+ Clients", "desc": "Thousands of happy travellers have trusted us with their Moroccan journey." }
-      ],
-      "team_badge": "The People Behind Elbo",
-      "team_title": "Meet Our Team",
-      "team_body": "Behind every smooth transfer and every well-planned tour is a small team of drivers and coordinators based in Marrakech and Casablanca — the same faces who'll greet you at the airport and the same people who answer when you call.",
-      "cta_title": "Ready to travel with us?",
-      "cta_btn": "Get a Free Quote"
-    },
-    "transfers": {
+    "hero_title": "About Elbo Tours",
+    "hero_sub": "Your trusted private transport partner across Morocco since 2014.",
+    "intro": "Elbo Tours was founded in Marrakech with a simple mission: to provide travellers with safe, comfortable and affordable private transport throughout Morocco.",
+    "stats": [
+      { "icon": "🏆", "title": "10+ Years", "desc": "Serving travellers from across the world with premium transport services." },
+      { "icon": "🌍", "title": "3 Languages", "desc": "Our drivers speak English, French and Arabic for seamless communication." },
+      { "icon": "⭐", "title": "5,000+ Clients", "desc": "Thousands of happy travellers have trusted us with their Moroccan journey." }
+    ],
+    "cta_title": "Ready to travel with us?",
+    "cta_btn": "Get a Free Quote"
+  },
+  "transfers": {
     "hero_title": "Morocco Transfer Services",
     "hero_sub": "Getting Around Morocco From Anywhere — door-to-door, fixed price, no surprises.",
     "badge": "Private Transfers · Morocco",
@@ -238,8 +203,6 @@
       "phone": "+212 665-889258",
       "email": "contact@elbo-tours.com",
       "address": "Marrakech, Morocco",
-        "address_marrakech": "Marrakech, Morocco",
-        "address_casablanca": "Hay Sadri GRP 4, Rue 19 NR11, Casablanca, Morocco",
       "hours": "7 days a week, 8am – 9pm"
     }
   },
@@ -248,3 +211,4 @@
     "copyright": "© 2026 Elbo Tours. All rights reserved."
   }
 }
+

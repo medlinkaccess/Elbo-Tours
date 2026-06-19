@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -8,11 +8,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 
 const SLIDES_DATA = [
-  { bg: 'linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.35)), url(/images/hero-promo.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url(/images/hero-fleet.jpg) center/cover no-repeat', accent: '#3E6B99', href: '/fleet' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url(/images/hero-essence.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(/images/hero-marrakech-transfer.jpg) center/cover no-repeat', accent: '#C8960C', href: '/transfers' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(/images/hero-casablanca-transfer.jpg) center/cover no-repeat', accent: '#3E6B99', href: '/transfers' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.25),rgba(0,0,0,0.25)), url(/images/hero-promo.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-fleet.jpg) center/cover no-repeat', accent: '#3E6B99', href: '/fleet' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-essence.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-sahara.jpg) center/cover no-repeat', accent: '#5aaa5a', href: '/tours?type=desert' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-cities.jpg) center/cover no-repeat', accent: '#C8440A', href: '/tours?type=culture' },
 ];
 
 const TOUR_TYPE_KEYS = ['Desert','Culture','Adventure','Nature','Luxury','Family','4x4 & Moto','Birdwatch','Yoga','City Break'];
@@ -47,14 +47,7 @@ const CITIES = [
   { name:'Fès', count:8 },
 ];
 
-const STATS_NUMS = ['6+','24','7','5★'];
-
-const SERVICES = [
-  { img: '/images/service-tours.jpg', titleKey: 'homepage_services.tours_title', bodyKey: 'homepage_services.tours_body', href: '/tours' },
-  { img: '/images/service-airport.jpg', titleKey: 'homepage_services.airport_title', bodyKey: 'homepage_services.airport_body', href: '/transfers' },
-  { img: '/images/service-city.jpg', titleKey: 'homepage_services.city_title', bodyKey: 'homepage_services.city_body', href: '/transfers' },
-  { img: '/images/service-fleet.jpg', titleKey: 'homepage_services.fleet_title', bodyKey: 'homepage_services.fleet_body', href: '/fleet' },
-];
+const STATS_NUMS = ['20+','24','7','1'];
 
 export default function Home() {
   const locale = useLocale();
@@ -85,9 +78,9 @@ export default function Home() {
     <>
       <style>{`
         :root { --gold:#C8960C; --gold-light:#F0C040; --rust:#C8440A; --sand:#F5EDD6; --dark:#1A1A2E; --ink:#1a0d00; }
-        .hero-section { position:relative; min-height:85vh; height:85vh; max-height:780px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; transition:background 1.2s ease; }
-        @media(max-width:768px){ .hero-section { min-height:600px; height:auto; max-height:none; } }
-        .hero-content { position:relative; z-index:10; text-align:center; padding:4rem 1.5rem 8rem; max-width:860px; margin:0 auto; }
+        .hero-section { position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; transition:background 1.2s ease; }
+        .hero-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.45); }
+        .hero-content { position:relative; z-index:10; text-align:center; padding:6rem 1.5rem 10rem; max-width:860px; margin:0 auto; }
         .hero-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(200,150,12,0.18); border:1px solid rgba(200,150,12,0.4); color:#F0C040; font-size:0.7rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; padding:0.4rem 1.2rem; border-radius:999px; margin-bottom:1.5rem; }
         .hero-title { font-family:Georgia,'Times New Roman',serif; font-size:clamp(2.4rem,6vw,4.5rem); font-weight:700; color:#fff; line-height:1.1; margin-bottom:1rem; white-space:pre-line; }
         .hero-title span { color:var(--gold-light); }
@@ -169,26 +162,6 @@ export default function Home() {
         .btn-white-outline:hover { background:rgba(255,255,255,0.12); border-color:#fff; }
         .divider { border:none; border-top:1px solid #e8e0d0; margin:3rem 0; }
         .mt-2 { margin-top:2rem; }
-
-        /* ── ABOUT + SERVICES section ── */
-        .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem; }
-        @media(max-width:768px){ .about-grid { grid-template-columns:1fr; } }
-        .about-img-wrap { position:relative; }
-        .about-img { width:100%; height:380px; object-fit:cover; border-radius:16px; display:block; }
-        @media(max-width:768px){ .about-img { height:240px; } }
-        .about-img-badge { position:absolute; bottom:-1rem; left:-1rem; background:var(--gold); color:#fff; border-radius:12px; padding:1rem 1.25rem; text-align:center; box-shadow:0 4px 16px rgba(200,150,12,0.35); }
-        .about-img-num { display:block; font-size:1.8rem; font-weight:800; line-height:1; }
-        .about-img-lbl { display:block; font-size:0.65rem; text-transform:uppercase; letter-spacing:.08em; opacity:0.85; margin-top:2px; }
-        .about-badges { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin-top:1.25rem; }
-        .services-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.25rem; }
-        @media(max-width:900px){ .services-grid { grid-template-columns:repeat(2,1fr); } }
-        @media(max-width:480px){ .services-grid { grid-template-columns:1fr; } }
-        .svc-card { background:#fff; border:1px solid #e8e0d0; border-radius:14px; padding:1.75rem 1.25rem; text-decoration:none; color:var(--ink); transition:box-shadow .2s,transform .15s,border-color .2s; display:flex; flex-direction:column; gap:0.5rem; }
-        .svc-card:hover { box-shadow:0 6px 24px rgba(200,150,12,0.15); transform:translateY(-2px); border-color:var(--gold); }
-        .svc-img { width:100%; height:140px; object-fit:cover; border-radius:10px; margin-bottom:0.5rem; }
-        .svc-title { font-family:Georgia,serif; font-size:1rem; font-weight:700; color:var(--ink); }
-        .svc-body { font-size:0.8rem; color:#666; line-height:1.6; flex:1; }
-        .svc-link { font-size:0.78rem; font-weight:700; color:var(--gold); margin-top:0.5rem; }
       `}</style>
 
       <Navbar />
@@ -196,6 +169,7 @@ export default function Home() {
 
         {/* HERO */}
         <section className="hero-section" style={{ background: s.bg }}>
+          <div className="hero-overlay" />
           <div className="hero-content">
             <div className="hero-badge">✦ {t('hero.badge')}</div>
             <h1 className="hero-title">
@@ -224,52 +198,6 @@ export default function Home() {
                 <div className="stat-label">{st.label}</div>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* ABOUT + SERVICES */}
-        <section className="section section-white" id="about-company">
-          <div className="container">
-            <div className="about-grid">
-              <div>
-                <span className="sec-eyebrow">{t('homepage_about.eyebrow')}</span>
-                <h2 className="sec-title">{t('homepage_about.title')}</h2>
-                <p className="sec-body" style={{ marginBottom:'1rem' }}>{t('homepage_about.p1')}</p>
-                <p className="sec-body" style={{ marginBottom:'1.5rem' }}>{t('homepage_about.p2')}</p>
-                <div className="about-badges">
-                  <div
-                    id="TA_rated54"
-                    className="TA_rated"
-                    dangerouslySetInnerHTML={{
-                      __html: `<ul id="Dxd7J9mLdB" class="TA_links 9R4ddqG"><li id="MZYxc0SJ3QE" class="Yin1kMmU7Hr7"><a target="_blank" href="https://www.tripadvisor.com/Attraction_Review-g293732-d34341288-Reviews-Elbo_Tours-Casablanca_Casablanca_Settat.html"><img src="https://www.tripadvisor.com/img/cdsi/img2/badges/ollie-11424-2.gif" alt="TripAdvisor"/></a></li></ul><script async src="https://www.jscache.com/wejs?wtype=rated&uniq=54&locationId=34341288&lang=en_US&display_version=2"></script>`
-                    }}
-                  />
-                  <Link href={`/${locale}/about`} className="btn-ghost">{t('homepage_about.cta')} →</Link>
-                </div>
-              </div>
-              <div className="about-img-wrap">
-                <img src="/images/hero-essence.jpg" alt="Elbo Tours — private tour guides Morocco" className="about-img" />
-                <div className="about-img-badge">
-                  <span className="about-img-num">6+</span>
-                  <span className="about-img-lbl">{t('homepage_about.img_badge')}</span>
-                </div>
-              </div>
-            </div>
-            <hr className="divider" />
-            <div className="text-center" style={{ marginBottom:'2rem' }}>
-              <span className="sec-eyebrow">{t('homepage_services.eyebrow')}</span>
-              <h2 className="sec-title">{t('homepage_services.title')}</h2>
-            </div>
-            <div className="services-grid">
-              {SERVICES.map((svc, i) => (
-                <Link key={i} href={`/${locale}${svc.href}`} className="svc-card">
-                  <img src={svc.img} alt={t(svc.titleKey as any)} className="svc-img" />
-                  <div className="svc-title">{t(svc.titleKey as any)}</div>
-                  <div className="svc-body">{t(svc.bodyKey as any)}</div>
-                  <span className="svc-link">{t('homepage_services.details')} →</span>
-                </Link>
-              ))}
-            </div>
           </div>
         </section>
 
