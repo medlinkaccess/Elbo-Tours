@@ -9,8 +9,8 @@ import WhatsAppButton from '@/components/chat/WhatsAppButton';
 const BLOG_POSTS = [
   {
     id: 'best-marrakech-airport-transfer',
-    title: 'Best Marrakech Airport Transfer: Everything You Need to Know (2025)',
-    titleFr: 'Meilleur Transfert Aéroport Marrakech : Tout Ce Que Vous Devez Savoir (2025)',
+    title: 'Best Marrakech Airport Transfer: Everything You Need to Know (2026)',
+    titleFr: 'Meilleur Transfert Aéroport Marrakech : Tout Ce Que Vous Devez Savoir (2026)',
     excerpt: 'Compare taxis, shuttles and private transfers from Marrakech Menara Airport. Prices, travel times and tips for a stress-free arrival.',
     excerptFr: "Comparez taxis, navettes et transferts privés depuis l'aéroport de Marrakech. Prix, temps de trajet et conseils pour une arrivée sans stress.",
     category: 'Airport Transfer',
@@ -19,8 +19,8 @@ const BLOG_POSTS = [
   },
   {
     id: 'best-desert-tour-from-marrakech',
-    title: 'Best Desert Tour From Marrakech 2025: Sahara in 3, 5 or 7 Days',
-    titleFr: 'Meilleur Circuit Désert Depuis Marrakech 2025 : Sahara en 3, 5 ou 7 Jours',
+    title: 'Best Desert Tour From Marrakech 2026: Sahara in 3, 5 or 7 Days',
+    titleFr: 'Meilleur Circuit Désert Depuis Marrakech 2026 : Sahara en 3, 5 ou 7 Jours',
     excerpt: 'Planning a Sahara desert tour from Marrakech? Compare 3-day, 5-day and 7-day itineraries and what to expect at Merzouga.',
     excerptFr: 'Vous planifiez un circuit désert depuis Marrakech ? Comparez les itinéraires de 3, 5 et 7 jours et découvrez Merzouga.',
     category: 'Desert Tours',
@@ -39,8 +39,8 @@ const BLOG_POSTS = [
   },
   {
     id: 'is-morocco-safe-for-tourists',
-    title: 'Is Morocco Safe for Tourists in 2025? An Honest Guide',
-    titleFr: 'Le Maroc Est-il Sûr pour les Touristes en 2025 ? Un Guide Honnête',
+    title: 'Is Morocco Safe for Tourists in 2026? An Honest Guide',
+    titleFr: 'Le Maroc Est-il Sûr pour les Touristes en 2026 ? Un Guide Honnête',
     excerpt: 'Morocco safety for solo travellers, women, and families — what to watch out for and how to travel smart, from local experts.',
     excerptFr: 'Sécurité au Maroc pour les voyageurs solo, les femmes et les familles — conseils pratiques d\'experts locaux.',
     category: 'Travel Tips',
@@ -49,8 +49,8 @@ const BLOG_POSTS = [
   },
   {
     id: 'best-time-to-visit-morocco',
-    title: 'Best Time to Visit Morocco: Month by Month Guide 2025',
-    titleFr: 'Meilleure Période pour Visiter le Maroc : Guide Mois par Mois 2025',
+    title: 'Best Time to Visit Morocco: Month by Month Guide 2026',
+    titleFr: 'Meilleure Période pour Visiter le Maroc : Guide Mois par Mois 2026',
     excerpt: 'When is the best time to visit Morocco? A complete month-by-month guide covering weather, crowds, and the ideal season for desert tours.',
     excerptFr: 'Quelle est la meilleure période pour visiter le Maroc ? Guide complet mois par mois sur la météo, les foules et la saison idéale.',
     category: 'Travel Tips',
