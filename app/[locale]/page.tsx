@@ -43,8 +43,6 @@ const CITIES = [
   { name:'Marrakech', count:16 },
   { name:'Casablanca', count:15 },
   { name:'Rabat', count:12 },
-  { name:'Tangier', count:10 },
-  { name:'Fès', count:8 },
 ];
 
 const STATS_NUMS = ['6+','24','7','5★'];
@@ -170,7 +168,7 @@ export default function Home() {
         .divider { border:none; border-top:1px solid #e8e0d0; margin:3rem 0; }
         .mt-2 { margin-top:2rem; }
 
-        /* ── ABOUT + SERVICES section ── */
+        /* -- ABOUT + SERVICES section -- */
         .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem; }
         @media(max-width:768px){ .about-grid { grid-template-columns:1fr; } }
         .about-img-wrap { position:relative; }
@@ -416,4 +414,3 @@ export default function Home() {
     </>
   );
 }
-
