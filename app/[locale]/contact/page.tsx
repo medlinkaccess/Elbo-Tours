@@ -52,7 +52,7 @@ export default function ContactPage() {
                 {[
                   {
                     icon: '📞', label: 'Phone',
-                    items: [
+                    items: (({ value: string; href?: string })[]) & typeof items; items: [
                       { value: '+212 665-889258', href: 'tel:+212665889258' },
                       { value: '+212 657-257106', href: 'tel:+212657257106' },
                       { value: '+212 522-713542', href: 'tel:+212522713542' },
@@ -60,27 +60,27 @@ export default function ContactPage() {
                   },
                   {
                     icon: '✉️', label: 'Email',
-                    items: [
+                    items: (({ value: string; href?: string })[]) & typeof items; items: [
                       { value: 'elbotours2025@gmail.com', href: 'mailto:elbotours2025@gmail.com' },
                     ],
                   },
                   {
                     icon: '📍', label: 'Location',
-                    items: [
+                    items: (({ value: string; href?: string })[]) & typeof items; items: [
                       { value: t('info.address_marrakech') },
                       { value: t('info.address_casablanca') },
                     ],
                   },
                   {
                     icon: '🕐', label: 'Hours',
-                    items: [ { value: t('info.hours') } ],
+                    items: (({ value: string; href?: string })[]) & typeof items; items: [ { value: t('info.hours') } ],
                   },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 bg-gray-50 rounded-xl p-5">
                     <span className="text-2xl">{item.icon}</span>
                     <div>
                       <div className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">{item.label}</div>
-                      {item.items.map((line, j) => (
+                      {item.items.map((line: { value: string; href?: string }, j) => (
                         line.href ? (
                           <a key={j} href={line.href} className="font-semibold text-[#1A1A2E] hover:text-[#C8960C] block">{line.value}</a>
                         ) : (
@@ -124,3 +124,5 @@ export default function ContactPage() {
     </>
   );
 }
+
+
