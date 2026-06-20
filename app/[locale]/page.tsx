@@ -9,10 +9,10 @@ import { useState, useEffect } from 'react';
 
 const SLIDES_DATA = [
   { bg: 'linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.35)), url(/images/hero-promo.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url(/images/hero-fleet.jpg) center/cover no-repeat', accent: '#3E6B99', href: '/fleet' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url(/images/hero-essence.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(/images/hero-marrakech-transfer.jpg) center/cover no-repeat', accent: '#C8960C', href: '/transfers' },
-  { bg: 'linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(/images/hero-casablanca-transfer.jpg) center/cover no-repeat', accent: '#3E6B99', href: '/transfers' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(/images/hero-desert.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url(/images/hero-essence.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(/images/hero-marrakech-transfer.jpg) center/cover no-repeat', accent: '#C8960C', href: '/transfers' },
+  { bg: 'linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(/images/hero-sahara.jpg) center/cover no-repeat', accent: '#C8960C', href: '/tours' },
 ];
 
 const TOUR_TYPE_KEYS = ['Desert','Culture','Adventure','Nature','Luxury','Family','4x4 & Moto','Birdwatch','Yoga','City Break'];
@@ -416,3 +416,4 @@ export default function Home() {
     </>
   );
 }
+
