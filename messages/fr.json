@@ -12,12 +12,12 @@
   "hero": {
     "badge": "Circuits Privés au Maroc",
     "slides": [
-      { "headline": "Découvrez le Maroc", "sub": "Circuits privés sur mesure au départ de Marrakech", "cta": "Explorer les circuits" },
-      { "headline": "Voyagez Confortablement,\nAvec Notre Flotte Moderne", "sub": "Vans spacieux, chauffeurs professionnels — chaque trajet sûr, fluide et ponctuel", "cta": "Notre Flotte" },
-      { "headline": "Découvrez l'Essence\ndu Maroc", "sub": "Circuits privés sur mesure au départ de Marrakech", "cta": "Explorer les circuits" },
-      { "headline": "Transferts Fluides,\nDepuis l'Aéroport de Marrakech", "sub": "Prise en charge privée dès votre arrivée — sans attente, sans stress", "cta": "Réserver un Transfert" },
-      { "headline": "Aéroport de Casablanca,\nPris en Charge Dès l'Arrivée", "sub": "Chauffeurs professionnels prêts à vous accueillir, pancarte à votre nom", "cta": "Réserver un Transfert" }
-    ]
+        { "headline": "Decouvrez le Maroc", "sub": "Circuits prives sur mesure depuis Marrakech", "cta": "Voir les circuits" },
+        { "headline": "Le Sahara,\nA Votre Rythme", "sub": "Randonnes en chameau, camps de luxe et nuits etoilees dans le desert", "cta": "Voir les circuits" },
+        { "headline": "Decouvrez\nEssence du Maroc", "sub": "Circuits prives sur mesure depuis Marrakech", "cta": "Voir les circuits" },
+        { "headline": "Transferts Fluides,\nDepuis Aeroport Marrakech", "sub": "Prise en charge privee des votre atterrissage - sans attente", "cta": "Reserver un transfert" },
+        { "headline": "Treks Chameau\net Camps Desert", "sub": "Dormez sous les etoiles du Sahara dans un camp de luxe", "cta": "Voir les circuits" }
+      ]
   },
   "stats": [
     { "num": "6+", "label": "Années d'expérience" },
@@ -248,3 +248,4 @@
     "copyright": "© 2026 Elbo Tours. Tous droits réservés."
   }
 }
+

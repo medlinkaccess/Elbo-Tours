@@ -12,12 +12,12 @@
   "hero": {
     "badge": "Private Morocco Tours",
     "slides": [
-      { "headline": "Discover Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
-      { "headline": "Travel in Comfort,\nWith Our Modern Fleet", "sub": "Spacious vans, professional drivers — every journey safe, smooth, and on time", "cta": "View Our Fleet" },
-      { "headline": "Discover the\nEssence of Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
-      { "headline": "Smooth Transfers,\nFrom Marrakech Airport", "sub": "Private pickup the moment you land — no waiting, no hassle", "cta": "Book a Transfer" },
-      { "headline": "Casablanca Airport,\nSorted From Arrival", "sub": "Professional drivers ready and waiting with your name on the sign", "cta": "Book a Transfer" }
-    ]
+        { "headline": "Discover Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
+        { "headline": "Sahara Desert,\nYour Way", "sub": "3-day camel treks, luxury desert camps and starlit Sahara nights", "cta": "Explore Tours" },
+        { "headline": "Discover the\nEssence of Morocco", "sub": "Private tailor-made tours from Marrakech", "cta": "Explore Tours" },
+        { "headline": "Smooth Transfers,\nFrom Marrakech Airport", "sub": "Private pickup the moment you land � no waiting, no hassle", "cta": "Book a Transfer" },
+        { "headline": "Camel Treks &\nDesert Camps", "sub": "Sleep under the Saharan stars in a luxury desert camp", "cta": "Explore Tours" }
+      ]
   },
   "stats": [
     { "num": "6+", "label": "Years of experience" },
@@ -248,3 +248,4 @@
     "copyright": "© 2026 Elbo Tours. All rights reserved."
   }
 }
+
