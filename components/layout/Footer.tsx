@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <Image
-              src="https://elbo-tours.com/wp-content/uploads/2026/04/WhatsApp-Image-2026-04-02-at-01.39.26-Photoroom.png"
+              src="/images/logo.png"
               alt="Elbo Tours"
               width={130}
               height={46}
