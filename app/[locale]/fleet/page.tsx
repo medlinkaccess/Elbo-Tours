@@ -7,7 +7,7 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 
 const vehicleImgs = ['/images/fleet/sedan.jpg', '/images/fleet/minivan.jpg', '/images/fleet/minibus.jpg'];
-const vehicleEmojis = ['??', '??', '??'];
+const vehicleEmojis = ['ğŸš—', 'ğŸš', 'ğŸšŒ'];
 const vehicleAc = [true, true, true];
 const vehicleWifi = [false, true, true];
 
@@ -15,11 +15,11 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   const { locale } = params;
   const isEn = locale === 'en';
   const title = isEn
-    ? 'Our Fleet | Private Tourist Transport Vehicles in Morocco – Elbo Tours'
-    : 'Notre Flotte | Véhicules de Transport Touristique Privé au Maroc – Elbo Tours';
+    ? 'Our Fleet | Private Tourist Transport Vehicles in Morocco â€“ Elbo Tours'
+    : 'Notre Flotte | VÃ©hicules de Transport Touristique PrivÃ© au Maroc â€“ Elbo Tours';
   const description = isEn
-    ? 'Explore Elbo Tours modern fleet of air-conditioned vehicles — sedans, minivans and minibuses — for private transfers and tours across Morocco.'
-    : 'Découvrez la flotte moderne d\'Elbo Tours — berlines, minivans et minibus climatisés — pour vos transferts privés et circuits à travers le Maroc.';
+    ? 'Explore Elbo Tours modern fleet of air-conditioned vehicles â€” sedans, minivans and minibuses â€” for private transfers and tours across Morocco.'
+    : 'DÃ©couvrez la flotte moderne d\'Elbo Tours â€” berlines, minivans et minibus climatisÃ©s â€” pour vos transferts privÃ©s et circuits Ã  travers le Maroc.';
   return {
     title,
     description,
@@ -69,7 +69,7 @@ export default function FleetPage() {
                   <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden flex-shrink-0 relative">
                     <Image
                       src={vehicleImgs[i]!}
-                      alt={`${v.name} – Elbo Tours`}
+                      alt={`${v.name} â€“ Elbo Tours`}
                       fill
                       className="object-cover"
                     />
@@ -82,10 +82,10 @@ export default function FleetPage() {
                 <div className="flex-1">
                   <h2 className="font-display text-2xl font-bold text-[#1A1A2E] mb-1" style={{fontFamily:'var(--font-playfair),Georgia,serif'}}>{v.name}</h2>
                   <div className="flex gap-3 mb-3 flex-wrap">
-                    <span className="text-sm text-[#C8960C] font-semibold">?? {v.capacity}</span>
-                    <span className="text-sm text-gray-500">?? {v.bags}</span>
-                    {vehicleAc[i] && <span className="text-sm text-gray-500">?? A/C</span>}
-                    {vehicleWifi[i] && <span className="text-sm text-gray-500">?? WiFi</span>}
+                    <span className="text-sm text-[#C8960C] font-semibold">ğŸ‘¥ {v.capacity}</span>
+                    <span className="text-sm text-gray-500">ğŸ§³ {v.bags}</span>
+                    {vehicleAc[i] && <span className="text-sm text-gray-500">â„ï¸ A/C</span>}
+                    {vehicleWifi[i] && <span className="text-sm text-gray-500">ğŸ“¶ WiFi</span>}
                   </div>
                   <p className="text-gray-500 leading-relaxed">{v.desc}</p>
                 </div>
@@ -100,5 +100,3 @@ export default function FleetPage() {
     </>
   );
 }
-
-
