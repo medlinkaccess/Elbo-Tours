@@ -3,7 +3,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Inter, Playfair_Display } from 'next/font/google';
-import '@/app/globals.css'; // Safe absolute import alias
+import Script from 'next/script';
+import '@/app/globals.css';
 import { LocalBusinessJsonLd } from '@/components/JsonLd';
 import ChatWidget from '@/components/chat/ChatWidget';
 import WhatsAppButton from '@/components/chat/WhatsAppButton';
@@ -28,6 +29,9 @@ export async function generateMetadata({ params: { locale } }: { params: { local
     keywords: isEn
       ? ['Morocco tours', 'Marrakech transfers', 'private driver Morocco', 'excursions Marrakech', 'minibus hire Morocco', 'Morocco private tours', 'desert tours Morocco', 'Sahara tour Marrakech', 'Fes Marrakech tour', 'Chefchaouen day trip']
       : ['circuits Maroc', 'transfert Marrakech', 'chauffeur prive Maroc', 'excursions Marrakech', 'minibus Maroc'],
+    verification: {
+      google: 'iTQF2H9rUjHNxX-0skrVJq9mPHYr48bemgtebTb5Fus',
+    },
     alternates: {
       canonical: `https://elbo-tours.com/${locale}`,
       languages: {
@@ -50,7 +54,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
     robots: {
       index: true,
       follow: true,
-      googleBot: { index: true, follow: true },
+      googleBot: { index: true, follow: True },
     },
   };
 }
@@ -64,9 +68,22 @@ export default async function LocaleLayout({
 }) {
   if (!locales.includes(locale)) notFound();
   const messages = await getMessages();
-  
   return (
     <html lang={locale} className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-F36KXEJZGS"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-F36KXEJZGS');
+          `}
+        </Script>
+      </head>
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}
