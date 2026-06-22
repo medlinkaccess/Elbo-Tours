@@ -33,10 +33,10 @@ export async function generateMetadata({ params: { locale } }: { params: { local
       google: 'iTQF2H9rUjHNxX-0skrVJq9mPHYr48bemgtebTb5Fus',
     },
     alternates: {
-      canonical: `https://elbo-tours.com/${locale}`,
+      canonical: `https://www.elbo-tours.com/${locale}`,
       languages: {
-        en: 'https://elbo-tours.com/en',
-        fr: 'https://elbo-tours.com/fr',
+        en: 'https://www.elbo-tours.com/en',
+        fr: 'https://www.elbo-tours.com/fr',
       },
     },
     openGraph: {
@@ -44,8 +44,8 @@ export async function generateMetadata({ params: { locale } }: { params: { local
       locale: isEn ? 'en_US' : 'fr_FR',
       alternateLocale: isEn ? 'fr_FR' : 'en_US',
       siteName: 'Elbo Tours',
-      url: `https://elbo-tours.com/${locale}`,
-      images: [{ url: 'https://elbo-tours.com/images/og-default.jpg', width: 1200, height: 630, alt: 'Elbo Tours Morocco' }],
+      url: `https://www.elbo-tours.com/${locale}`,
+      images: [{ url: 'https://www.elbo-tours.com/images/og-default.jpg', width: 1200, height: 630, alt: 'Elbo Tours Morocco' }],
     },
     twitter: {
       card: 'summary_large_image',

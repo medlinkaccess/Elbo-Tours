@@ -3,7 +3,7 @@ import { neon } from '@neondatabase/serverless';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sql = neon(process.env.DATABASE_URL!);
-  const base = 'https://elbo-tours.com';
+  const base = 'https://www.elbo-tours.com';
   const locales = ['en', 'fr'];
 
   const staticPages = ['', '/tours', '/transfers', '/fleet', '/blog', '/about', '/contact'];
