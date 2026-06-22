@@ -23,6 +23,7 @@ export default function ContactClient() {
         { value: '+212 665-889258', href: 'tel:+212665889258' },
         { value: '+212 657-257106', href: 'tel:+212657257106' },
         { value: '+212 522-713542', href: 'tel:+212522713542' },
+        { value: '+212 626-553562', href: 'tel:+212626553562' },
       ],
     },
     {
