@@ -54,7 +54,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
     robots: {
       index: true,
       follow: true,
-      googleBot: { index: true, follow: True },
+      googleBot: { index: true, follow: true },
     },
   };
 }
