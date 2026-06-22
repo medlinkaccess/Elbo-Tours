@@ -14,18 +14,18 @@ export async function PUT(
   const { id } = params;
   try {
     const body = await req.json();
-
+    const transferType = body.type === 'CITY_TO_CITY' ? 'CITY_TO_CITY' : 'AIRPORT';
     await sql`
       UPDATE transfers
-      SET "priceFrom" = ${body.priceFrom || 0},
+      SET type = ${transferType}::"TransferType",
           "fromLocation" = ${body.fromLocation || ''},
-          "toLocation" = ${body.toLocation || ''},
-          "imageUrl" = ${body.image || ''},
+          "toLocation" = ${body.toLocation || null},
+          "priceFrom" = ${body.priceFrom || 0},
+          "imageUrl" = ${body.image || null},
           active = ${body.active !== false},
           "updatedAt" = NOW()
       WHERE id = ${id}
     `;
-
     await sql`DELETE FROM transfer_translations WHERE "transferId" = ${id}`;
     await sql`
       INSERT INTO transfer_translations (id, "transferId", locale, title, description)
@@ -37,7 +37,6 @@ export async function PUT(
         VALUES (${randomUUID()}, ${id}, 'fr', ${body.titleFr || ''}, ${body.descFr || ''})
       `;
     }
-
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[PUT /api/transfers/[id]]', err);

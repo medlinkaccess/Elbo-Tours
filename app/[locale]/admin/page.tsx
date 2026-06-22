@@ -513,14 +513,14 @@ function MessagesTab() {
 function TransfersTab() {
   const [items, setItems] = useState<any[]>([]);
   const [editing, setEditing] = useState<any | null>(null);
-  const [form, setForm] = useState({ title: '', titleFr: '', fromLocation: '', toLocation: '', priceFrom: '', image: '', active: true });
+  const [form, setForm] = useState({ title: '', titleFr: '', fromLocation: '', toLocation: '', priceFrom: '', image: '', active: true, type: 'AIRPORT' });
   const [err, setErr] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { fetch('/api/transfers').then(r => r.json()).then(setItems); }, []);
   function set(k: string, v: any) { setForm(f => ({ ...f, [k]: v })); }
-  function startEdit(item: any) { setEditing(item); setForm({ title: item.title || '', titleFr: item.titleFr || '', fromLocation: item.fromLocation || '', toLocation: item.toLocation || '', priceFrom: item.priceFrom?.toString() || '', image: item.image || '', active: item.active !== false }); }
-  function startNew() { setEditing({}); setForm({ title: '', titleFr: '', fromLocation: '', toLocation: '', priceFrom: '', image: '', active: true }); }
+  function startEdit(item: any) { setEditing(item); setForm({ title: item.title || '', titleFr: item.titleFr || '', fromLocation: item.fromLocation || '', toLocation: item.toLocation || '', priceFrom: item.priceFrom?.toString() || '', image: item.image || '', active: item.active !== false, type: item.type || 'AIRPORT' }); }
+  function startNew() { setEditing({}); setForm({ title: '', titleFr: '', fromLocation: '', toLocation: '', priceFrom: '', image: '', active: true, type: 'AIRPORT' }); }
 
   async function save() {
     setSaving(true); setErr('');
@@ -552,6 +552,12 @@ function TransfersTab() {
             <Field label="Title (FR)"><input style={inp} value={form.titleFr} onChange={e => set('titleFr', e.target.value)} /></Field>
             <Field label="From Location"><input style={inp} value={form.fromLocation} onChange={e => set('fromLocation', e.target.value)} /></Field>
             <Field label="To Location"><input style={inp} value={form.toLocation} onChange={e => set('toLocation', e.target.value)} /></Field>
+            <Field label="Type">
+              <select style={inp} value={form.type} onChange={e => set('type', e.target.value)}>
+                <option value="AIRPORT">✈️ Airport Transfer</option>
+                <option value="CITY_TO_CITY">🚗 City to City</option>
+              </select>
+            </Field>
             <Field label="Price From (EUR)"><input style={inp} type="number" value={form.priceFrom} onChange={e => set('priceFrom', e.target.value)} placeholder="0 = Ask for price" /></Field>
             <div style={{ display: 'flex', alignItems: 'center', paddingTop: '1.5rem' }}>
               <label style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', cursor: 'pointer' }}><input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} /> Active</label>
