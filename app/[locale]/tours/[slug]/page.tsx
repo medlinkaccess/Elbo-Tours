@@ -1,56 +1,17 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import styles from "./tour.module.css";
 import { TourJsonLd } from "@/components/JsonLd";
-import QuoteModal from "@/components/tours/QuoteModal";
+import { getTourBySlug } from "@/lib/getTourBySlug";
+import { ItineraryAccordion, BookingActions } from "./TourInteractive";
 
-interface ItineraryDay {
-  day: number;
-  title: string;
-  description: string;
-}
-interface RelatedTour {
-  slug: string;
-  title: string;
-  priceFrom: number;
-  priceDisplay: string | null;
-  imageUrl: string | null;
-  durationDays: number;
-}
-interface TourDetail {
-  id: string;
-  slug: string;
-  category: string;
-  priceFrom: number;
-  priceDisplay: string | null;
-  currency: string;
-  durationDays: number;
-  durationText: string | null;
-  maxGroupSize: number | null;
-  minGroupSize: number;
-  featured: boolean;
-  imageUrl: string | null;
-  gallery: string[];
-  tags: string[];
-  departsFrom: string;
-  destinationName: string | null;
-  title: string;
-  description: string;
-  metaTitle: string;
-  metaDesc: string;
-  itinerary: ItineraryDay[];
-  highlights: string[];
-  includes: string[];
-  excludes: string[];
-  related: RelatedTour[];
+interface PageProps {
+  params: { locale: string; slug: string };
 }
 
-const WHATSAPP = "212665889258";
-
-function formatPrice(tour: TourDetail): string {
+function formatPrice(tour: { priceDisplay: string | null; priceFrom: number }): string {
   if (tour.priceDisplay) return tour.priceDisplay;
   if (tour.priceFrom && tour.priceFrom > 0)
     return "From €" + tour.priceFrom.toLocaleString();
@@ -69,66 +30,58 @@ function categoryLabel(cat: string): string {
   return map[cat] || cat;
 }
 
-export default function TourDetailPage() {
-  const params = useParams();
-  const locale = (params?.locale as string) || "en";
-  const slug = params?.slug as string;
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale, slug } = params;
+  const tour = await getTourBySlug(slug, locale);
 
-  const [tour, setTour] = useState<TourDetail | null>(null);
-  const [showQuote, setShowQuote] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeDay, setActiveDay] = useState(0);
-
-  useEffect(() => {
-    if (!slug) return;
-    setLoading(true);
-    setError(null);
-    fetch("/api/tours/" + slug + "?locale=" + locale)
-      .then(res => {
-        if (!res.ok) throw new Error(res.status === 404 ? "Tour not found" : "Failed to load tour");
-        return res.json();
-      })
-      .then((data: TourDetail) => {
-        setTour(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [slug, locale]);
-
-  if (loading) {
-    return (
-      <div className={styles.loadingWrap}>
-        <div className={styles.spinner} />
-        <p>{locale === "fr" ? "Chargement..." : "Loading..."}</p>
-      </div>
-    );
+  if (!tour) {
+    return { title: "Tour not found | Elbo Tours" };
   }
 
-  if (error || !tour) {
-    return (
-      <div className={styles.errorWrap}>
-        <h1>{error || "Tour not found"}</h1>
-        <Link href={"/" + locale + "/tours"}>
-          &larr; {locale === "fr" ? "Retour aux circuits" : "Back to tours"}
-        </Link>
-      </div>
-    );
-  }
+  const base = "https://www.elbo-tours.com";
+  const title = (tour.metaTitle || tour.title) + " | Elbo Tours";
+  const description = tour.metaDesc || tour.description;
 
-  const whatsappMsg = encodeURIComponent(
-    "Hi! I am interested in the " + tour.title + " tour. Can you send me more details?"
-  );
-  const whatsappUrl = "https://wa.me/" + WHATSAPP + "?text=" + whatsappMsg;
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${base}/${locale}/tours/${slug}`,
+      languages: {
+        en: `${base}/en/tours/${slug}`,
+        fr: `${base}/fr/tours/${slug}`,
+      },
+    },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url: `${base}/${locale}/tours/${slug}`,
+      siteName: "Elbo Tours",
+      images: tour.imageUrl ? [{ url: tour.imageUrl, width: 1200, height: 630, alt: tour.title }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
+
+export default async function TourDetailPage({ params }: PageProps) {
+  const { locale, slug } = params;
+  const tour = await getTourBySlug(slug, locale);
+
+  if (!tour) {
+    notFound();
+  }
 
   return (
     <main className={styles.page}>
-      {tour && <TourJsonLd tour={tour} locale={locale} />}
+      <TourJsonLd tour={tour} locale={locale} />
+
       <section className={styles.hero}>
-        {(tour.imageUrl && tour.imageUrl !== "") ? (
+        {tour.imageUrl && tour.imageUrl !== "" ? (
           <Image
             src={tour.imageUrl}
             alt={tour.title}
@@ -152,10 +105,12 @@ export default function TourDetailPage() {
             </div>
             <h1 className={styles.heroTitle}>{tour.title}</h1>
             <div className={styles.heroMeta}>
-              {tour.durationText && <span>&#128336; {tour.durationText}</span>}
-              {tour.departsFrom && <span>&#128205; {locale === "fr" ? "Depart de" : "Departs from"} {tour.departsFrom}</span>}
+              {tour.durationText && <span>🕐 {tour.durationText}</span>}
+              {tour.departsFrom && (
+                <span>📍 {locale === "fr" ? "Depart de" : "Departs from"} {tour.departsFrom}</span>
+              )}
               {tour.maxGroupSize && (
-                <span>&#128101; Max {tour.maxGroupSize} {locale === "fr" ? "pers." : "people"}</span>
+                <span>👥 Max {tour.maxGroupSize} {locale === "fr" ? "pers." : "people"}</span>
               )}
             </div>
           </div>
@@ -164,7 +119,6 @@ export default function TourDetailPage() {
 
       <div className={styles.body}>
         <div className={styles.main}>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>
               {locale === "fr" ? "Apercu" : "Overview"}
@@ -180,7 +134,7 @@ export default function TourDetailPage() {
               <ul className={styles.highlightList}>
                 {tour.highlights.map((h, i) => (
                   <li key={i} className={styles.highlightItem}>
-                    <span className={styles.checkIcon}>&#10003;</span>
+                    <span className={styles.checkIcon}>✓</span>
                     {h}
                   </li>
                 ))}
@@ -193,28 +147,7 @@ export default function TourDetailPage() {
               <h2 className={styles.sectionTitle}>
                 {locale === "fr" ? "Programme" : "Itinerary"}
               </h2>
-              <div className={styles.itinerary}>
-                {tour.itinerary.map((day, i) => (
-                  <div key={i} className={styles.dayBlock}>
-                    <button
-                      className={styles.dayHeader + (activeDay === i ? " " + styles.dayHeaderActive : "")}
-                      onClick={() => setActiveDay(activeDay === i ? -1 : i)}
-                      aria-expanded={activeDay === i}
-                    >
-                      <span className={styles.dayNum}>
-                        {locale === "fr" ? "Jour" : "Day"} {day.day}
-                      </span>
-                      <span className={styles.dayTitle}>{day.title}</span>
-                      <span className={styles.dayChevron}>{activeDay === i ? "▲" : "▼"}</span>
-                    </button>
-                    {activeDay === i && (
-                      <div className={styles.dayBody}>
-                        <p>{day.description}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+              <ItineraryAccordion itinerary={tour.itinerary} locale={locale} />
             </section>
           )}
 
@@ -232,7 +165,7 @@ export default function TourDetailPage() {
                     <ul className={styles.inclusionList}>
                       {tour.includes.map((item, i) => (
                         <li key={i} className={styles.inclusionItem}>
-                          <span className={styles.checkIcon}>&#10003;</span>{item}
+                          <span className={styles.checkIcon}>✓</span>{item}
                         </li>
                       ))}
                     </ul>
@@ -246,7 +179,7 @@ export default function TourDetailPage() {
                     <ul className={styles.inclusionList}>
                       {tour.excludes.map((item, i) => (
                         <li key={i} className={styles.inclusionItem + " " + styles.exclusionItem}>
-                          <span className={styles.xIcon}>&#10007;</span>{item}
+                          <span className={styles.xIcon}>✗</span>{item}
                         </li>
                       ))}
                     </ul>
@@ -264,7 +197,13 @@ export default function TourDetailPage() {
               <div className={styles.gallery}>
                 {tour.gallery.map((url, i) => (
                   <div key={i} className={styles.galleryItem}>
-                    <Image src={url} alt={tour.title + " photo " + (i+1)} fill className={styles.galleryImg} sizes="(max-width: 768px) 50vw, 33vw" />
+                    <Image
+                      src={url}
+                      alt={tour.title + " photo " + (i + 1)}
+                      fill
+                      className={styles.galleryImg}
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                    />
                   </div>
                 ))}
               </div>
@@ -309,17 +248,11 @@ export default function TourDetailPage() {
                 </div>
               )}
             </div>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtn}>
-              {locale === "fr" ? "Reserver sur WhatsApp" : "Book via WhatsApp"}
-            </a>
-            <button onClick={() => setShowQuote(true)} className={styles.ctaBtnSecondary} style={{ cursor: "pointer", width: "100%", background: "#fff" }}>
-              {locale === "fr" ? "Demander un devis" : "Request a Quote"}
-            </button>
-
+            <BookingActions tourId={tour.id} tourTitle={tour.title} locale={locale} />
           </div>
           {tour.tags.length > 0 && (
             <div className={styles.tagsBlock}>
-              {tour.tags.map(tag => (
+              {tour.tags.map((tag) => (
                 <span key={tag} className={styles.tag}>{tag}</span>
               ))}
             </div>
@@ -333,10 +266,10 @@ export default function TourDetailPage() {
             {locale === "fr" ? "Circuits similaires" : "Similar tours"}
           </h2>
           <div className={styles.relatedGrid}>
-            {tour.related.map(r => (
+            {tour.related.map((r) => (
               <Link key={r.slug} href={"/" + locale + "/tours/" + r.slug} className={styles.relatedCard}>
                 <div className={styles.relatedImgWrap}>
-                  {(r.imageUrl && r.imageUrl !== "") ? (
+                  {r.imageUrl && r.imageUrl !== "" ? (
                     <Image src={r.imageUrl} alt={r.title} fill className={styles.relatedImg} sizes="300px" />
                   ) : (
                     <div className={styles.relatedImgPlaceholder} />
@@ -353,7 +286,6 @@ export default function TourDetailPage() {
           </div>
         </section>
       )}
-      {showQuote && tour && <QuoteModal tourId={tour.id} tourTitle={tour.title} onClose={() => setShowQuote(false)} />}
     </main>
   );
 }
