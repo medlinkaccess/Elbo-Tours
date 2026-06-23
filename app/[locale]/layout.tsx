@@ -45,7 +45,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
       alternateLocale: isEn ? 'fr_FR' : 'en_US',
       siteName: 'Elbo Tours',
       url: `https://www.elbo-tours.com/${locale}`,
-      images: [{ url: 'https://www.elbo-tours.com/images/og-default.jpg', width: 1200, height: 630, alt: 'Elbo Tours Morocco' }],
+      images: [{ url: 'https://www.elbo-tours.com/images/hero-promo.jpg', width: 1200, height: 630, alt: 'Elbo Tours Morocco' }],
     },
     twitter: {
       card: 'summary_large_image',
