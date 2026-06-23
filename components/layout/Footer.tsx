@@ -75,9 +75,16 @@ export default function Footer() {
 
         <div className="border-t border-gray-700 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-sm text-gray-500">
           <p>{t('copyright')}</p>
+          <div className="flex gap-6">
+            <Link href={`/${locale}/privacy-policy`} className="hover:text-[#C8960C] transition-colors">
+              {locale === 'en' ? 'Privacy Policy' : 'Politique de Confidentialité'}
+            </Link>
+            <Link href={`/${locale}/terms-of-use`} className="hover:text-[#C8960C] transition-colors">
+              {locale === 'en' ? 'Terms of Use' : "Conditions d'Utilisation"}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
-
