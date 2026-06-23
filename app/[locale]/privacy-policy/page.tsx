@@ -55,7 +55,7 @@ function EnContent() {
       <p className="text-gray-700">We retain your personal data for as long as necessary to fulfil the purposes described above, or as required by law. Booking records are typically kept for 3 years.</p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3 text-gray-800">6. Your Rights</h2>
-      <p className="text-gray-700">You have the right to access, correct, or delete your personal data. To exercise these rights, contact us at <a href="mailto:contact@elbo-tours.com" className="text-[#C8960C] hover:underline">contact@elbo-tours.com</a>.</p>
+      <p className="text-gray-700">You have the right to access, correct, or delete your personal data. To exercise these rights, contact us at <a href="mailto:elbotours2025@gmail.com" className="text-[#C8960C] hover:underline">elbotours2025@gmail.com</a>.</p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3 text-gray-800">7. Security</h2>
       <p className="text-gray-700">We implement appropriate technical and organisational measures to protect your data against unauthorised access, loss, or disclosure.</p>
@@ -65,7 +65,7 @@ function EnContent() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3 text-gray-800">9. Contact</h2>
       <p className="text-gray-700">Elbo Tours – Marrakech, Morocco<br />
-      Email: <a href="mailto:contact@elbo-tours.com" className="text-[#C8960C] hover:underline">contact@elbo-tours.com</a><br />
+      Email: <a href="mailto:elbotours2025@gmail.com" className="text-[#C8960C] hover:underline">elbotours2025@gmail.com</a><br />
       Phone: <a href="tel:+212665889258" className="text-[#C8960C] hover:underline">+212 665-889258</a></p>
     </article>
   );
@@ -104,7 +104,7 @@ function FrContent() {
       <p className="text-gray-700">Nous conservons vos données le temps nécessaire aux finalités décrites, ou tel que requis par la loi. Les dossiers de réservation sont généralement conservés 3 ans.</p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3 text-gray-800">6. Vos droits</h2>
-      <p className="text-gray-700">Vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression de vos données. Contactez-nous à <a href="mailto:contact@elbo-tours.com" className="text-[#C8960C] hover:underline">contact@elbo-tours.com</a>.</p>
+      <p className="text-gray-700">Vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression de vos données. Contactez-nous à <a href="mailto:elbotours2025@gmail.com" className="text-[#C8960C] hover:underline">elbotours2025@gmail.com</a>.</p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3 text-gray-800">7. Sécurité</h2>
       <p className="text-gray-700">Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données contre tout accès non autorisé, perte ou divulgation.</p>
@@ -114,7 +114,7 @@ function FrContent() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3 text-gray-800">9. Contact</h2>
       <p className="text-gray-700">Elbo Tours – Marrakech, Maroc<br />
-      E-mail : <a href="mailto:contact@elbo-tours.com" className="text-[#C8960C] hover:underline">contact@elbo-tours.com</a><br />
+      E-mail : <a href="mailto:elbotours2025@gmail.com" className="text-[#C8960C] hover:underline">elbotours2025@gmail.com</a><br />
       Tél : <a href="tel:+212665889258" className="text-[#C8960C] hover:underline">+212 665-889258</a></p>
     </article>
   );
