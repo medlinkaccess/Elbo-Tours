@@ -136,9 +136,13 @@ function ToursTab() {
     featured: false, active: true,
     departsFrom: "Marrakech", maxGroupSize: "12", tags: "", priceDisplay: "",
     highlights: [] as string[],
+    highlightsFr: [] as string[],
     includes: [] as string[],
+    includesFr: [] as string[],
     excludes: [] as string[],
+    excludesFr: [] as string[],
     itinerary: [] as any[],
+    itineraryFr: [] as any[],
   });
   const [err, setErr] = useState("");
   const [saving, setSaving] = useState(false);
@@ -168,16 +172,20 @@ function ToursTab() {
       tags: (detail.tags || []).join(", "),
       priceDisplay: detail.priceDisplay || "",
       highlights: detail.highlights || [],
+      highlightsFr: detail.highlightsFr || [],
       includes: detail.includes || [],
+      includesFr: detail.includesFr || [],
       excludes: detail.excludes || [],
+      excludesFr: detail.excludesFr || [],
       itinerary: detail.itinerary || [],
+      itineraryFr: detail.itineraryFr || [],
     });
     setExpandedSection(null);
   }
 
   function startNew() {
     setEditing({});
-    setForm({ title: "", titleFr: "", desc: "", descFr: "", category: CATEGORIES[0], duration: "", price: "", image: "", featured: false, active: true, departsFrom: "Marrakech", maxGroupSize: "12", tags: "", priceDisplay: "", highlights: [], includes: [], excludes: [], itinerary: [] });
+    setForm({ title: "", titleFr: "", desc: "", descFr: "", category: CATEGORIES[0], duration: "", price: "", image: "", featured: false, active: true, departsFrom: "Marrakech", maxGroupSize: "12", tags: "", priceDisplay: "", highlights: [], highlightsFr: [], includes: [], includesFr: [], excludes: [], excludesFr: [], itinerary: [], itineraryFr: [] });
   }
 
   async function save() {
@@ -244,17 +252,31 @@ function ToursTab() {
             </div>
             <div style={{ gridColumn: "1/-1" }}><Field label="Image (used for card & hero)"><ImageUpload value={form.image} onChange={v => set("image", v)} /></Field></div>
 
-            <Section id="highlights" label={"Highlights (" + form.highlights.length + ")"}>
-              <ListEditor label="" values={form.highlights} onChange={v => set("highlights", v)} />
-            </Section>
-            <Section id="includes" label={"Included (" + form.includes.length + ") / Excluded (" + form.excludes.length + ")"}>
+            <Section id="highlights" label={"Highlights (" + form.highlights.length + " EN / " + form.highlightsFr.length + " FR)"}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                <ListEditor label="Included" values={form.includes} onChange={v => set("includes", v)} />
-                <ListEditor label="Not Included" values={form.excludes} onChange={v => set("excludes", v)} />
+                <ListEditor label="EN" values={form.highlights} onChange={v => set("highlights", v)} />
+                <ListEditor label="FR" values={form.highlightsFr} onChange={v => set("highlightsFr", v)} />
               </div>
             </Section>
-            <Section id="itinerary" label={"Itinerary (" + form.itinerary.length + " days)"}>
-              <ItineraryEditor days={form.itinerary} onChange={v => set("itinerary", v)} />
+            <Section id="includes" label={"Inclus EN+FR (" + form.includes.length + "/" + form.includesFr.length + " incl, " + form.excludes.length + "/" + form.excludesFr.length + " excl)"}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <ListEditor label="Included (EN)" values={form.includes} onChange={v => set("includes", v)} />
+                <ListEditor label="Included (FR)" values={form.includesFr} onChange={v => set("includesFr", v)} />
+                <ListEditor label="Not Included (EN)" values={form.excludes} onChange={v => set("excludes", v)} />
+                <ListEditor label="Not Included (FR)" values={form.excludesFr} onChange={v => set("excludesFr", v)} />
+              </div>
+            </Section>
+            <Section id="itinerary" label={"Itinerary (" + form.itinerary.length + " days EN / " + form.itineraryFr.length + " FR)"}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: "0.8rem", color: "#666", marginBottom: "0.5rem", textTransform: "uppercase" }}>EN</div>
+                  <ItineraryEditor days={form.itinerary} onChange={v => set("itinerary", v)} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: "0.8rem", color: "#666", marginBottom: "0.5rem", textTransform: "uppercase" }}>FR</div>
+                  <ItineraryEditor days={form.itineraryFr} onChange={v => set("itineraryFr", v)} />
+                </div>
+              </div>
             </Section>
           </div>
           {err && <p style={{ color: "#c0392b", fontSize: "0.85rem", margin: "0.75rem 0 0" }}>{err}</p>}

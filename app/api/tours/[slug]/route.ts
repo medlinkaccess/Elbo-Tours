@@ -101,6 +101,30 @@ export async function GET(
       LIMIT 3
     `;
 
+    // FR highlights
+    const highlightsFrRows = await sql`
+      SELECT text FROM tour_highlights
+      WHERE "tourId" = ${tour.id} AND locale = 'fr'
+      ORDER BY id
+    `;
+    const highlightsFr = highlightsFrRows.map((r: any) => r.text);
+
+    // FR inclusions
+    const incFrRows = await sql`
+      SELECT text, included FROM tour_inclusions
+      WHERE "tourId" = ${tour.id} AND locale = 'fr'
+      ORDER BY included DESC, id
+    `;
+    const includesFr = incFrRows.filter((r: any) => r.included).map((r: any) => r.text);
+    const excludesFr = incFrRows.filter((r: any) => !r.included).map((r: any) => r.text);
+
+    // FR translation (for itinerary)
+    const frTranslation = translationMap['fr'] || {};
+    let itineraryFr: { day: number; title: string; description: string }[] = [];
+    if (frTranslation.itinerary) {
+      try { itineraryFr = JSON.parse(frTranslation.itinerary); } catch { itineraryFr = []; }
+    }
+
     return NextResponse.json({
       id: tour.id,
       slug: tour.slug,
@@ -130,6 +154,10 @@ export async function GET(
       includes,
       excludes,
       related: relatedRows,
+      highlightsFr,
+      includesFr,
+      excludesFr,
+      itineraryFr,
     });
   } catch (err) {
     console.error('[GET /api/tours/[slug]]', err);
@@ -204,7 +232,7 @@ export async function PUT(
           ${randomUUID()}, ${id}, ${"fr"},
           ${body.titleFr || ""},
           ${body.descFr || ""},
-          ${JSON.stringify(body.itinerary || [])},
+          ${JSON.stringify(body.itineraryFr || body.itinerary || [])},
           ${body.titleFr || ""},
           ${body.descFr || ""}
         )
@@ -215,6 +243,9 @@ export async function PUT(
     for (const h of (body.highlights || [])) {
       if (h.trim()) await sql`INSERT INTO tour_highlights (id, "tourId", locale, text) VALUES (${randomUUID()}, ${id}, ${"en"}, ${h.trim()})`;
     }
+    for (const h of (body.highlightsFr || [])) {
+      if (h.trim()) await sql`INSERT INTO tour_highlights (id, "tourId", locale, text) VALUES (${randomUUID()}, ${id}, ${"fr"}, ${h.trim()})`;
+    }
 
     await sql`DELETE FROM tour_inclusions WHERE "tourId" = ${id}`;
     for (const item of (body.includes || [])) {
@@ -222,6 +253,12 @@ export async function PUT(
     }
     for (const item of (body.excludes || [])) {
       if (item.trim()) await sql`INSERT INTO tour_inclusions (id, "tourId", locale, text, included) VALUES (${randomUUID()}, ${id}, ${"en"}, ${item.trim()}, ${false})`;
+    }
+    for (const item of (body.includesFr || [])) {
+      if (item.trim()) await sql`INSERT INTO tour_inclusions (id, "tourId", locale, text, included) VALUES (${randomUUID()}, ${id}, ${"fr"}, ${item.trim()}, ${true})`;
+    }
+    for (const item of (body.excludesFr || [])) {
+      if (item.trim()) await sql`INSERT INTO tour_inclusions (id, "tourId", locale, text, included) VALUES (${randomUUID()}, ${id}, ${"fr"}, ${item.trim()}, ${false})`;
     }
 
     return NextResponse.json({ ok: true });
