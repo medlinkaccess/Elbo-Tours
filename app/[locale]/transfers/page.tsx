@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import TransfersClient from './TransfersClient';
+import { TransfersJsonLd } from '@/components/JsonLd';
 import { getTransfers } from '@/lib/getTransfers';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
@@ -15,15 +16,15 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     title,
     description,
     alternates: {
-      canonical: `https://elbo-tours.com/${locale}/transfers`,
-      languages: { en: 'https://elbo-tours.com/en/transfers', fr: 'https://elbo-tours.com/fr/transfers' },
+      canonical: `https://www.elbo-tours.com/${locale}/transfers`,
+      languages: { en: 'https://www.elbo-tours.com/en/transfers', fr: 'https://www.elbo-tours.com/fr/transfers' },
     },
     openGraph: {
       title,
       description,
-      url: `https://elbo-tours.com/${locale}/transfers`,
+      url: `https://www.elbo-tours.com/${locale}/transfers`,
       type: 'website',
-      images: [{ url: 'https://elbo-tours.com/images/hero-marrakech-transfer.jpg', width: 1200, height: 630, alt: 'Elbo Tours Private Transfers Morocco' }],
+      images: [{ url: 'https://www.elbo-tours.com/images/hero-marrakech-transfer.jpg', width: 1200, height: 630, alt: 'Elbo Tours Private Transfers Morocco' }],
     },
   };
 }
@@ -34,5 +35,10 @@ export default async function TransfersPage({ params }: { params: { locale: stri
   const airports = transfers.filter((t) => t.type === 'AIRPORT');
   const cityRoutes = transfers.filter((t) => t.type === 'INTER_CITY');
 
-  return <TransfersClient initialAirports={airports} initialCityRoutes={cityRoutes} />;
+  return (
+    <>
+      <TransfersJsonLd transfers={transfers} locale={locale} />
+      <TransfersClient initialAirports={airports} initialCityRoutes={cityRoutes} />
+    </>
+  );
 }

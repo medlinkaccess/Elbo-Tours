@@ -101,3 +101,44 @@ export function LocalBusinessJsonLd() {
     />
   );
 }
+
+export function TransfersJsonLd({ transfers, locale }: { transfers: any[]; locale: string }) {
+  const base = 'https://www.elbo-tours.com';
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: transfers.map((t: any, i: number) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Service',
+        serviceType: t.type === 'AIRPORT' ? 'Airport Transfer' : 'City to City Transfer',
+        name: t.title,
+        description: t.description,
+        provider: {
+          '@type': 'TravelAgency',
+          name: 'Elbo Tours',
+          url: base,
+          telephone: '+212665889258',
+        },
+        areaServed: {
+          '@type': 'Place',
+          name: t.fromLocation,
+        },
+        offers: {
+          '@type': 'Offer',
+          price: t.priceFrom > 0 ? t.priceFrom : undefined,
+          priceCurrency: 'EUR',
+          availability: 'https://schema.org/InStock',
+          url: `${base}/${locale}/transfers`,
+        },
+      },
+    })),
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
