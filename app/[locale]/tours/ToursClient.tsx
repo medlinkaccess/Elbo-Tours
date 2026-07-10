@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
@@ -188,7 +189,7 @@ function TourCard({ tour, locale }: { tour: Tour; locale: string }) {
       {/* Image or gradient placeholder */}
       <div className="relative h-52 overflow-hidden">
         {tour.image ? (
-          <img src={tour.image} alt={title} className="w-full h-full object-cover" />
+          <Image src={tour.image} alt={title} fill sizes="(max-width: 768px) 100vw, 400px" className="object-cover" />
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
             <span className="text-7xl opacity-60">{emoji}</span>

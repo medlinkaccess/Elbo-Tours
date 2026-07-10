@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '') + '-' + id.slice(0, 6);
-    const transferType = body.type === 'CITY_TO_CITY' ? 'CITY_TO_CITY' : 'AIRPORT';
+    const transferType = body.type === 'INTER_CITY' ? 'INTER_CITY' : 'AIRPORT';
     await sql`
       INSERT INTO transfers (id, slug, type, "fromLocation", "toLocation", "priceFrom", "imageUrl", active, "createdAt", "updatedAt")
       VALUES (

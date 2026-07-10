@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/chat/WhatsAppButton';
@@ -246,7 +247,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="about-img-wrap">
-                <img src="/images/hero-essence.jpg" alt="Elbo Tours — private tour guides Morocco" className="about-img" />
+                <Image src="/images/hero-essence.jpg" alt="Elbo Tours — private tour guides Morocco" fill sizes="(max-width: 768px) 100vw, 600px" className="about-img" style={{objectFit:"cover"}} />
                 <div className="about-img-badge">
                   <span className="about-img-num">6+</span>
                   <span className="about-img-lbl">{t('homepage_about.img_badge')}</span>
@@ -261,7 +262,7 @@ export default function Home() {
             <div className="services-grid">
               {SERVICES.map((svc, i) => (
                 <Link key={i} href={`/${locale}${svc.href}`} className="svc-card">
-                  <img src={svc.img} alt={t(svc.titleKey as any)} className="svc-img" />
+                  <Image src={svc.img} alt={t(svc.titleKey as any)} width={400} height={140} className="svc-img" />
                   <div className="svc-title">{t(svc.titleKey as any)}</div>
                   <div className="svc-body">{t(svc.bodyKey as any)}</div>
                   <span className="svc-link">{t('homepage_services.details')} →</span>
@@ -282,7 +283,7 @@ export default function Home() {
             <div className="type-grid">
               {TOUR_TYPE_KEYS.map((key, i) => (
                 <Link key={i} href={`/${locale}${TOUR_TYPE_HREFS[i]}`} className="type-card">
-                  <img src={TOUR_TYPE_IMGS[i]} alt={typeLabels[key] || key} className="type-img" />
+                  <Image src={TOUR_TYPE_IMGS[i]} alt={typeLabels[key] || key} width={300} height={90} className="type-img" />
                   <span className="type-label">{typeLabels[key] || key}</span>
                 </Link>
               ))}

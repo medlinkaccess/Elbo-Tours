@@ -577,7 +577,7 @@ function TransfersTab() {
             <Field label="Type">
               <select style={inp} value={form.type} onChange={e => set('type', e.target.value)}>
                 <option value="AIRPORT">✈️ Airport Transfer</option>
-                <option value="CITY_TO_CITY">🚗 City to City</option>
+                <option value="INTER_CITY">🚗 City to City</option>
               </select>
             </Field>
             <Field label="Price From (EUR)"><input style={inp} type="number" value={form.priceFrom} onChange={e => set('priceFrom', e.target.value)} placeholder="0 = Ask for price" /></Field>

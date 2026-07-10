@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const folder = 'elbo-tours';
     const signStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash('sha256').update(signStr).digest('hex');
+    const signature = crypto.createHash('sha1').update(signStr).digest('hex');
 
     const form = new FormData();
     form.append('file', dataUri);

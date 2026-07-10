@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -283,7 +284,7 @@ export default function BlogPostPage({ params }: { params: { locale: string; id:
             <p className="text-gray-400 text-sm">{post.date}</p>
           </header>
           <div className="relative h-[300px] sm:h-[450px] rounded-2xl overflow-hidden mb-10 shadow-md">
-            <img src={post.image} alt={title} className="w-full h-full object-cover" />
+            <Image src={post.image} alt={title} fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover" />
           </div>
           <div className="prose prose-lg max-w-none text-gray-600 space-y-6 leading-relaxed">
             {content.map((paragraph, index) => (

@@ -80,8 +80,8 @@ export function LocalBusinessJsonLd() {
       { '@type': 'Country', name: 'Morocco' },
     ],
     sameAs: [
-      'https://www.facebook.com/elbotours',
-      'https://www.instagram.com/elbotours',
+      'https://web.facebook.com/profile.php?id=61591918824325',
+      'https://www.instagram.com/elbo_tours2026/',
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import TransfersClient from './TransfersClient';
+import { getTransfers } from '@/lib/getTransfers';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const { locale } = params;
@@ -27,6 +28,11 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   };
 }
 
-export default function TransfersPage() {
-  return <TransfersClient />;
+export default async function TransfersPage({ params }: { params: { locale: string } }) {
+  const { locale } = params;
+  const transfers = await getTransfers(locale);
+  const airports = transfers.filter((t) => t.type === 'AIRPORT');
+  const cityRoutes = transfers.filter((t) => t.type === 'INTER_CITY');
+
+  return <TransfersClient initialAirports={airports} initialCityRoutes={cityRoutes} />;
 }
