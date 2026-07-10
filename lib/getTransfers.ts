@@ -3,7 +3,7 @@ import { sql } from '@/lib/db';
 export interface TransferItem {
   id: string;
   slug: string;
-  type: 'AIRPORT' | 'CITY_TO_CITY';
+  type: 'AIRPORT' | 'INTER_CITY';
   fromLocation: string;
   toLocation: string | null;
   priceFrom: number;
