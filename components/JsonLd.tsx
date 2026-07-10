@@ -142,3 +142,40 @@ export function TransfersJsonLd({ transfers, locale }: { transfers: any[]; local
     />
   );
 }
+
+export function BlogJsonLd({ post, locale, id }: { post: any; locale: string; id: string }) {
+  const base = 'https://www.elbo-tours.com';
+  const title = locale === 'fr' && post.titleFr ? post.titleFr : post.title;
+  const description = locale === 'fr' && post.excerptFr ? post.excerptFr : post.excerpt;
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description: description,
+    image: post.image ? `${base}${post.image}` : undefined,
+    datePublished: post.date,
+    author: {
+      '@type': 'Organization',
+      name: 'Elbo Tours',
+      url: base,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Elbo Tours',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${base}/logos/elbo-logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${base}/${locale}/blog/${id}`,
+    },
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}

@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/chat/WhatsAppButton';
 import { notFound } from 'next/navigation';
+import { BlogJsonLd } from '@/components/JsonLd';
 
 interface BlogPost {
   id: string;
@@ -243,11 +244,11 @@ export async function generateMetadata({ params }: { params: { locale: string; i
   return {
     title: `${title} | Elbo Tours Blog`,
     description,
-    alternates: { canonical: `https://elbo-tours.com/${params.locale}/blog/${params.id}` },
+    alternates: { canonical: `https://www.elbo-tours.com/${params.locale}/blog/${params.id}` },
     openGraph: {
       title,
       description,
-      url: `https://elbo-tours.com/${params.locale}/blog/${params.id}`,
+      url: `https://www.elbo-tours.com/${params.locale}/blog/${params.id}`,
       type: 'article',
       images: [{ url: post.image, width: 1200, height: 630, alt: title }],
     },
@@ -263,6 +264,7 @@ export default function BlogPostPage({ params }: { params: { locale: string; id:
 
   return (
     <>
+      <BlogJsonLd post={post} locale={params.locale} id={params.id} />
       <Navbar />
       <main className="pt-20 bg-white">
         <article className="max-w-4xl mx-auto px-4 py-12">
