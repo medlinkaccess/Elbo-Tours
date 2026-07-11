@@ -82,6 +82,7 @@ export function LocalBusinessJsonLd() {
     sameAs: [
       'https://web.facebook.com/profile.php?id=61591918824325',
       'https://www.instagram.com/elbo_tours2026/',
+      'https://www.youtube.com/channel/UCTeTlxxRzYHahE-D6TzPOlg',
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
