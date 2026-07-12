@@ -12,6 +12,8 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   const otherLocale = locale === 'en' ? 'fr' : 'en';
+
+  const localeFlags: Record<string, string> = { en: '🇬🇧', fr: '🇫🇷' };
   const switchPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
 
   const links = [
@@ -63,7 +65,7 @@ export default function Navbar() {
               {t('phone')}
             </a>
             <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-2 py-1 text-gray-600 hover:border-[#C8960C] hover:text-[#C8960C] transition-colors uppercase">
-              {otherLocale}
+              <span>{localeFlags[otherLocale]}</span> <span>{otherLocale}</span>
             </Link>
             <Link href={`/${locale}/contact`} className="btn-gold !py-2.5 !px-5 text-sm">
               {t('book')}
@@ -92,7 +94,7 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="flex gap-3 pt-2">
-            <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-3 py-2 uppercase text-gray-600">{otherLocale}</Link>
+            <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-3 py-2 uppercase text-gray-600 flex items-center gap-1.5"><span>{localeFlags[otherLocale]}</span> <span>{otherLocale}</span></Link>
             <Link href={`/${locale}/contact`} className="btn-gold !py-2 !px-5 text-sm" onClick={() => setOpen(false)}>{t('book')}</Link>
           </div>
         </div>
