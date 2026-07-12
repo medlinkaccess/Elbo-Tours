@@ -12,6 +12,7 @@
     "@prisma/adapter-neon": "^7.8.0",
     "@types/nodemailer": "^8.0.1",
     "cloudinary": "^2.10.0",
+    "country-flag-icons": "^1.6.20",
     "dotenv": "^17.4.2",
     "next": "14.2.5",
     "next-intl": "^3.15.0",

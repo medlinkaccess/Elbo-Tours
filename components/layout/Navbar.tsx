@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
+import { GB, FR } from 'country-flag-icons/react/3x2';
 
 export default function Navbar() {
   const t = useTranslations('nav');
@@ -13,7 +14,7 @@ export default function Navbar() {
 
   const otherLocale = locale === 'en' ? 'fr' : 'en';
 
-  const localeFlags: Record<string, string> = { en: '🇬🇧', fr: '🇫🇷' };
+  const localeFlags = { en: GB, fr: FR };
   const switchPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
 
   const links = [
@@ -65,7 +66,7 @@ export default function Navbar() {
               {t('phone')}
             </a>
             <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-2 py-1 text-gray-600 hover:border-[#C8960C] hover:text-[#C8960C] transition-colors uppercase">
-              <span>{localeFlags[otherLocale]}</span> <span>{otherLocale}</span>
+              {(() => { const Flag = localeFlags[otherLocale]; return <Flag className="w-5 h-3.5 rounded-sm" />; })()} <span>{otherLocale}</span>
             </Link>
             <Link href={`/${locale}/contact`} className="btn-gold !py-2.5 !px-5 text-sm">
               {t('book')}
@@ -94,7 +95,7 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="flex gap-3 pt-2">
-            <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-3 py-2 uppercase text-gray-600 flex items-center gap-1.5"><span>{localeFlags[otherLocale]}</span> <span>{otherLocale}</span></Link>
+            <Link href={switchPath} className="text-xs font-bold border border-gray-300 rounded px-3 py-2 uppercase text-gray-600 flex items-center gap-1.5">{(() => { const Flag = localeFlags[otherLocale]; return <Flag className="w-5 h-3.5 rounded-sm" />; })()} <span>{otherLocale}</span></Link>
             <Link href={`/${locale}/contact`} className="btn-gold !py-2 !px-5 text-sm" onClick={() => setOpen(false)}>{t('book')}</Link>
           </div>
         </div>
